@@ -16,6 +16,14 @@ namespace Fhi.HelseId.ClientSecret.App.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Generates private and public key.
+        /// Stores in executing directory if path not specified.
+        /// privateKey will be named <FileName>_private.json
+        /// privateKey will be named <FileName>_puplic.json
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
             var keyPath = _parameters.KeyPath ?? Environment.CurrentDirectory;
@@ -27,8 +35,8 @@ namespace Fhi.HelseId.ClientSecret.App.Services
 
             var keyPair = JwkGenerator.GenerateRsaJwk();
 
-            string privateKeyPath = Path.Combine(keyPath, $"{_parameters.ClientId}_private.json");
-            string publicKeyPath = Path.Combine(keyPath, $"{_parameters.ClientId}_public.json");
+            string privateKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_private.json");
+            string publicKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_public.json");
 
             File.WriteAllText(privateKeyPath, keyPair.privateKey);
             File.WriteAllText(publicKeyPath, keyPair.publicKey);
