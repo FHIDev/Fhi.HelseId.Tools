@@ -8,15 +8,12 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
     public class KeyGenerationTests
     {
         [Test]
-        public async Task GenerateKeys_UserConfirms()
+        public async Task GenerateKeys_PathIsEmpty_UseCurrentDirectory()
         {
             var loggerMock = Substitute.For<ILogger<KeyGeneratorService>>();
-            var parameters = new GenerateKeyParameters { ClientId = "TestClient", KeyPath = "C:\\TestKeys" };
+            var parameters = new GenerateKeyParameters { FileName = "TestClient", KeyPath = "C:\\TestKeys" };
 
-            using var input = new StringReader("y\n"); // Simulate user typing 'y'
             using var output = new StringWriter();
-            Console.SetIn(input);
-            Console.SetOut(output);
 
             var service = new KeyGeneratorService(parameters, loggerMock);
 

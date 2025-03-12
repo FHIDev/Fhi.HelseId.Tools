@@ -5,13 +5,13 @@
 ### Generate new keys
 
 ```
- dotnet run --ClientId=<clientId> --KeyPath=C:\Keys
+ generatekey --FileName <NAME> --KeyPath <PATH>
 ```
 
 ### Update client with new keys
 
 ```
- dotnet run --ClientId=<clientId> --KeyPath=C:\Keys
+ generatekey --FileName <NAME> --KeyPath <PATH>
 ```
 
 ## Publish new version

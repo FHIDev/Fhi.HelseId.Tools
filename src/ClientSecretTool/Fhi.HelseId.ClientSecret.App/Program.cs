@@ -9,7 +9,7 @@ public class Program
 {
     public class GenerateKeyParameters
     {
-        public string? ClientId { get; set; }
+        public string? FileName { get; set; }
 
         public string? KeyPath { get; set; }
     };
@@ -17,9 +17,10 @@ public class Program
     public class UpdateClientKeyParameters
     {
         public string? ClientId { get; set; }
+        public string? OldKeyPath { get; set; }
         public string? OldKey { get; set; }
 
-        public string? PublicKeyPath { get; set; }
+        public string? NewKeyPath { get; set; }
     };
 
     public static void Main(string[] args)
@@ -32,6 +33,10 @@ public class Program
         .ConfigureServices((context, services) =>
         {
             ConfigureServices(args, context, services);
+        })
+        .ConfigureLogging((context, logging) =>
+        {
+            //logging.Services.AddLogging();
         })
         .Build()
         .Run();
@@ -49,7 +54,7 @@ public class Program
                 var config = provider.GetRequiredService<IConfiguration>();
                 return new GenerateKeyParameters
                 {
-                    ClientId = config["ClientId"],
+                    FileName = config["FileName"],
                     KeyPath = config["KeyPath"]
                 };
             });
@@ -61,19 +66,39 @@ public class Program
         }
         else if (command == "updateclientkey")
         {
+            var envArg = args.FirstOrDefault(a => a.StartsWith("--env="));
+            var environment = envArg?.Split("=")[1] ?? "prod";
+
+            Console.WriteLine($"Using environment: {environment}");
+
+            var configuration = new ConfigurationBuilder()
+                            .SetBasePath(Environment.CurrentDirectory)
+                            .AddJsonFile($"appsettings.{environment}.json", optional: false)
+                            .Build();
+
             services.AddSingleton<UpdateClientKeyParameters>(provider =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
                 return new UpdateClientKeyParameters
                 {
                     ClientId = config["ClientId"],
-                    PublicKeyPath = config["PublicKeyPath"],
+                    NewKeyPath = config["NewKeyPath"],
+                    OldKeyPath = config["OldKeyPath"],
                     OldKey = config["OldKey"]
                 };
             });
+
             services.AddHostedService<ClientKeyUpdaterService>();
-            services.Configure<ClientConfiguration>(context.Configuration.GetSection("SelvbetjeningConfiguration"));
-            services.AddTransient<HelseIdSelvbetjeningService>();
+            var selvbetjeningConfig = new SelvbetjeningConfiguration();
+            var section = context.Configuration.GetSection("SelvbetjeningConfiguration");
+            section.Bind(selvbetjeningConfig);
+            services.Configure<SelvbetjeningConfiguration>(section);
+
+            Console.WriteLine($"  - HelseId authority: {selvbetjeningConfig.Authority}");
+            Console.WriteLine($"  - HelseId selvbetjening address: {selvbetjeningConfig.BaseAddress}");
+            Console.Write("Proceed with key generation? (y/n): ");
+
+            services.AddTransient<IHelseIdSelvbetjeningService, HelseIdSelvbetjeningService>();
         }
         else
         {

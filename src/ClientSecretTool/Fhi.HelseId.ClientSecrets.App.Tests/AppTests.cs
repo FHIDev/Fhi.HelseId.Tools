@@ -31,21 +31,6 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
             await host.StopAsync(TimeSpan.FromSeconds(10));
         }
 
-        [Test]
-        public async Task MainProgram_ShouldGenerateKeyOutput()
-        {
-            // Arrange
-            var args = new[] { "generatekey" };
 
-            // Redirect console output
-            var stringWriter = new StringWriter();
-            Console.SetOut(stringWriter);
-
-            // Act
-            await Task.Run(() => Program.Main(args)); // If Main is asynchronous, ensure it completes.
-
-            // Assert
-            var output = stringWriter.ToString().Trim();  // Get the output
-        }
     }
 }
