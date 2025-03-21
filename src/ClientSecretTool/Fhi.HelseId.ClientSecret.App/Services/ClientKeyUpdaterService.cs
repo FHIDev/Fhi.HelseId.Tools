@@ -1,49 +1,61 @@
-﻿using Fhi.HelseId.Selvbetjening;
-using Fhi.HelseId.Selvbetjening.Models;
+﻿using Fhi.HelseId.ClientSecret.App.Services;
+using Fhi.HelseId.Selvbetjening.Services;
+using Fhi.HelseId.Selvbetjening.Services.Models;
 using Microsoft.Extensions.Hosting;
-using static Program;
+using Microsoft.Extensions.Logging;
 
 internal class ClientKeyUpdaterService : IHostedService
 {
     private readonly UpdateClientKeyParameters _parameters;
-    private readonly SelvbetjeningConfiguration _selvbetjeningConfiguration;
     private readonly IHelseIdSelvbetjeningService _helseIdSelvbetjeningService;
+    private readonly IFileHandler _fileHandler;
+    private readonly ILogger<ClientKeyUpdaterService> _logger;
 
     public ClientKeyUpdaterService(UpdateClientKeyParameters updateClientKeyParameters,
-        SelvbetjeningConfiguration selvbetjeningConfiguration,
-        IHelseIdSelvbetjeningService helseIdSelvbetjeningService)
+        IHelseIdSelvbetjeningService helseIdSelvbetjeningService,
+        IFileHandler fileHandler,
+        ILogger<ClientKeyUpdaterService> logger)
     {
         _parameters = updateClientKeyParameters;
-        _selvbetjeningConfiguration = selvbetjeningConfiguration;
         _helseIdSelvbetjeningService = helseIdSelvbetjeningService;
+        _fileHandler = fileHandler;
+        _logger = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        Console.WriteLine("Update client Generation Parameters:");
-        Console.WriteLine($"  - ClientId: {_parameters.ClientId}");
-        Console.WriteLine($"  - KeyPath: {_parameters.PublicKeyPath}");
-        Console.WriteLine($"  - HelseId authority: {_selvbetjeningConfiguration.Authority}");
-        Console.WriteLine($"  - HelseId selvbetjening address: {_selvbetjeningConfiguration.BaseAddress}");
-        Console.Write("Proceed with key generation? (y/n): ");
-
-        string? input = Console.ReadLine();
-        if (input?.Trim().ToLower() != "y")
+        try
         {
-            Console.WriteLine("Operation cancelled.");
-            return Task.CompletedTask;
-        }
+            _logger.LogInformation("Update client {@ClientId} ", _parameters.ClientId);
 
-        //TODO: error handling
-        var newKey = File.ReadAllText(_parameters.PublicKeyPath);
-        Console.WriteLine($"New public key: {newKey} ");
-        _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, _parameters.OldKey), newKey);
+            string newKey = !string.IsNullOrEmpty(_parameters.NewKey) ? _parameters.NewKey :
+            (!string.IsNullOrEmpty(_parameters.NewKeyPath) ? _fileHandler.ReadAllText(_parameters.NewKeyPath) : string.Empty);
+
+            string? oldKey = !string.IsNullOrEmpty(_parameters.OldKey) ? _parameters.NewKey :
+            (!string.IsNullOrEmpty(_parameters.OldKeyPath) ? _fileHandler.ReadAllText(_parameters.OldKeyPath) : string.Empty);
+
+
+            if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))
+            {
+                _logger.LogInformation($" - NewKey: {newKey} \n");
+                _logger.LogInformation($" - OldKey: {oldKey} \n");
+                _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
+            }
+            else
+            {
+                _logger.LogError($"Parameters empty. New key: {newKey} Old key: {oldKey}");
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+        }
 
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        return Task.FromCanceled(cancellationToken);
+        return Task.CompletedTask;
     }
 }
