@@ -8,9 +8,9 @@ namespace Fhi.IdentityModel.Tokens
     /// <summary>
     /// Generate Json Web Keys
     /// </summary>
-    /// <param name="publicKey">Public key</param>
-    /// <param name="privateKey">Public and private key</param>
-    public record JwkKeyPair(string publicKey, string privateKey);
+    /// <param name="PublicKey">Public key</param>
+    /// <param name="PrivateKey">Public and private key</param>
+    public record JwkKeyPair(string PublicKey, string PrivateKey);
 
     public static class JwkGenerator
     {
@@ -42,8 +42,9 @@ namespace Fhi.IdentityModel.Tokens
                 E = privateJwk.E
             };
 
-            string privateJwkJson = JsonSerializer.Serialize(privateJwk, new JsonSerializerOptions { WriteIndented = true });
-            string publicJwkJson = JsonSerializer.Serialize(publicJwk, new JsonSerializerOptions { WriteIndented = true });
+            JsonSerializerOptions options = new() { WriteIndented = true };
+            string privateJwkJson = JsonSerializer.Serialize(privateJwk, options);
+            string publicJwkJson = JsonSerializer.Serialize(publicJwk, options);
 
             return new JwkKeyPair(publicJwkJson, privateJwkJson);
         }

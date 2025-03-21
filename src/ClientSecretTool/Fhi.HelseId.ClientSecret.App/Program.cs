@@ -74,20 +74,19 @@ public partial class Program
                             .AddCommandLine(args)
                             .Build();
 
-
             services.AddSingleton(provider =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
+                var clientId = config["ClientId"];
                 return new UpdateClientKeyParameters
                 {
-                    ClientId = config["ClientId"],
+                    ClientId = config["ClientId"] ?? string.Empty,
                     NewKeyPath = config["NewKeyPath"],
                     OldKeyPath = config["OldKeyPath"],
                     OldKey = config["OldKey"],
                     NewKey = config["NewKey"]
                 };
             });
-
             services.AddHostedService<ClientKeyUpdaterService>();
 
             services.Configure<SelvbetjeningConfiguration>(configuration.GetSection("SelvbetjeningConfiguration"));

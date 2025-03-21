@@ -30,7 +30,7 @@ namespace Fhi.HelseId.Selvbetjening.Services
         {
             try
             {
-                _logger.LogInformation($"Start updating client {clientToUpdate.ClientId} with new key.");
+                _logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
                 _logger.LogInformation("Selvbetjening parameters: {@Paramters}", _selvbetjeningConfig);
 
                 var client = _httpClientFactory.CreateClient();
@@ -52,12 +52,10 @@ namespace Fhi.HelseId.Selvbetjening.Services
                     _logger.LogInformation($"/*** Get client secret info (public jwk) in NHN selvbetjening ***/");
                     var uri = new Uri(new Uri(_selvbetjeningConfig.BaseAddress), _selvbetjeningConfig.ClientSecretEndpoint);
 
-                    var requestMessage = new HttpRequestMessageBuilder()
-                       .Create(HttpMethod.Post, uri)
-                       .WithHeader("Accept", "application/json")
+                    var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri)
                        .WithDpop(uri.ToString(), HttpMethod.Post.ToString(), dPoPKey, "PS256", response.AccessToken)
                        .WithContent(JsonContent.Create(newPublicJwk, options: CreateJsonSerializerOptions()))
-                       .Build();
+                       .WithHeader("Accept", "application/json");
 
                     var clientSecretUpdateResponse = await client.SendAsync(requestMessage);
 
@@ -126,7 +124,7 @@ namespace Fhi.HelseId.Selvbetjening.Services
         {
             var key = JwkGenerator.GenerateRsaJwk();
 
-            return key.privateKey;
+            return key.PrivateKey;
         }
     }
 }

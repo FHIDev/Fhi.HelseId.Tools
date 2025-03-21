@@ -39,8 +39,8 @@ namespace Fhi.HelseId.ClientSecret.App.Services
             string privateKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_private.json");
             string publicKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_public.json");
 
-            _fileWriter.WriteAllText(privateKeyPath, keyPair.privateKey);
-            _fileWriter.WriteAllText(publicKeyPath, keyPair.publicKey);
+            _fileWriter.WriteAllText(privateKeyPath, keyPair.PrivateKey);
+            _fileWriter.WriteAllText(publicKeyPath, keyPair.PublicKey);
 
             _logger.LogInformation("Private key saved: {@PrivateKeyPath}", privateKeyPath);
             _logger.LogInformation("Public key saved: {@PublicKeyPath}", publicKeyPath);

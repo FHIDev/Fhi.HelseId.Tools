@@ -83,9 +83,6 @@ namespace Fhi.HelseId.Selvbetjening.Http
             return this;
         }
 
-        public ClientCredentialsTokenRequest Build()
-        {
-            return _request;
-        }
+        public ClientCredentialsTokenRequest Build() => _request;
     }
 }
