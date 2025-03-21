@@ -1,6 +1,6 @@
 ﻿using Duende.IdentityModel;
 using Duende.IdentityModel.Client;
-using Fhi.Cryptographic;
+using Fhi.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Fhi.HelseId.Selvbetjening.Http

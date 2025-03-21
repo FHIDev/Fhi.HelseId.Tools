@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Fhi.HelseId.Selvbetjening
+namespace Fhi.IdentityModel.Tokens
 {
     /// <summary>
     /// TODO: Replace with potentially new authentication package.

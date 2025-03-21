@@ -1,30 +1,29 @@
-﻿using Fhi.HelseId.Selvbetjening;
+﻿using Fhi.HelseId.Selvbetjening.Services;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using static Program;
 
 namespace Fhi.HelseId.ClientSecret.App.Tests
 {
     public class ClientKeyUpdateTests
     {
-        [Test]
-        public async Task ClientKeyUpate_UserConfirms_UpdateClientSecret()
+        [TestCase("", "c:\\temp")]
+        [TestCase("c:\\temp", "")]
+        public async Task ClientKeyUpate_EmptyNewKeyPath_GiveErrorMessage(string newKeyPath, string oldkeyPath)
         {
             var loggerMock = Substitute.For<ILogger<ClientKeyUpdaterService>>();
-            var parameters = new UpdateClientKeyParameters { ClientId = "TestClient", NewKeyPath = "" };
-
-            using var input = new StringReader("y\n"); // Simulate user typing 'y'
-            using var output = new StringWriter();
-            Console.SetIn(input);
-            Console.SetOut(output);
-
+            var parameters = new UpdateClientKeyParameters { ClientId = "TestClient", NewKeyPath = newKeyPath, OldKeyPath = oldkeyPath };
+            var fileHandlerMock = new FileHandlerMock();
             var helseIdServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();
-            var service = new ClientKeyUpdaterService(parameters, helseIdServiceMock, loggerMock);
+            var clientKeyUpdaterService = new ClientKeyUpdaterService(parameters, helseIdServiceMock, fileHandlerMock, loggerMock);
 
-            await service.StartAsync(CancellationToken.None);
+            await clientKeyUpdaterService.StartAsync(CancellationToken.None);
 
-            string consoleOutput = output.ToString();
+            loggerMock.Received(1).Log(
+               LogLevel.Error,
+               Arg.Any<EventId>(),
+               Arg.Is<object>(o => o.ToString()!.Contains("Parameters empty.")),
+               Arg.Any<Exception>(),
+               Arg.Any<Func<object, Exception?, string>>());
         }
-
     }
 }

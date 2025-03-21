@@ -3,9 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 
-namespace Fhi.Cryptographic
+namespace Fhi.IdentityModel.Tokens
 {
     //TODO: need to go through this. Copied from HelseID samples and Duende. Should we handle multiple algorithm
     // need to figure out what algs, size etc. to support
@@ -81,19 +80,6 @@ namespace Fhi.Cryptographic
 
             var jwtSecurityToken = new JwtSecurityToken(jwtHeader, payload);
             return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-        }
-
-        /// <summary>
-        /// From Duende
-        /// </summary>
-        /// <returns></returns>
-        public static string CreateDPoPKey()
-        {
-            var key = new RsaSecurityKey(RSA.Create(2048));
-            var jwk = JsonWebKeyConverter.ConvertFromRSASecurityKey(key);
-            jwk.Alg = "PS256";
-            var jwkJson = JsonSerializer.Serialize(jwk);
-            return jwkJson;
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 
 //TODO: Move to separate library. Should we have a set of allowd algorithms?
-namespace Fhi.Cryptographic
+namespace Fhi.IdentityModel.Tokens
 {
     /// <summary>
     /// Generate Json Web Keys

@@ -1,44 +1,55 @@
-﻿using Fhi.HelseId.Selvbetjening;
-using Fhi.HelseId.Selvbetjening.Models;
+﻿using Fhi.HelseId.ClientSecret.App.Services;
+using Fhi.HelseId.Selvbetjening.Services;
+using Fhi.HelseId.Selvbetjening.Services.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using static Program;
 
 internal class ClientKeyUpdaterService : IHostedService
 {
     private readonly UpdateClientKeyParameters _parameters;
     private readonly IHelseIdSelvbetjeningService _helseIdSelvbetjeningService;
+    private readonly IFileHandler _fileHandler;
     private readonly ILogger<ClientKeyUpdaterService> _logger;
 
     public ClientKeyUpdaterService(UpdateClientKeyParameters updateClientKeyParameters,
         IHelseIdSelvbetjeningService helseIdSelvbetjeningService,
+        IFileHandler fileHandler,
         ILogger<ClientKeyUpdaterService> logger)
     {
         _parameters = updateClientKeyParameters;
         _helseIdSelvbetjeningService = helseIdSelvbetjeningService;
+        _fileHandler = fileHandler;
         _logger = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        Console.WriteLine("Update client Generation Parameters:");
-        Console.WriteLine($"  - ClientId: {_parameters.ClientId}");
-        Console.WriteLine($"  - NewKeyPath: {_parameters.NewKeyPath}");
-        Console.WriteLine($"  - OldKeyPath: {_parameters.OldKeyPath}");
-
-        string? input = Console.ReadLine();
-        if (input?.Trim().ToLower() != "y")
+        try
         {
-            Console.WriteLine("Operation cancelled.");
-            return Task.CompletedTask;
+            _logger.LogInformation("Update client {@ClientId} ", _parameters.ClientId);
+
+            string newKey = !string.IsNullOrEmpty(_parameters.NewKey) ? _parameters.NewKey :
+            (!string.IsNullOrEmpty(_parameters.NewKeyPath) ? _fileHandler.ReadAllText(_parameters.NewKeyPath) : string.Empty);
+
+            string? oldKey = !string.IsNullOrEmpty(_parameters.OldKey) ? _parameters.NewKey :
+            (!string.IsNullOrEmpty(_parameters.OldKeyPath) ? _fileHandler.ReadAllText(_parameters.OldKeyPath) : string.Empty);
+
+
+            if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))
+            {
+                _logger.LogInformation($" - NewKey: {newKey} \n");
+                _logger.LogInformation($" - OldKey: {oldKey} \n");
+                _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
+            }
+            else
+            {
+                _logger.LogError($"Parameters empty. New key: {newKey} Old key: {oldKey}");
+            }
         }
-
-        //TODO: error handling
-        var newKey = File.ReadAllText(_parameters.NewKeyPath);
-        var oldKey = _parameters.OldKey;//File.ReadAllText(_parameters.OldKeyPath);
-
-        Console.WriteLine($"New public key: {newKey} ");
-        _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+        }
 
         return Task.CompletedTask;
     }

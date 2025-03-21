@@ -1,6 +1,5 @@
-﻿
-using Duende.IdentityModel.Client;
-using Fhi.Cryptographic;
+﻿using Duende.IdentityModel.Client;
+using Fhi.IdentityModel.Tokens;
 
 namespace Fhi.HelseId.Selvbetjening.Http
 {
@@ -22,13 +21,13 @@ namespace Fhi.HelseId.Selvbetjening.Http
                 privateJwkAlg,
                 accessToken: accessToken);
 
-            _httpRequest.SetDPoPToken(accessToken, dpopProof);
+            _httpRequest?.SetDPoPToken(accessToken, dpopProof);
             return this;
         }
 
         public HttpRequestMessageBuilder WithHeader(string key, string value)
         {
-            _httpRequest.Headers.Add(key, value);
+            _httpRequest?.Headers.Add(key, value);
             return this;
         }
 

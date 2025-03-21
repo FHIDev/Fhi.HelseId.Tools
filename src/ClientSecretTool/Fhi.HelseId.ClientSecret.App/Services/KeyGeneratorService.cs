@@ -1,18 +1,19 @@
-﻿using Fhi.Cryptographic;
+﻿using Fhi.IdentityModel.Tokens;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using static Program;
 
 namespace Fhi.HelseId.ClientSecret.App.Services
 {
     internal class KeyGeneratorService : IHostedService
     {
         private readonly GenerateKeyParameters _parameters;
+        private readonly IFileHandler _fileWriter;
         private readonly ILogger<KeyGeneratorService> _logger;
 
-        public KeyGeneratorService(GenerateKeyParameters parameters, ILogger<KeyGeneratorService> logger)
+        public KeyGeneratorService(GenerateKeyParameters parameters, IFileHandler fileWriter, ILogger<KeyGeneratorService> logger)
         {
             _parameters = parameters;
+            _fileWriter = fileWriter;
             _logger = logger;
         }
 
@@ -29,7 +30,7 @@ namespace Fhi.HelseId.ClientSecret.App.Services
             var keyPath = _parameters.KeyPath ?? Environment.CurrentDirectory;
             if (!Directory.Exists(keyPath))
             {
-                Console.WriteLine($"Key path did not exist. Creating folder {keyPath}");
+                _logger.LogInformation("Key path did not exist. Creating folder {@KeyPath}", keyPath);
                 Directory.CreateDirectory(keyPath);
             }
 
@@ -38,11 +39,11 @@ namespace Fhi.HelseId.ClientSecret.App.Services
             string privateKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_private.json");
             string publicKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_public.json");
 
-            File.WriteAllText(privateKeyPath, keyPair.privateKey);
-            File.WriteAllText(publicKeyPath, keyPair.publicKey);
+            _fileWriter.WriteAllText(privateKeyPath, keyPair.privateKey);
+            _fileWriter.WriteAllText(publicKeyPath, keyPair.publicKey);
 
-            Console.WriteLine($"Private key saved: {privateKeyPath}");
-            Console.WriteLine($"Public key saved: {publicKeyPath}");
+            _logger.LogInformation("Private key saved: {@PrivateKeyPath}", privateKeyPath);
+            _logger.LogInformation("Public key saved: {@PublicKeyPath}", publicKeyPath);
 
             return Task.CompletedTask;
         }

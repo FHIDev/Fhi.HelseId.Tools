@@ -1,32 +1,18 @@
 ﻿using Fhi.HelseId.ClientSecret.App.Services;
 using Fhi.HelseId.Selvbetjening;
-using Fhi.HelseId.Selvbetjening.Models;
+using Fhi.HelseId.Selvbetjening.Services.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
-public class Program
+public partial class Program
 {
-    public class GenerateKeyParameters
-    {
-        public string? FileName { get; set; }
-
-        public string? KeyPath { get; set; }
-    };
-
-    public class UpdateClientKeyParameters
-    {
-        public string? ClientId { get; set; }
-        public string? OldKeyPath { get; set; }
-        public string? OldKey { get; set; }
-
-        public string? NewKeyPath { get; set; }
-    };
-
     public static void Main(string[] args)
     {
-        new HostBuilder()
-           .ConfigureAppConfiguration(config =>
+        var host = Host.CreateDefaultBuilder(args)
+        .ConfigureAppConfiguration(config =>
            {
                config.AddCommandLine(args);
            })
@@ -34,22 +20,29 @@ public class Program
         {
             ConfigureServices(args, context, services);
         })
-        .ConfigureLogging((context, logging) =>
+        .ConfigureLogging((context, config) =>
         {
-            //logging.Services.AddLogging();
+            Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+                    .WriteTo.Console()
+                    .CreateLogger();
+
+            config.ClearProviders();
+            config.AddSerilog(Log.Logger, dispose: true);
         })
-        .Build()
-        .Run();
+        .Build();
+
+        host.Run();
     }
 
     internal static void ConfigureServices(string[] args, HostBuilderContext context, IServiceCollection services)
     {
-        var config = context.Configuration;
-        string? command = args.Length > 0 ? args[0] : null;
+        services.AddSingleton<IFileHandler, FileHandler>();
 
+        string? command = args.Length > 0 ? args[0] : null;
         if (command == "generatekey")
         {
-            services.AddSingleton<GenerateKeyParameters>(provider =>
+            services.AddSingleton(provider =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
                 return new GenerateKeyParameters
@@ -60,23 +53,29 @@ public class Program
             });
 
             services.AddHostedService<KeyGeneratorService>();
-
-            // Add hosted services
             services.AddHostedService<KeyGeneratorService>();
+
         }
         else if (command == "updateclientkey")
         {
-            var envArg = args.FirstOrDefault(a => a.StartsWith("--env="));
-            var environment = envArg?.Split("=")[1] ?? "prod";
+            Console.WriteLine($"Environment: {context.HostingEnvironment.EnvironmentName}");
+            Console.WriteLine($"Update client in environment {context.HostingEnvironment.EnvironmentName}? y/n");
 
-            Console.WriteLine($"Using environment: {environment}");
+            string? input = Console.ReadLine();
+            if (input?.Trim().ToLower() != "y")
+            {
+                Console.WriteLine("Operation cancelled.");
+                return;
+            }
 
             var configuration = new ConfigurationBuilder()
                             .SetBasePath(Environment.CurrentDirectory)
-                            .AddJsonFile($"appsettings.{environment}.json", optional: false)
+                            .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: false)
+                            .AddCommandLine(args)
                             .Build();
 
-            services.AddSingleton<UpdateClientKeyParameters>(provider =>
+
+            services.AddSingleton(provider =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
                 return new UpdateClientKeyParameters
@@ -84,21 +83,15 @@ public class Program
                     ClientId = config["ClientId"],
                     NewKeyPath = config["NewKeyPath"],
                     OldKeyPath = config["OldKeyPath"],
-                    OldKey = config["OldKey"]
+                    OldKey = config["OldKey"],
+                    NewKey = config["NewKey"]
                 };
             });
 
             services.AddHostedService<ClientKeyUpdaterService>();
-            var selvbetjeningConfig = new SelvbetjeningConfiguration();
-            var section = context.Configuration.GetSection("SelvbetjeningConfiguration");
-            section.Bind(selvbetjeningConfig);
-            services.Configure<SelvbetjeningConfiguration>(section);
 
-            Console.WriteLine($"  - HelseId authority: {selvbetjeningConfig.Authority}");
-            Console.WriteLine($"  - HelseId selvbetjening address: {selvbetjeningConfig.BaseAddress}");
-            Console.Write("Proceed with key generation? (y/n): ");
-
-            services.AddTransient<IHelseIdSelvbetjeningService, HelseIdSelvbetjeningService>();
+            services.Configure<SelvbetjeningConfiguration>(configuration.GetSection("SelvbetjeningConfiguration"));
+            services.AddSelvbetjeningServices();
         }
         else
         {
