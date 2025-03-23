@@ -6,5 +6,5 @@ OldKey="{\"alg\":\"PS512\",\"d\":\"xxx ....\"}"
 
 export DOTNET_ENVIRONMENT=Development
  "..\src\Fhi.HelseIdSelvebetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvebetjening.CLI.exe"
- updateclientkey --ClientId $ClientId --NewKey $NewKey --OldKey $OldKey  
+ updateclientkey --ClientId $clientId --NewClientJwk $newKey --OldClientJwk $oldKey  
 

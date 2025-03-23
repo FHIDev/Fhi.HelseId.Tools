@@ -1,5 +1,8 @@
 ﻿namespace Fhi.HelseId.Selvbetjening.Services.Models
 {
+    /// <summary>
+    /// Configuration options for HelseID Selvbetjeing API
+    /// </summary>
     public class SelvbetjeningConfiguration
     {
         /// <summary>

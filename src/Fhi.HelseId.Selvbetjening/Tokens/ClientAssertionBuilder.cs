@@ -7,7 +7,7 @@ namespace Fhi.IdentityModel.Tokens
     /// <summary>
     /// TODO: Replace with potentially new authentication package.
     /// </summary>
-    public static class ClientAssertionBuilder
+    internal static class ClientAssertionBuilder
     {
         public static string CreateClientAssertionJwt(string issuer, string clientId, string privateKey)
         {

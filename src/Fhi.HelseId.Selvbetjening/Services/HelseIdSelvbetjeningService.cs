@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace Fhi.HelseId.Selvbetjening.Services
 {
-    public class HelseIdSelvbetjeningService : IHelseIdSelvbetjeningService
+    internal class HelseIdSelvbetjeningService : IHelseIdSelvbetjeningService
     {
         private readonly SelvbetjeningConfiguration _selvbetjeningConfig;
         private readonly IHttpClientFactory _httpClientFactory;

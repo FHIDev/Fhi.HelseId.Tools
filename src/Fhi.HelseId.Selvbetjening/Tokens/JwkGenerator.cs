@@ -12,8 +12,15 @@ namespace Fhi.IdentityModel.Tokens
     /// <param name="PrivateKey">Public and private key</param>
     public record JwkKeyPair(string PublicKey, string PrivateKey);
 
+    /// <summary>
+    /// Generate Json Web Keys
+    /// </summary>
     public static class JwkGenerator
     {
+        /// <summary>
+        /// Generate a Json web key with RSA algorithm. Returns both private key and public key 
+        /// </summary>
+        /// <returns>JwkKeypair</returns>
         public static JwkKeyPair GenerateRsaJwk()
         {
             using var rsa = RSA.Create(2048);

@@ -5,9 +5,20 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Fhi.HelseId.Selvbetjening.Http
 {
-    public class ClientCredentialRequestBuilder
+    /// <summary>
+    ///  Build ClientCredentialsTokenRequest
+    /// </summary>
+    internal class ClientCredentialRequestBuilder
     {
         private static ClientCredentialsTokenRequest _request = new();
+        /// <summary>
+        /// Initializer for ClientCredentialsTokenRequest 
+        /// </summary>
+        /// <param name="tokenEndpoint"></param>
+        /// <param name="clientId"></param>
+        /// <param name="grantType"></param>
+        /// <param name="credentialStyle"></param>
+        /// <returns></returns>
         public ClientCredentialRequestBuilder Create(
             string tokenEndpoint,
             string clientId,
@@ -25,6 +36,15 @@ namespace Fhi.HelseId.Selvbetjening.Http
             return this;
         }
 
+        /// <summary>
+        ///  Add DPoP with nonce to ClientCredentialsTokenRequest
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="httpMethod"></param>
+        /// <param name="privateJwk"></param>
+        /// <param name="privateJwkAlg"></param>
+        /// <param name="nonce"></param>
+        /// <returns></returns>
         public ClientCredentialRequestBuilder WithDPoPNonce(string uri, string httpMethod, string privateJwk, string privateJwkAlg, string nonce)
         {
             var dpopProofAccessToken = DPoPProofGenerator.CreateDPoPProof(
@@ -39,6 +59,14 @@ namespace Fhi.HelseId.Selvbetjening.Http
             return this;
         }
 
+        /// <summary>
+        /// Add DPoP to ClientCredentialsTokenRequest
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="httpMethod"></param>
+        /// <param name="privateJwk"></param>
+        /// <param name="privateJwkAlg"></param>
+        /// <returns></returns>
         public ClientCredentialRequestBuilder WithDPoP(string uri, string httpMethod, string privateJwk, string privateJwkAlg)
         {
             var dpopProofAccessToken = DPoPProofGenerator.CreateDPoPProof(
@@ -52,6 +80,13 @@ namespace Fhi.HelseId.Selvbetjening.Http
             return this;
         }
 
+        /// <summary>
+        /// Create Client assertion token from private jwk and add ClientAssertion to ClientCredentialsTokenRequest
+        /// </summary>
+        /// <param name="issuer"></param>
+        /// <param name="privateJwk"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public ClientCredentialRequestBuilder WithClientAssertion(string issuer, string privateJwk, string type = OidcConstants.ClientAssertionTypes.JwtBearer)
         {
             var clientAssertion = ClientAssertionBuilder.CreateClientAssertionJwt(issuer, _request.ClientId, privateJwk);
@@ -64,6 +99,13 @@ namespace Fhi.HelseId.Selvbetjening.Http
             return this;
         }
 
+        /// <summary>
+        /// Create Client assertion token from private jwk and add ClientAssertion to ClientCredentialsTokenRequest
+        /// </summary>
+        /// <param name="issuer"></param>
+        /// <param name="jsonWebKey"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public ClientCredentialRequestBuilder WithClientAssertion(string issuer, JsonWebKey jsonWebKey, string type = OidcConstants.ClientAssertionTypes.JwtBearer)
         {
             var clientAssertion = ClientAssertionBuilder.CreateClientAssertionJwt(issuer, _request.ClientId, jsonWebKey);
@@ -76,6 +118,11 @@ namespace Fhi.HelseId.Selvbetjening.Http
             return this;
         }
 
+        /// <summary>
+        /// Add scope to ClientCredentialsTokenRequest
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <returns></returns>
         public ClientCredentialRequestBuilder WithScope(string scope)
         {
             _request.Scope = scope;
@@ -83,6 +130,10 @@ namespace Fhi.HelseId.Selvbetjening.Http
             return this;
         }
 
+        /// <summary>
+        ///  Build the ClientCredentialsTokenRequest
+        /// </summary>
+        /// <returns></returns>
         public ClientCredentialsTokenRequest Build() => _request;
     }
 }

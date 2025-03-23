@@ -9,7 +9,7 @@
     },
     "UpdateClientKey With Path": {
       "commandName": "Project",
-      "commandLineArgs": "updateclientkey --ClientId client --NewKeyPath C:\\temp\\nam_private.json --OldKeyPath C:\\temp\\oldKey.json",
+      "commandLineArgs": "updateclientkey --ClientId client --NewClientJwkPath C:\\temp\\name_private.json --OldClientJwkPath C:\\temp\\oldKey.json",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

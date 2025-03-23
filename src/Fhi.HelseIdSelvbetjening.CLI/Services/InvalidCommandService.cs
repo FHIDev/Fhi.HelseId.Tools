@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-public class InvalidCommandService : IHostedService
+internal class InvalidCommandService : IHostedService
 {
     private readonly ILogger<InvalidCommandService> _logger;
 

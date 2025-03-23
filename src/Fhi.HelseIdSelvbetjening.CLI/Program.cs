@@ -7,8 +7,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
+/// <summary>
+/// Executable Program for HelseId Serlvbetjening CLI
+/// </summary>
 public partial class Program
 {
+    /// <summary>
+    /// Main program
+    /// </summary>
+    /// <param name="args"></param>
     public static void Main(string[] args)
     {
         var host = Host.CreateDefaultBuilder(args)
@@ -81,10 +88,10 @@ public partial class Program
                 return new UpdateClientKeyParameters
                 {
                     ClientId = config[nameof(UpdateClientKeyParameters.ClientId)] ?? string.Empty,
-                    NewKeyPath = config[nameof(UpdateClientKeyParameters.NewKeyPath)],
-                    OldKeyPath = config[nameof(UpdateClientKeyParameters.OldKeyPath)],
-                    OldKey = config[nameof(UpdateClientKeyParameters.OldKey)],
-                    NewKey = config[nameof(UpdateClientKeyParameters.NewKey)]
+                    NewClientJwkPath = config[nameof(UpdateClientKeyParameters.NewClientJwkPath)],
+                    OldClientJwkPath = config[nameof(UpdateClientKeyParameters.OldClientJwkPath)],
+                    OldClientJwk = config[nameof(UpdateClientKeyParameters.OldClientJwk)],
+                    NewClientJwk = config[nameof(UpdateClientKeyParameters.NewClientJwk)]
                 };
             });
             services.AddHostedService<ClientKeyUpdaterService>();

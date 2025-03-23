@@ -1,12 +1,12 @@
 ﻿namespace Fhi.HelseIdSelvbetjening.Services
 {
-    public interface IFileHandler
+    internal interface IFileHandler
     {
         void WriteAllText(string path, string content);
 
         string ReadAllText(string path);
     }
-    public class FileHandler : IFileHandler
+    internal class FileHandler : IFileHandler
     {
         public string ReadAllText(string path)
         {

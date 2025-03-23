@@ -6,7 +6,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{59FB16D6-5EB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{BA5A1542-0A32-41A2-8EE1-4647B1DA53B3}"
 	ProjectSection(SolutionItems) = preProject
-		samples\appsettings.development.json = samples\appsettings.development.json
 		samples\generate-keys.ps1 = samples\generate-keys.ps1
 		samples\generate-keys.sh = samples\generate-keys.sh
 		samples\update-clientsecret.ps1 = samples\update-clientsecret.ps1
@@ -25,7 +24,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fhi.HelseIdSelvbetjening.Un
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B31D3BB4-71ED-4EF0-9D3D-F7BC774FDD2D}"
 	ProjectSection(SolutionItems) = preProject
-		src.props = src.props
+		src\Directory.Build.props = src\Directory.Build.props
 	EndProjectSection
 EndProject
 Global

@@ -3,7 +3,7 @@ using Fhi.IdentityModel.Tokens;
 
 namespace Fhi.HelseId.Selvbetjening.Http
 {
-    public static class HttpRequestMessageExtensions
+    internal static class HttpRequestMessageExtensions
     {
 
         public static HttpRequestMessage WithDpop(this HttpRequestMessage httpRequest, string uri, string httpMethod, string privateJwk, string privateJwkAlg, string accessToken)

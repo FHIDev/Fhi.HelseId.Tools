@@ -6,7 +6,7 @@ $oldKey =""
 
 $env:DOTNET_ENVIRONMENT = "Development"
 
-& $exePath updateclientkey --ClientId $clientId --NewKey $newKey --OldKey $oldKey
+& $exePath updateclientkey --ClientId $clientId --NewClientJwk $newKey --OldClientJwk $oldKey
 
 Write-Host $output
 

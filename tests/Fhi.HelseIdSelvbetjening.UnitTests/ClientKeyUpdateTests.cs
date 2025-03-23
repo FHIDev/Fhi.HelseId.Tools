@@ -11,7 +11,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
         public async Task ClientKeyUpate_EmptyNewKeyPath_GiveErrorMessage(string newKeyPath, string oldkeyPath)
         {
             var loggerMock = Substitute.For<ILogger<ClientKeyUpdaterService>>();
-            var parameters = new UpdateClientKeyParameters { ClientId = "TestClient", NewKeyPath = newKeyPath, OldKeyPath = oldkeyPath };
+            var parameters = new UpdateClientKeyParameters { ClientId = "TestClient", NewClientJwkPath = newKeyPath, OldClientJwkPath = oldkeyPath };
             var fileHandlerMock = new FileHandlerMock();
             var helseIdServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();
             var clientKeyUpdaterService = new ClientKeyUpdaterService(parameters, helseIdServiceMock, fileHandlerMock, loggerMock);
