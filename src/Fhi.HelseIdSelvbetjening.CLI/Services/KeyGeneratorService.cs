@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Fhi.HelseId.ClientSecret.App.Services
+namespace Fhi.HelseIdSelvbetjening.Services
 {
     internal class KeyGeneratorService : IHostedService
     {

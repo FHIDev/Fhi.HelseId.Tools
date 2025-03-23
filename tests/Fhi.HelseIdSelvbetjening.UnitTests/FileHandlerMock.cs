@@ -1,4 +1,4 @@
-﻿using Fhi.HelseId.ClientSecret.App.Services;
+﻿using Fhi.HelseIdSelvbetjening.Services;
 using System.Collections.Concurrent;
 
 namespace Fhi.HelseId.ClientSecret.App.Tests

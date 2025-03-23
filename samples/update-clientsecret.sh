@@ -5,5 +5,6 @@ NewKey="{\"alg\":\"RSA\",\"d\":\"xxx .....}"
 OldKey="{\"alg\":\"PS512\",\"d\":\"xxx ....\"}"
 
 export DOTNET_ENVIRONMENT=Development
- "..\src\ClientSecretTool\Fhi.HelseId.ClientSecret.App\bin\Debug\net9.0\Fhi.HelseId.ClientSecret.App.exe" updateclientkey --ClientId $ClientId --NewKey $NewKey --OldKey $OldKey  
+ "..\src\Fhi.HelseIdSelvebetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvebetjening.CLI.exe"
+ updateclientkey --ClientId $ClientId --NewKey $NewKey --OldKey $OldKey  
 

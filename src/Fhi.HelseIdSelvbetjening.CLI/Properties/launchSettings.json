@@ -2,14 +2,14 @@
   "profiles": {
     "Generatekey": {
       "commandName": "Project",
-      "commandLineArgs": "generatekey --FileName <name>  --KeyPath C:\\temp",
+      "commandLineArgs": "generatekey --FileName name  --KeyPath C:\\temp",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "UpdateClientKey With Path": {
       "commandName": "Project",
-      "commandLineArgs": "updateclientkey --ClientId <clientId> --NewKeyPath C:\\temp\\<name>_private.json --env dev --OldKeyPath C:\\temp\\oldKey.json",
+      "commandLineArgs": "updateclientkey --ClientId client --NewKeyPath C:\\temp\\nam_private.json --OldKeyPath C:\\temp\\oldKey.json",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

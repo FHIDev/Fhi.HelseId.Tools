@@ -1,4 +1,4 @@
-﻿using Fhi.HelseId.ClientSecret.App.Services;
+﻿using Fhi.HelseIdSelvbetjening.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using NSubstitute;

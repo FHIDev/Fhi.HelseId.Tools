@@ -1,6 +1,6 @@
-﻿using Fhi.HelseId.ClientSecret.App.Services;
-using Fhi.HelseId.Selvbetjening.Services;
+﻿using Fhi.HelseId.Selvbetjening.Services;
 using Fhi.HelseId.Selvbetjening.Services.Models;
+using Fhi.HelseIdSelvbetjening.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

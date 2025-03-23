@@ -6,5 +6,5 @@ OldKey=""
 
 
 export DOTNET_ENVIRONMENT=Development
- "C:\Users\jhoug\source\repos\Fhi.HelseId.Tools\src\ClientSecretTool\Fhi.HelseId.ClientSecret.App\bin\Debug\net9.0\Fhi.HelseId.ClientSecret.App.exe" updateclientkey --ClientId $ClientId --NewKey $NewKey --OldKey ""  
+ "...\src\Fhi.HelseIdSelvebetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvebetjening.CLI.exe" updateclientkey --ClientId $ClientId --NewKey $NewKey --OldKey ""  
 

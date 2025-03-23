@@ -1,6 +1,6 @@
-﻿using Fhi.HelseId.ClientSecret.App.Services;
-using Fhi.HelseId.Selvbetjening;
+﻿using Fhi.HelseId.Selvbetjening;
 using Fhi.HelseId.Selvbetjening.Services.Models;
+using Fhi.HelseIdSelvbetjening.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -69,7 +69,7 @@ public partial class Program
             }
 
             var configuration = new ConfigurationBuilder()
-                            .SetBasePath(Environment.CurrentDirectory)
+                            .SetBasePath(AppContext.BaseDirectory)
                             .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: false)
                             .AddCommandLine(args)
                             .Build();
@@ -80,11 +80,11 @@ public partial class Program
                 var clientId = config["ClientId"];
                 return new UpdateClientKeyParameters
                 {
-                    ClientId = config["ClientId"] ?? string.Empty,
-                    NewKeyPath = config["NewKeyPath"],
-                    OldKeyPath = config["OldKeyPath"],
-                    OldKey = config["OldKey"],
-                    NewKey = config["NewKey"]
+                    ClientId = config[nameof(UpdateClientKeyParameters.ClientId)] ?? string.Empty,
+                    NewKeyPath = config[nameof(UpdateClientKeyParameters.NewKeyPath)],
+                    OldKeyPath = config[nameof(UpdateClientKeyParameters.OldKeyPath)],
+                    OldKey = config[nameof(UpdateClientKeyParameters.OldKey)],
+                    NewKey = config[nameof(UpdateClientKeyParameters.NewKey)]
                 };
             });
             services.AddHostedService<ClientKeyUpdaterService>();

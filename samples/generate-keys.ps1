@@ -1,4 +1,4 @@
-﻿$exePath = "C:\Users\jhoug\source\repos\Fhi.HelseId.Tools\src\ClientSecretTool\Fhi.HelseId.ClientSecret.App\bin\Debug\net9.0\Fhi.HelseId.ClientSecret.App.exe"
+﻿$exePath = "..\src\Fhi.HelseIdSelvebetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvebetjening.CLI.exe"
 
 
 $env:DOTNET_ENVIRONMENT = "Development"

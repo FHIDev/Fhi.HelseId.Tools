@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fhi.HelseId.Selvbetjening\Fhi.HelseId.Selvbetjening.csproj" />
+    <ProjectReference Include="..\Fhi.HelseId.Selvbetjening\Fhi.HelseIdSelvbetjening.csproj" />
   </ItemGroup>
 
   <ItemGroup>

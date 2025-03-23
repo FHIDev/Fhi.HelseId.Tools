@@ -1,4 +1,4 @@
-﻿namespace Fhi.HelseId.ClientSecret.App.Services
+﻿namespace Fhi.HelseIdSelvbetjening.Services
 {
     public interface IFileHandler
     {

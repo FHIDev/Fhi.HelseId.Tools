@@ -9,22 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="AcceptanceTests\TestData\test_public.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="AcceptanceTests\TestData\test_public.json">
+    <Content Include="TestData\test_public.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
-    <PackageReference Include="Duende.AccessTokenManagement" Version="3.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-    <PackageReference Include="NSubstitute" Version="5.3.0" />
     <PackageReference Include="NUnit" Version="4.2.2" />
     <PackageReference Include="NUnit.Analyzers" Version="4.3.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
@@ -34,8 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fhi.HelseId.ClientSecret.App\Fhi.HelseId.ClientSecret.App.csproj" />
-    <ProjectReference Include="..\Fhi.HelseId.Selvbetjening\Fhi.HelseId.Selvbetjening.csproj" />
+    <ProjectReference Include="..\..\src\Fhi.HelseIdSelvbetjening.CLI\Fhi.HelseIdSelvbetjening.CLI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,6 +37,9 @@
 
   <ItemGroup>
     <None Update="appsettings.development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\oldkey.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
