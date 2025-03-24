@@ -21,7 +21,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
         /// Generates private and public key.
         /// Stores in executing directory if path not specified.
         /// privateKey will be named FileName_private.json
-        /// privateKey will be named FileName_puplic.json 
+        /// privateKey will be named FileName_public.json 
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
