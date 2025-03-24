@@ -36,7 +36,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
 
             var keyPair = JwkGenerator.GenerateRsaJwk();
 
-            string privateKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_private.json");
+            var privateKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_private.json");
             string publicKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_public.json");
 
             _fileWriter.WriteAllText(privateKeyPath, keyPair.PrivateKey);
