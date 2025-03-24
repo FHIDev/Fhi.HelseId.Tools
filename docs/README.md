@@ -4,7 +4,13 @@ Developer and operations tools to work with HelseID clients and registrations fo
 
 ## Tool for update HelseIdcClient secrets (Jwk)
 
-### Update client with new keys
+![](./ClientSecretManagement.jpg)
+
+### 1. Add scope nhn:selvbetjening/client to klientsystem and klientkonfigurasjon
+
+### 2. Generate new keys 
+
+### 3. Update client with new keys
 
 In order for an application to use the tool the Client must have registered _nhn:selvbetjening/client_ scope. Below is flow of how dataflow works
 
