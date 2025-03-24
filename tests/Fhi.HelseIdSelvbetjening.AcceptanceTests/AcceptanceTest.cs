@@ -70,7 +70,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
             using var input = new StringReader("y\n");
             Console.SetIn(input);
 
-            IHost host = BuildHost(args);
+            var host = BuildHost(args);
 
             await host.StartAsync();
 
