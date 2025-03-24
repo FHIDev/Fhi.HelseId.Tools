@@ -68,7 +68,7 @@ public partial class Program
             Console.WriteLine($"Environment: {context.HostingEnvironment.EnvironmentName}");
             Console.WriteLine($"Update client in environment {context.HostingEnvironment.EnvironmentName}? y/n");
 
-            string? input = Console.ReadLine();
+            var input = Console.ReadLine();
             if (input?.Trim().ToLower() != "y")
             {
                 Console.WriteLine("Operation cancelled.");
