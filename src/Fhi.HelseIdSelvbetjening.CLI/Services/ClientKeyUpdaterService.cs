@@ -36,13 +36,13 @@ internal class ClientKeyUpdaterService : IHostedService
 
             if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))
             {
-                _logger.LogInformation($" - NewKey: {newKey} \n");
-                _logger.LogInformation($" - OldKey: {oldKey} \n");
+                _logger.LogInformation("NewKey: {newKey}", newKey);
+                _logger.LogInformation("OldKey: {oldKey}", oldKey);
                 _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
             }
             else
             {
-                _logger.LogError($"Parameters empty. New key: {newKey} Old key: {oldKey}");
+                _logger.LogError("Parameters empty. New key: {newKey} Old key: {oldKey}", newKey, oldKey);
             }
         }
         catch (Exception e)
