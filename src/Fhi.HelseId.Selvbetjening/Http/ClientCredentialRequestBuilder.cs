@@ -1,9 +1,9 @@
-﻿using Duende.IdentityModel;
+using Duende.IdentityModel;
 using Duende.IdentityModel.Client;
 using Fhi.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Fhi.HelseId.Selvbetjening.Http
+namespace Fhi.HelseIdSelvbetjening.Http
 {
     /// <summary>
     ///  Build ClientCredentialsTokenRequest

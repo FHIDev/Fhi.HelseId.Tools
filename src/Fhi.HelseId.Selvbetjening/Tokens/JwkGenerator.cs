@@ -1,6 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 
 //TODO: Move to separate library. Should we have a set of allowd algorithms?
 namespace Fhi.IdentityModel.Tokens
@@ -18,16 +18,16 @@ namespace Fhi.IdentityModel.Tokens
     public static class JwkGenerator
     {
         /// <summary>
-        /// Generate a Json web key with RSA algorithm. Returns both private key and public key 
+        /// Generate a Json web key with RSA signing algorithm. Returns both private key and public key 
         /// </summary>
-        /// <returns>JwkKeyPair</returns>
-        public static JwkKeyPair GenerateRsaJwk()
+        /// <returns>JwkKeypair</returns>
+        public static JwkKeyPair GenerateRsaJwk(string signingAlgorithm = SecurityAlgorithms.RsaSha512)
         {
             using var rsa = RSA.Create(2048);
             var rsaParameters = rsa.ExportParameters(true);
             var privateJwk = new JsonWebKey
             {
-                Alg = rsa.SignatureAlgorithm,
+                Alg = signingAlgorithm,
                 Kty = "RSA",
                 Kid = Guid.NewGuid().ToString(),
                 N = Base64UrlEncoder.Encode(rsaParameters.Modulus),

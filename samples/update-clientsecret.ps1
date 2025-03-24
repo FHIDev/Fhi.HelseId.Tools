@@ -1,5 +1,5 @@
 ﻿$exePath = "..\src\Fhi.HelseIdSelvebetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvebetjening.CLI.exe"
-$clientId = "<clientId>"
+$clientId = ""
 $newKey = ""
 $oldKey =""
 

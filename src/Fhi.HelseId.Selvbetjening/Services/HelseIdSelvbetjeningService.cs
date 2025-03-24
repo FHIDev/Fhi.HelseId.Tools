@@ -1,14 +1,14 @@
-﻿using Duende.IdentityModel.Client;
-using Fhi.HelseId.Selvbetjening.Http;
-using Fhi.HelseId.Selvbetjening.Services.Models;
-using Fhi.IdentityModel.Tokens;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Duende.IdentityModel.Client;
+using Fhi.HelseIdSelvbetjening.Http;
+using Fhi.HelseIdSelvbetjening.Services.Models;
+using Fhi.IdentityModel.Tokens;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace Fhi.HelseId.Selvbetjening.Services
+namespace Fhi.HelseIdSelvbetjening.Services
 {
     internal class HelseIdSelvbetjeningService : IHelseIdSelvbetjeningService
     {

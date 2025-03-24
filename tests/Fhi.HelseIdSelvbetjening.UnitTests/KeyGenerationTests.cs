@@ -35,7 +35,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
             var privateKey = fileStore._files["C:\\TestKeys\\TestClient_private.json"];
             var privateJwk = new JsonWebKey(privateKey);
             Assert.That(privateJwk, Is.Not.Null);
-            Assert.That(privateJwk.Alg, Is.EqualTo("RSA"));
+            Assert.That(privateJwk.Alg, Is.EqualTo(SecurityAlgorithms.RsaSha512));
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
             var privateKey = fileStore._files[$"{currentDir}\\TestClient_private.json"];
             var privateJwk = new JsonWebKey(privateKey);
             Assert.That(privateJwk, Is.Not.Null);
-            Assert.That(privateJwk.Alg, Is.EqualTo("RSA"));
+            Assert.That(privateJwk.Alg, Is.EqualTo(SecurityAlgorithms.RsaSha512));
         }
     }
 }

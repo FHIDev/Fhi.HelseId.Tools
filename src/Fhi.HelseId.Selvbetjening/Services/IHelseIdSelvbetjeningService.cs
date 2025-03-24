@@ -1,6 +1,6 @@
-﻿using Fhi.HelseId.Selvbetjening.Services.Models;
+using Fhi.HelseIdSelvbetjening.Services.Models;
 
-namespace Fhi.HelseId.Selvbetjening.Services
+namespace Fhi.HelseIdSelvbetjening.Services
 {
     /// <summary>
     /// Service for handling HelseId clients such as reading secret (key) expirations, updates client secrets

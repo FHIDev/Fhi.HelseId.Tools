@@ -1,6 +1,6 @@
-﻿using Fhi.HelseId.Selvbetjening;
-using Fhi.HelseId.Selvbetjening.Services.Models;
+using Fhi.HelseId.Selvbetjening;
 using Fhi.HelseIdSelvbetjening.Services;
+using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -59,7 +59,6 @@ public partial class Program
                 };
             });
 
-            services.AddHostedService<KeyGeneratorService>();
             services.AddHostedService<KeyGeneratorService>();
 
         }

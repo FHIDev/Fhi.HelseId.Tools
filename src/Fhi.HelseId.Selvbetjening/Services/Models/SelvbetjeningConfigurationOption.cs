@@ -1,4 +1,4 @@
-﻿namespace Fhi.HelseId.Selvbetjening.Services.Models
+namespace Fhi.HelseIdSelvbetjening.Services.Models
 {
     /// <summary>
     /// Configuration options for HelseId Selvbetjening API

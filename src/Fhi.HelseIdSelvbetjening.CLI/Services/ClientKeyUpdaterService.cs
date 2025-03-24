@@ -1,6 +1,5 @@
-﻿using Fhi.HelseId.Selvbetjening.Services;
-using Fhi.HelseId.Selvbetjening.Services.Models;
 using Fhi.HelseIdSelvbetjening.Services;
+using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

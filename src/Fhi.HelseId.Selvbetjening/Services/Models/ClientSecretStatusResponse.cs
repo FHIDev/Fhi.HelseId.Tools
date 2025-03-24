@@ -1,6 +1,6 @@
-﻿using System.Net;
+using System.Net;
 
-namespace Fhi.HelseId.Selvbetjening.Services.Models
+namespace Fhi.HelseIdSelvbetjening.Services.Models
 {
     /// <summary>
     /// Response after updating client secret

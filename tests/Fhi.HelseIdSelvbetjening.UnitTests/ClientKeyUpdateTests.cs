@@ -1,4 +1,4 @@
-﻿using Fhi.HelseId.Selvbetjening.Services;
+﻿using Fhi.HelseIdSelvbetjening.Services;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
