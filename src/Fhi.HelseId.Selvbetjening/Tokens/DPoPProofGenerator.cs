@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Fhi.IdentityModel.Tokens
 {
-    //TODO: need to go through this. Copied from HelseID samples and Duende. Should we handle multiple algorithm
+    // TODO: Need to go through this. Copied from HelseId samples and Duende. Should we handle multiple algorithms?
     // need to figure out what algs, size etc. to support
 
     internal static class DPoPProofGenerator
