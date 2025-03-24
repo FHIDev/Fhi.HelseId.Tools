@@ -2,7 +2,7 @@
 Developer and operations tools to work with HelseID clients and registrations for FHI
 
 
-## Tool for update HelseIdcClient secrets (Jwk)
+## Tool for update HelseId Client secrets (Jwk)
 
 ![](./ClientSecretManagement.jpg)
 
