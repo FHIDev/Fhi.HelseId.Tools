@@ -46,7 +46,7 @@ public partial class Program
     {
         services.AddSingleton<IFileHandler, FileHandler>();
 
-        string? command = args.Length > 0 ? args[0] : null;
+        var command = args.Length > 0 ? args[0] : null;
         if (command == "generatekey")
         {
             services.AddSingleton(provider =>
