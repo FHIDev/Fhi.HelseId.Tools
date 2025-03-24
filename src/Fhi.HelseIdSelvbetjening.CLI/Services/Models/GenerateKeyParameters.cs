@@ -1,6 +1,6 @@
 ﻿
 /// <summary>
-/// Paramters for generating Client private and public Json wen keys
+/// Parameters for generating Client private and public Json web keys
 /// </summary>
 internal class GenerateKeyParameters
 {
