@@ -8,7 +8,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
     {
         [TestCase("", "c:\\temp")]
         [TestCase("c:\\temp", "")]
-        public async Task ClientKeyUpate_EmptyNewKeyPath_GiveErrorMessage(string newKeyPath, string oldkeyPath)
+        public async Task ClientKeyUpdate_EmptyNewKeyPath_GiveErrorMessage(string newKeyPath, string oldkeyPath)
         {
             var loggerMock = Substitute.For<ILogger<ClientKeyUpdaterService>>();
             var parameters = new UpdateClientKeyParameters { ClientId = "TestClient", NewClientJwkPath = newKeyPath, OldClientJwkPath = oldkeyPath };
