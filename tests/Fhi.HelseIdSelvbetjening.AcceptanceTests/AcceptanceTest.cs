@@ -5,7 +5,7 @@ using Serilog;
 
 namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
 {
-    //TODO: Figure out why httpclient not work from test host and move to separate test project
+    // TODO: Investigate why the HttpClient is not working from the test host and move it to a separate test project
     public class AcceptanceTest
     {
         [Ignore("Used for acceptanceTest only")]
