@@ -18,7 +18,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
             var stringWriter = new StringWriter();
             Console.SetOut(stringWriter);
 
-            IHost host = BuildHost(argsGenerateKey);
+            var host = BuildHost(argsGenerateKey);
             await host.StartAsync();
 
             var output = stringWriter.ToString().Trim();
