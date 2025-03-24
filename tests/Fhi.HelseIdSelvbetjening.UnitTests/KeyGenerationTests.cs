@@ -51,23 +51,24 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
 
             await service.StartAsync(CancellationToken.None);
 
-            Console.WriteLine($"Current directory: {Environment.CurrentDirectory}");
-            var currentDir = Environment.CurrentDirectory;
+            var expectedPublicKeyPath = Path.Combine(Environment.CurrentDirectory, "TestClient_public.json");
+            var expectedPrivateKeyPath = Path.Combine(Environment.CurrentDirectory, "TestClient_private.json");
+
             loggerMock.Received(1).Log(
                 LogLevel.Information,
                 Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString()!.Contains($"Private key saved: {currentDir}\\TestClient_private.json")),
+                Arg.Is<object>(o => o.ToString()!.Contains($"Private key saved: {expectedPrivateKeyPath}")),
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
 
             loggerMock.Received(1).Log(
                 LogLevel.Information,
                 Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString()!.Contains($"Public key saved: {currentDir}\\TestClient_public.json")),
+                Arg.Is<object>(o => o.ToString()!.Contains($"Public key saved: {expectedPublicKeyPath}")),
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
 
-            var privateKey = fileStore._files[$"{currentDir}\\TestClient_private.json"];
+            var privateKey = fileStore._files[$"{expectedPrivateKeyPath}"];
             var privateJwk = new JsonWebKey(privateKey);
             Assert.That(privateJwk, Is.Not.Null);
             Assert.That(privateJwk.Alg, Is.EqualTo(SecurityAlgorithms.RsaSha512));
