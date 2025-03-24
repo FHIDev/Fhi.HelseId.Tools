@@ -51,6 +51,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
 
             await service.StartAsync(CancellationToken.None);
 
+            Console.WriteLine($"Current directory: {Environment.CurrentDirectory}");
             var currentDir = Environment.CurrentDirectory;
             loggerMock.Received(1).Log(
                 LogLevel.Information,
