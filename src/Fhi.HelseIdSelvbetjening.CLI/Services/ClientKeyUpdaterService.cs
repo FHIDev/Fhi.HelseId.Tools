@@ -28,7 +28,7 @@ internal class ClientKeyUpdaterService : IHostedService
         {
             _logger.LogInformation("Update client {@ClientId} ", _parameters.ClientId);
 
-            string newKey = !string.IsNullOrEmpty(_parameters.NewClientJwk) ? _parameters.NewClientJwk :
+            var newKey = !string.IsNullOrEmpty(_parameters.NewClientJwk) ? _parameters.NewClientJwk :
             (!string.IsNullOrEmpty(_parameters.NewClientJwkPath) ? _fileHandler.ReadAllText(_parameters.NewClientJwkPath) : string.Empty);
 
             string? oldKey = !string.IsNullOrEmpty(_parameters.OldClientJwk) ? _parameters.NewClientJwk :
