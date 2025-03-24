@@ -17,22 +17,24 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
             var service = new KeyGeneratorService(parameters, fileStore, loggerMock);
             await service.StartAsync(CancellationToken.None);
 
+            var expectedPublicKeyPath = Path.Combine(parameters.KeyPath, "TestClient_public.json");
+            var expectedPrivateKeyPath = Path.Combine(parameters.KeyPath, "TestClient_private.json");
             loggerMock.Received(1).Log(
                LogLevel.Information,
                Arg.Any<EventId>(),
-               Arg.Is<object>(o => o.ToString()!.Contains("Private key saved: C:\\TestKeys\\TestClient_private.json")),
+               Arg.Is<object>(o => o.ToString()!.Contains($"Private key saved: {expectedPrivateKeyPath}")),
                Arg.Any<Exception>(),
                Arg.Any<Func<object, Exception?, string>>());
 
             loggerMock.Received(1).Log(
                 LogLevel.Information,
                 Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString()!.Contains("Public key saved: C:\\TestKeys\\TestClient_public.json")),
+                Arg.Is<object>(o => o.ToString()!.Contains($"Public key saved: {expectedPublicKeyPath}")),
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
 
 
-            var privateKey = fileStore._files["C:\\TestKeys\\TestClient_private.json"];
+            var privateKey = fileStore._files[expectedPrivateKeyPath];
             var privateJwk = new JsonWebKey(privateKey);
             Assert.That(privateJwk, Is.Not.Null);
             Assert.That(privateJwk.Alg, Is.EqualTo(SecurityAlgorithms.RsaSha512));
@@ -68,7 +70,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
 
-            var privateKey = fileStore._files[$"{expectedPrivateKeyPath}"];
+            var privateKey = fileStore._files[expectedPrivateKeyPath];
             var privateJwk = new JsonWebKey(privateKey);
             Assert.That(privateJwk, Is.Not.Null);
             Assert.That(privateJwk.Alg, Is.EqualTo(SecurityAlgorithms.RsaSha512));
