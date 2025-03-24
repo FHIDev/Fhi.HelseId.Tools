@@ -3,7 +3,7 @@
 namespace Fhi.HelseId.Selvbetjening.Services
 {
     /// <summary>
-    /// Service for handling HelseId clients such ac reading secret (key) expirations, updates client secrets
+    /// Service for handling HelseId clients such as reading secret (key) expirations, updates client secrets
     /// </summary>
     public interface IHelseIdSelvbetjeningService
     {
