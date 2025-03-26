@@ -27,11 +27,11 @@ internal class ClientKeyUpdaterService : IHostedService
         {
             _logger.LogInformation("Update client {@ClientId} ", _parameters.ClientId);
 
-            var newKey = !string.IsNullOrEmpty(_parameters.NewClientJwk) ? _parameters.NewClientJwk :
-            (!string.IsNullOrEmpty(_parameters.NewClientJwkPath) ? _fileHandler.ReadAllText(_parameters.NewClientJwkPath) : string.Empty);
+            var newKey = !string.IsNullOrEmpty(_parameters.NewPublicJwk) ? _parameters.NewPublicJwk :
+            (!string.IsNullOrEmpty(_parameters.NewPublicJwkPath) ? _fileHandler.ReadAllText(_parameters.NewPublicJwkPath) : string.Empty);
 
-            var oldKey = !string.IsNullOrEmpty(_parameters.OldClientJwk) ? _parameters.NewClientJwk :
-            (!string.IsNullOrEmpty(_parameters.OldClientJwkPath) ? _fileHandler.ReadAllText(_parameters.OldClientJwkPath) : string.Empty);
+            var oldKey = !string.IsNullOrEmpty(_parameters.ExisitingPrivateJwk) ? _parameters.NewPublicJwk :
+            (!string.IsNullOrEmpty(_parameters.ExistingPrivateJwkPath) ? _fileHandler.ReadAllText(_parameters.ExistingPrivateJwkPath) : string.Empty);
 
 
             if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))

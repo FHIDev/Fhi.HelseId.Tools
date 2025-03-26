@@ -1,4 +1,4 @@
-﻿
+
 /// <summary>
 /// Parameters used when updating a client secret (jwk's)
 /// </summary>
@@ -11,17 +11,17 @@ internal class UpdateClientKeyParameters
     /// <summary>
     /// Path to the existing client secret (jwk). Will use <OldKey></OldKey> first.
     /// </summary>
-    public string? OldClientJwkPath { get; set; }
+    public string? ExistingPrivateJwkPath { get; set; }
     /// <summary>
-    /// The Clients existing Jwk
+    /// The Clients existing client secret (private Jwk)
     /// </summary>
-    public string? OldClientJwk { get; set; }
+    public string? ExisitingPrivateJwk { get; set; }
     /// <summary>
-    /// Path to the new generated client secret (jwk). Will use <NewKey></NewKey> first.
+    /// Path to the new public generated client secret (jwk). Will use <NewKey></NewKey> first.
     /// </summary>
-    public string? NewClientJwkPath { get; set; }
+    public string? NewPublicJwkPath { get; set; }
     /// <summary>
     /// The Clients new Jwk
     /// </summary>
-    public string? NewClientJwk { get; set; }
+    public string? NewPublicJwk { get; set; }
 };

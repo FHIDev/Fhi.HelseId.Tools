@@ -87,10 +87,10 @@ public partial class Program
                 return new UpdateClientKeyParameters
                 {
                     ClientId = config[nameof(UpdateClientKeyParameters.ClientId)] ?? string.Empty,
-                    NewClientJwkPath = config[nameof(UpdateClientKeyParameters.NewClientJwkPath)],
-                    OldClientJwkPath = config[nameof(UpdateClientKeyParameters.OldClientJwkPath)],
-                    OldClientJwk = config[nameof(UpdateClientKeyParameters.OldClientJwk)],
-                    NewClientJwk = config[nameof(UpdateClientKeyParameters.NewClientJwk)]
+                    NewPublicJwkPath = config[nameof(UpdateClientKeyParameters.NewPublicJwkPath)],
+                    ExistingPrivateJwkPath = config[nameof(UpdateClientKeyParameters.ExistingPrivateJwkPath)],
+                    ExisitingPrivateJwk = config[nameof(UpdateClientKeyParameters.ExisitingPrivateJwk)],
+                    NewPublicJwk = config[nameof(UpdateClientKeyParameters.NewPublicJwk)]
                 };
             });
             services.AddHostedService<ClientKeyUpdaterService>();
