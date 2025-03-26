@@ -11,14 +11,14 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
         public async Task GenerateKeys_PathIsNotEmpty_AddKeysToSpecifiedPath()
         {
             var loggerMock = Substitute.For<ILogger<KeyGeneratorService>>();
-            var parameters = new GenerateKeyParameters { FileName = "TestClient", KeyPath = "C:\\TestKeys" };
+            var parameters = new GenerateKeyParameters { KeyFileNamePrefix = "TestClient", KeyDirectory = "C:\\TestKeys" };
             var fileStore = new FileHandlerMock();
 
             var service = new KeyGeneratorService(parameters, fileStore, loggerMock);
             await service.StartAsync(CancellationToken.None);
 
-            var expectedPublicKeyPath = Path.Combine(parameters.KeyPath, "TestClient_public.json");
-            var expectedPrivateKeyPath = Path.Combine(parameters.KeyPath, "TestClient_private.json");
+            var expectedPublicKeyPath = Path.Combine(parameters.KeyDirectory, $"{parameters.KeyFileNamePrefix}_public.json");
+            var expectedPrivateKeyPath = Path.Combine(parameters.KeyDirectory, $"{parameters.KeyFileNamePrefix}_private.json");
             loggerMock.Received(1).Log(
                LogLevel.Information,
                Arg.Any<EventId>(),
@@ -44,7 +44,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
         public async Task GenerateKeys_PathIsEmpty_UseCurrentDirectory()
         {
             var loggerMock = Substitute.For<ILogger<KeyGeneratorService>>();
-            var parameters = new GenerateKeyParameters { FileName = "TestClient" };
+            var parameters = new GenerateKeyParameters { KeyFileNamePrefix = "TestClient" };
             var fileStore = new FileHandlerMock();
             using var output = new StringWriter();
             Console.SetOut(output);
@@ -53,8 +53,8 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
 
             await service.StartAsync(CancellationToken.None);
 
-            var expectedPublicKeyPath = Path.Combine(Environment.CurrentDirectory, "TestClient_public.json");
-            var expectedPrivateKeyPath = Path.Combine(Environment.CurrentDirectory, "TestClient_private.json");
+            var expectedPublicKeyPath = Path.Combine(Environment.CurrentDirectory, $"{parameters.KeyFileNamePrefix}_public.json");
+            var expectedPrivateKeyPath = Path.Combine(Environment.CurrentDirectory, $"{parameters.KeyFileNamePrefix}_private.json");
 
             loggerMock.Received(1).Log(
                 LogLevel.Information,

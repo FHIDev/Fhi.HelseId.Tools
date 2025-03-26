@@ -54,8 +54,8 @@ public partial class Program
                 var config = provider.GetRequiredService<IConfiguration>();
                 return new GenerateKeyParameters
                 {
-                    FileName = config["FileName"],
-                    KeyPath = config["KeyPath"]
+                    KeyFileNamePrefix = config[nameof(GenerateKeyParameters.KeyFileNamePrefix)],
+                    KeyDirectory = config[nameof(GenerateKeyParameters.KeyDirectory)]
                 };
             });
 

@@ -27,7 +27,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
         /// <returns></returns>
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var keyPath = _parameters.KeyPath ?? Environment.CurrentDirectory;
+            var keyPath = _parameters.KeyDirectory ?? Environment.CurrentDirectory;
             if (!Directory.Exists(keyPath))
             {
                 _logger.LogInformation("Key path did not exist. Creating folder {@KeyPath}", keyPath);
@@ -36,8 +36,8 @@ namespace Fhi.HelseIdSelvbetjening.Services
 
             var keyPair = JwkGenerator.GenerateRsaJwk();
 
-            var privateKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_private.json");
-            var publicKeyPath = Path.Combine(keyPath, $"{_parameters.FileName}_public.json");
+            var privateKeyPath = Path.Combine(keyPath, $"{_parameters.KeyFileNamePrefix}_private.json");
+            var publicKeyPath = Path.Combine(keyPath, $"{_parameters.KeyFileNamePrefix}_public.json");
 
             _fileWriter.WriteAllText(privateKeyPath, keyPair.PrivateKey);
             _fileWriter.WriteAllText(publicKeyPath, keyPair.PublicKey);

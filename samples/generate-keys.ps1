@@ -2,6 +2,6 @@
 
 
 $env:DOTNET_ENVIRONMENT = "Development"
-& $exePath generatekey --FileName "name_ps" --KeyPath "C:\\temp"
+& $exePath generatekey --KeyFileNamePrefix "name_ps" --KeyDirectory "C:\\temp"
 Write-Host $output
    

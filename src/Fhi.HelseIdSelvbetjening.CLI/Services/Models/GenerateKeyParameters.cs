@@ -1,16 +1,16 @@
-﻿
+
 /// <summary>
 /// Parameters for generating Client private and public Json web keys
 /// </summary>
 internal class GenerateKeyParameters
 {
     /// <summary>
-    /// Name of the file where keys will be stored
+    /// Prefix name of the file
     /// </summary>
-    public string? FileName { get; set; }
+    public string? KeyFileNamePrefix { get; set; }
 
     /// <summary>
-    /// Path of the file where keys will be stored
+    /// Directory where public and private file will be stored
     /// </summary>
-    public string? KeyPath { get; set; }
+    public string? KeyDirectory { get; set; }
 };
