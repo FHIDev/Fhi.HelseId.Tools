@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "Generatekey": {
+      "commandName": "Project",
+      "commandLineArgs": "generatekey --KeyFileNamePrefix name  --KeyDirectory C:\\temp",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "UpdateClientKey With Path": {
+      "commandName": "Project",
+      "commandLineArgs": "updateclientkey --ClientId client --NewPublicJwkPath C:\\temp\\name_private.json --ExistingPrivateJwkPath C:\\temp\\oldKey.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
