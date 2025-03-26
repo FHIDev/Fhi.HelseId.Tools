@@ -31,14 +31,3 @@ jobs:
 
     - name: Run test
       run: dotnet test --no-build --configuration Release --verbosity normal
-  
-    - name: Publish
-      run: dotnet publish  ./src/Fhi.HelseIdSelvbetjening.CLI/ --no-build --configuration Release --output publish_output --self-contained true -p:PublishSingleFile=true --runtime win-x64
-
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: published-app
-        path: publish_output/
-        retention-days: 7  # Optional: Set retention period
