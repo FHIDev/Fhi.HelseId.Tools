@@ -24,7 +24,7 @@ jobs:
       run: dotnet --version
       
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore --runtime win-x64
       
     - name: Build
       run: dotnet build --no-restore --configuration Release --verbosity minimal

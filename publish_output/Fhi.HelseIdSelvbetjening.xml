@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Fhi.HelseIdSelvbetjening</name>
+    </assembly>
+    <members>
+        <member name="T:Fhi.HelseIdSelvbetjening.Http.ClientCredentialRequestBuilder">
+            <summary>
+             Build ClientCredentialsTokenRequest
+            </summary>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Http.ClientCredentialRequestBuilder.Create(System.String,System.String,System.String,Duende.IdentityModel.Client.ClientCredentialStyle)">
+            <summary>
+            Initializer for ClientCredentialsTokenRequest 
+            </summary>
+            <param name="tokenEndpoint"></param>
+            <param name="clientId"></param>
+            <param name="grantType"></param>
+            <param name="credentialStyle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Http.ClientCredentialRequestBuilder.WithDPoPNonce(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+             Add DPoP with nonce to ClientCredentialsTokenRequest
+            </summary>
+            <param name="uri"></param>
+            <param name="httpMethod"></param>
+            <param name="privateJwk"></param>
+            <param name="privateJwkAlg"></param>
+            <param name="nonce"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Http.ClientCredentialRequestBuilder.WithDPoP(System.String,System.String,System.String,System.String)">
+            <summary>
+            Add DPoP to ClientCredentialsTokenRequest
+            </summary>
+            <param name="uri"></param>
+            <param name="httpMethod"></param>
+            <param name="privateJwk"></param>
+            <param name="privateJwkAlg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Http.ClientCredentialRequestBuilder.WithClientAssertion(System.String,System.String,System.String)">
+            <summary>
+            Create Client assertion token from private jwk and add ClientAssertion to ClientCredentialsTokenRequest
+            </summary>
+            <param name="issuer"></param>
+            <param name="privateJwk"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Http.ClientCredentialRequestBuilder.WithClientAssertion(System.String,Microsoft.IdentityModel.Tokens.JsonWebKey,System.String)">
+            <summary>
+            Create Client assertion token from private jwk and add ClientAssertion to ClientCredentialsTokenRequest
+            </summary>
+            <param name="issuer"></param>
+            <param name="jsonWebKey"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Http.ClientCredentialRequestBuilder.WithScope(System.String)">
+            <summary>
+            Add scope to ClientCredentialsTokenRequest
+            </summary>
+            <param name="scope"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Http.ClientCredentialRequestBuilder.Build">
+            <summary>
+             Build the ClientCredentialsTokenRequest
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Fhi.HelseIdSelvbetjening.Services.IHelseIdSelvbetjeningService">
+            <summary>
+            Service for handling HelseId clients such as reading secret (key) expirations, updates client secrets
+            </summary>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Services.IHelseIdSelvbetjeningService.UpdateClientSecret(Fhi.HelseIdSelvbetjening.Services.Models.ClientConfiguration,System.String)">
+            <summary>
+            Add new (public jwk key) secret to an existing client 
+            </summary>
+            <param name="clientToUpdate">The client that should be updated</param>
+            <param name="newPublicJwk">New public key for client</param>
+            <returns></returns>
+        </member>
+        <member name="T:Fhi.HelseIdSelvbetjening.Services.Models.ClientConfiguration">
+            <summary>
+            HelseId client
+            </summary>
+            <param name="ClientId">The client identifier</param>
+            <param name="Jwk">The private JWK key for the client</param>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Services.Models.ClientConfiguration.#ctor(System.String,System.String)">
+            <summary>
+            HelseId client
+            </summary>
+            <param name="ClientId">The client identifier</param>
+            <param name="Jwk">The private JWK key for the client</param>
+        </member>
+        <member name="P:Fhi.HelseIdSelvbetjening.Services.Models.ClientConfiguration.ClientId">
+            <summary>The client identifier</summary>
+        </member>
+        <member name="P:Fhi.HelseIdSelvbetjening.Services.Models.ClientConfiguration.Jwk">
+            <summary>The private JWK key for the client</summary>
+        </member>
+        <member name="T:Fhi.HelseIdSelvbetjening.Services.Models.ClientSecretUpdateResponse">
+            <summary>
+            Response after updating client secret
+            </summary>
+            <param name="HttpStatus">Status code</param>
+            <param name="Message">Message</param>
+        </member>
+        <member name="M:Fhi.HelseIdSelvbetjening.Services.Models.ClientSecretUpdateResponse.#ctor(System.Net.HttpStatusCode,System.String)">
+            <summary>
+            Response after updating client secret
+            </summary>
+            <param name="HttpStatus">Status code</param>
+            <param name="Message">Message</param>
+        </member>
+        <member name="P:Fhi.HelseIdSelvbetjening.Services.Models.ClientSecretUpdateResponse.HttpStatus">
+            <summary>Status code</summary>
+        </member>
+        <member name="P:Fhi.HelseIdSelvbetjening.Services.Models.ClientSecretUpdateResponse.Message">
+            <summary>Message</summary>
+        </member>
+        <member name="T:Fhi.HelseIdSelvbetjening.Services.Models.SelvbetjeningConfiguration">
+            <summary>
+            Configuration options for HelseId Selvbetjening API
+            </summary>
+        </member>
+        <member name="P:Fhi.HelseIdSelvbetjening.Services.Models.SelvbetjeningConfiguration.Authority">
+            <summary>
+            HelseId authority
+            </summary>
+        </member>
+        <member name="P:Fhi.HelseIdSelvbetjening.Services.Models.SelvbetjeningConfiguration.BaseAddress">
+            <summary>
+            Base address for HelseId Selvbetjening API
+            </summary>
+        </member>
+        <member name="P:Fhi.HelseIdSelvbetjening.Services.Models.SelvbetjeningConfiguration.ClientSecretEndpoint">
+            <summary>
+            The HelseId Selvbetjening client secret endpoint used to read client secrets and update secrets
+            </summary>
+        </member>
+        <member name="T:Fhi.HelseId.Selvbetjening.ServiceCollectionExtensions">
+            <summary>
+            Extensions for adding Selvbetjening services to an application
+            </summary>
+        </member>
+        <member name="M:Fhi.HelseId.Selvbetjening.ServiceCollectionExtensions.AddSelvbetjeningServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Add SelvbetjeningConfiguration and required services
+            </summary>
+            <param name="services">IServiceCollection</param>
+            <returns></returns>
+        </member>
+        <member name="T:Fhi.IdentityModel.Tokens.ClientAssertionBuilder">
+            <summary>
+            TODO: Replace with potentially new authentication package.
+            </summary>
+        </member>
+        <member name="M:Fhi.IdentityModel.Tokens.DPoPProofGenerator.CreateDPoPProof(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="url"></param>
+            <param name="httpMethod"></param>
+            <param name="key">public and private key</param>
+            <param name="keyAlgorithm"></param>
+            <param name="dPoPNonce"></param>
+            <param name="accessToken"></param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="T:Fhi.IdentityModel.Tokens.JwkKeyPair">
+            <summary>
+            Generate Json Web Keys
+            </summary>
+            <param name="PublicKey">Public key</param>
+            <param name="PrivateKey">Public and private key</param>
+        </member>
+        <member name="M:Fhi.IdentityModel.Tokens.JwkKeyPair.#ctor(System.String,System.String)">
+            <summary>
+            Generate Json Web Keys
+            </summary>
+            <param name="PublicKey">Public key</param>
+            <param name="PrivateKey">Public and private key</param>
+        </member>
+        <member name="P:Fhi.IdentityModel.Tokens.JwkKeyPair.PublicKey">
+            <summary>Public key</summary>
+        </member>
+        <member name="P:Fhi.IdentityModel.Tokens.JwkKeyPair.PrivateKey">
+            <summary>Public and private key</summary>
+        </member>
+        <member name="T:Fhi.IdentityModel.Tokens.JwkGenerator">
+            <summary>
+            Generate Json Web Keys
+            </summary>
+        </member>
+        <member name="M:Fhi.IdentityModel.Tokens.JwkGenerator.GenerateRsaJwk(System.String)">
+            <summary>
+            Generate a Json web key with RSA signing algorithm. Returns both private key and public key 
+            </summary>
+            <returns>JwkKeypair</returns>
+        </member>
+    </members>
+</doc>
