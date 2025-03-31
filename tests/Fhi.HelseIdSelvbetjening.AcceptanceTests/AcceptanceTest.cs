@@ -2,32 +2,56 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System.IO;
 
 namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
 {
     // TODO: Investigate why the HttpClient is not working from the test host and move it to a separate test project
     public class AcceptanceTest
     {
-        [Ignore("Used for acceptanceTest only")]
         [Test]
         public async Task GenerateKeys()
         {
-            var filePath = Environment.CurrentDirectory + "\\TestData";
-            var argsGenerateKey = new[] { "generatekey", "--KeyDirectory", filePath, "--KeyFileNamePrefix", "test" };
+            // Arrange
+            var testDirectory = Path.Combine(Environment.CurrentDirectory, "TestData");
+            Directory.CreateDirectory(testDirectory); // Ensure directory exists
+            
+            var keyName = "test";
+            var keyFilePath = Path.Combine(testDirectory, $"{keyName}_private.json");
+            var publicKeyFilePath = Path.Combine(testDirectory, $"{keyName}_public.json");
+            
+            // Cleanup any existing files from previous test runs
+            if (File.Exists(keyFilePath)) File.Delete(keyFilePath);
+            if (File.Exists(publicKeyFilePath)) File.Delete(publicKeyFilePath);
+            
+            var args = new[] { "generatekey", "--keyFileNamePrefix", keyName, "--keyDirectory", testDirectory };
 
-            var stringWriter = new StringWriter();
+            // Redirect console output for assertion
+            var originalOutput = Console.Out;
+            using var stringWriter = new StringWriter();
             Console.SetOut(stringWriter);
-
-            var host = BuildHost(argsGenerateKey);
-            await host.StartAsync();
-
-            var output = stringWriter.ToString().Trim();
-
-            await host.StopAsync(TimeSpan.FromSeconds(10));
+            
+            try
+            {
+                // Act
+                int exitCode = await Program.Main(args);
+                
+                // Assert
+                Assert.That(exitCode, Is.EqualTo(0));
+                Assert.That(File.Exists(keyFilePath), Is.True, "Private key file was not created");
+                Assert.That(File.Exists(publicKeyFilePath), Is.True, "Public key file was not created");
+                
+                var output = stringWriter.ToString();
+                Assert.That(output, Contains.Substring("Private key saved"));
+                Assert.That(output, Contains.Substring("Public key saved"));
+            }
+            finally
+            {
+                // Restore console output
+                Console.SetOut(originalOutput);
+            }
         }
 
-
-        [Ignore("Used for acceptanceTest only")]
         [Test]
         public async Task UpdateClientKeysFromPath()
         {
@@ -53,7 +77,6 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
             await host.StopAsync(TimeSpan.FromSeconds(10));
         }
 
-        [Ignore("Used for acceptanceTest only")]
         [Test]
         public async Task UpdateClientKeysFromParameters()
         {
@@ -89,7 +112,8 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
                })
                 .ConfigureServices((context, services) =>
                 {
-                    Program.ConfigureServices(argsGenerateKey, context, services);
+                    // TODO: Update for new System.CommandLine implementation
+                    // Program.ConfigureServices(argsGenerateKey, context, services);
                 })
                 .ConfigureLogging(config =>
                 {

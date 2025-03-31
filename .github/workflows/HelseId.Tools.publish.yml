@@ -7,12 +7,13 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:  
+  workflow_dispatch:
+  release:
+    types: [created]  
 
 jobs:
-  publish:
+  build-and-publish-executable:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
   
@@ -24,10 +25,8 @@ jobs:
     - name: Build Project
       run: dotnet build ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj --configuration Release
 
-
-    - name: Publish
+    - name: Publish Executable
       run: dotnet publish  ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj --configuration Release --output publish_output --self-contained true -p:PublishSingleFile=true --runtime win-x64
-
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
@@ -35,3 +34,37 @@ jobs:
         name: published-app
         path: publish_output/
         retention-days: 2  # Optional: Set retention period
+
+  publish-nuget:
+    runs-on: ubuntu-latest
+    # Only run when a release is created
+    if: github.event_name == 'release'
+    steps:
+    - uses: actions/checkout@v4
+  
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+    - name: Pack NuGet package
+      run: |
+        dotnet pack ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj \
+        --configuration Release \
+        -p:PackageVersion=${{ steps.get_version.outputs.VERSION }} \
+        --output nuget-packages
+
+    - name: Publish NuGet package
+      run: dotnet nuget push ./nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      if: github.event_name == 'release'
+
+    - name: Upload NuGet Package Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-package
+        path: nuget-packages/*.nupkg
+        retention-days: 7

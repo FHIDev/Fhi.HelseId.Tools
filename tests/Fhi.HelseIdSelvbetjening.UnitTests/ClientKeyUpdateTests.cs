@@ -16,7 +16,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
             var helseIdServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();
             var clientKeyUpdaterService = new ClientKeyUpdaterService(parameters, helseIdServiceMock, fileHandlerMock, loggerMock);
 
-            await clientKeyUpdaterService.StartAsync(CancellationToken.None);
+            await clientKeyUpdaterService.ExecuteAsync();
 
             loggerMock.Received(1).Log(
                LogLevel.Error,
