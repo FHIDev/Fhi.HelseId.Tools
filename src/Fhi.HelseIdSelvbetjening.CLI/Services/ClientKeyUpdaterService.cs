@@ -1,9 +1,8 @@
 using Fhi.HelseIdSelvbetjening.Services;
 using Fhi.HelseIdSelvbetjening.Services.Models;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-internal class ClientKeyUpdaterService : IHostedService
+internal class ClientKeyUpdaterService
 {
     private readonly UpdateClientKeyParameters _parameters;
     private readonly IHelseIdSelvbetjeningService _helseIdSelvbetjeningService;
@@ -21,7 +20,7 @@ internal class ClientKeyUpdaterService : IHostedService
         _logger = logger;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public Task ExecuteAsync()
     {
         try
         {
@@ -50,11 +49,6 @@ internal class ClientKeyUpdaterService : IHostedService
             _logger.LogError(e.Message);
         }
 
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
         return Task.CompletedTask;
     }
 }
