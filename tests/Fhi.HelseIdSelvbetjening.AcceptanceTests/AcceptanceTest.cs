@@ -78,6 +78,28 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
 
             await host.StopAsync(TimeSpan.FromSeconds(10));
         }
+        
+        [Test]
+        public async Task UpdateClientKeys_SkipConfirmation()
+        {
+            var args = new[]
+            {
+                "updateclientkey", "--yes"
+            };
+
+            var stringWriter = new StringWriter();
+            Console.SetOut(stringWriter);
+
+            var host = BuildHost(args);
+
+            await host.StartAsync();
+
+            var output = stringWriter.ToString().Trim();
+
+            await host.StopAsync(TimeSpan.FromSeconds(10));
+            
+            Assert.That(output, Does.Contain("Confirmation skipped"));
+        }
 
         private static IHost BuildHost(string[] argsGenerateKey)
         {
