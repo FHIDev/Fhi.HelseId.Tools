@@ -37,11 +37,11 @@ public partial class Program
         generateKeyCommand.AddAlias("generate-key");
         
         var keyNameOption = new Option<string>(
-            new[] { "--keyFileNamePrefix", "-n" },
+            ["--keyFileNamePrefix", "-n"],
             "Prefix for the key file names");
 
         var keyDirOption = new Option<string>(
-            new[] { "--keyDirectory", "-d" },
+            ["--keyDirectory", "-d"],
             "Directory to store the generated keys");
             
         generateKeyCommand.AddOption(keyNameOption);
@@ -55,24 +55,24 @@ public partial class Program
         updateClientKeyCommand.AddAlias("update-client-key");
         
         var clientIdOption = new Option<string>(
-            new[] { "--clientId", "-c" },
+                ["--clientId", "-c"],
             "Client ID to update")
         { IsRequired = true };
             
         var newPublicJwkPathOption = new Option<string>(
-            new[] { "--newPublicJwkPath", "-np" },
+            ["--newPublicJwkPath", "-np"],
             "Path to the new public key file");
             
         var existingPrivateJwkPathOption = new Option<string>(
-            new[] { "--existingPrivateJwkPath", "-ep" },
+            ["--existingPrivateJwkPath", "-ep"],
             "Path to the existing private key file");
             
         var newPublicJwkOption = new Option<string>(
-            new[] { "--newPublicJwk", "-n" },
+            ["--newPublicJwk", "-n"],
             "New public key value");
             
         var existingPrivateJwkOption = new Option<string>(
-            new[] { "--existingPrivateJwk", "-e" },
+            ["--existingPrivateJwk", "-e"],
             "Existing private key value");
             
         updateClientKeyCommand.AddOption(clientIdOption);
@@ -108,7 +108,7 @@ public partial class Program
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error generating key: {ex.Message}");
+            await Console.Error.WriteLineAsync($"Error generating key: {ex.Message}");
             return 1;
         }
     }
@@ -153,7 +153,7 @@ public partial class Program
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error updating client key: {ex.Message}");
+            await Console.Error.WriteLineAsync($"Error updating client key: {ex.Message}");
             return 1;
         }
     }
