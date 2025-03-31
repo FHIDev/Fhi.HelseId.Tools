@@ -16,7 +16,7 @@ public partial class Program
     /// Main program
     /// </summary>
     /// <param name="args"></param>
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var host = Host.CreateDefaultBuilder(args)
         .ConfigureAppConfiguration(config =>
@@ -39,7 +39,8 @@ public partial class Program
         })
         .Build();
 
-        host.Run();
+        await host.StartAsync();
+        await host.StopAsync();
     }
 
     internal static void ConfigureServices(string[] args, HostBuilderContext context, IServiceCollection services)
