@@ -101,9 +101,12 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.Fhi.HelseIdSelvbetjening.Tests
             // Act
             var result = await service.UpdateClientSecret(clientConfig, newPublicJwk);
 
-            // Assert
-            Assert.That(result.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(result.Message, Is.EqualTo("successfully updated client secret"));
+            using (Assert.EnterMultipleScope())
+            {
+                // Assert
+                Assert.That(result.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(result.Message, Is.EqualTo("successfully updated client secret"));
+            }
         }
 
         [Test]
