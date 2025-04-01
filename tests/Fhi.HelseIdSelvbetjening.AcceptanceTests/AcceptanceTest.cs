@@ -35,15 +35,16 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
             {
                 // Act
                 int exitCode = await Program.Main(args);
-                
-                // Assert
-                Assert.That(exitCode, Is.EqualTo(0));
-                Assert.That(File.Exists(keyFilePath), Is.True, "Private key file was not created");
-                Assert.That(File.Exists(publicKeyFilePath), Is.True, "Public key file was not created");
-                
+
                 var output = stringWriter.ToString();
-                Assert.That(output, Contains.Substring("Private key saved"));
-                Assert.That(output, Contains.Substring("Public key saved"));
+                using (Assert.EnterMultipleScope())
+                {
+                    Assert.That(exitCode, Is.EqualTo(0));
+                    Assert.That(File.Exists(keyFilePath), Is.True, "Private key file was not created");
+                    Assert.That(File.Exists(publicKeyFilePath), Is.True, "Public key file was not created");
+                    Assert.That(output, Contains.Substring("Private key saved"));
+                    Assert.That(output, Contains.Substring("Public key saved"));
+                }
             }
             finally
             {
@@ -74,11 +75,14 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
             
             var args = new[]
             {
-                "updateclientkey", "--env", "dev",
-                "--NewPublicJwkPath", newKeyPath,
-                "--ExistingPrivateJwkPath", oldKeyPath,
-                "--ClientId", "88d474a8-07df-4dc4-abb0-6b759c2b99ec"
+                "updateclientkey",
+                "--newPublicJwkPath", newKeyPath,
+                "--existingPrivateJwkPath", oldKeyPath,
+                "--clientId", "88d474a8-07df-4dc4-abb0-6b759c2b99ec"
             };
+
+            // Set environment to development
+            Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "development");
 
             // Redirect console output and input for interactive confirmation
             var originalOutput = Console.Out;
@@ -92,16 +96,13 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
             try
             {
                 // Act
-                var host = BuildHost(args);
-                await host.StartAsync();
-                
+                int exitCode = await Program.Main(args);
                 var output = stringWriter.ToString().Trim();
                 
-                // Assert - check for log entries that we expect in the output
-                Assert.That(output, Contains.Substring("Hosting environment: development"), "Output should show environment information");
-                Assert.That(output, Contains.Substring("Application started"), "Output should show that application started");
-                
-                await host.StopAsync(TimeSpan.FromSeconds(10));
+                // Assert
+                Assert.That(exitCode, Is.EqualTo(0), "Command should exit with code 0");
+                Assert.That(output, Contains.Substring("Environment: development"), "Output should show environment information");
+                Assert.That(output, Contains.Substring("Update client 88d474a8-07df-4dc4-abb0-6b759c2b99ec"), "Output should show client update process");
             }
             finally
             {
@@ -121,11 +122,14 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
             // Arrange
             var args = new[]
             {
-                "updateclientkey", "--env", "dev",
-                "--NewPublicJwk", "{\r\n  \"e\": \"AQAB\",\r\n  \"key_ops\": [],\r\n  \"kid\": \"t416Ss3pDr0WNShuU0Q1543RVSXeY9Vbqc1wHIx_kF8\",\r\n  \"kty\": \"RSA\",\r\n  \"n\": \"tPRvKBIs0Wcugola1Xzb3mAMkIg3tN8q8vRfjxaglvrEJ1b4ITazcHpSMvqwt2dLj7f6bw5ti-mL8_vOW--3tE3DL7ZTHvF-pazD2WV_aQUv5k5UKdOOmVhDJyJXFq7CMn-NoVBgQvMl84X8oZkIXSb1MdgeevvaUdn02aYgN9joQZFQcJLgEm1D8GPp3z4oloxBGX6c2mcqndusmda1iZckkeC_hN-9a0Uqq5azPO4WkbsBz_hPIl8qZbVWoyDaVcLAvS9k42SNox5TLdik9C0Kr6P2FWm9pIq-apNfTogYzGcvtMRp3BjBZ33OYl0rMj0g-D_oHYHyESJjlLwH0Q\",\r\n  \"oth\": [],\r\n  \"x5c\": []\r\n}",
-                "--ExistingPrivateJwk", "{\"d\":\"Q4x8XiZ3JKn0-ijW-H9plfw7QF4VLK43jHxYtPJvX6GcBuEk_rMedziQuqbBCZrK6aWVspnYS6dQtj33Z2TtSkXu2gy_1xR2nR8h9XeZ6h6QRbL9bj1Qxrk70ry7bXz5WIjyyuPmY73aPw9OFrZ_NDeUQjiEofzTHkr86ZIVjAmNLarVufG9P2V6fz14wwHc3aLBVgUt7Rxx5sFOQR30zYGpd1BH-xK6ykA6n6BdaIc4luWw_SkmVowwO4toScj07qoAYTUR4IFQHYt7sQZNufFG89nB-v_Er0a2tRvtME2NnU_4rn4ea1yyGFlYH_6Amtb8u4-TAeOESjrMw9ylBkvb6vIvtqT0lQdBJJEPI_Hx-655ElvO4zT48HBS6oVZHCARN17d7pQWrnxiSusYEdM9RwJET57ieVayo-baQe3NOvj2Y5V2H034cWCJt_DTh7ye9RXD4gtMnHDQ-tgV6ztwW8GkGvbJzXUnkqGXUvKqjeJAnOc2Ahoxpc-9cnMnW2DrwPnI0f9Jsq0n3hQyqwnnyimIeZn32WVe2Q4XC7d_VB21E8oDZhdeUlxuTZX-foTrYB3xvDKB6tLCaaMbfpzvUsSfSYqbAXQfqhQWosyt7w-ZIYJOY05fWspR3mlpo5IMGkaDp8clvz51f8zdMfSYFTml4e_zjoduvlz2wyE\"}",
-                "--ClientId", "88d474a8-07df-4dc4-abb0-6b759c2b99ec"
+                "updateclientkey",
+                "--newPublicJwk", "{\r\n  \"e\": \"AQAB\",\r\n  \"key_ops\": [],\r\n  \"kid\": \"t416Ss3pDr0WNShuU0Q1543RVSXeY9Vbqc1wHIx_kF8\",\r\n  \"kty\": \"RSA\",\r\n  \"n\": \"tPRvKBIs0Wcugola1Xzb3mAMkIg3tN8q8vRfjxaglvrEJ1b4ITazcHpSMvqwt2dLj7f6bw5ti-mL8_vOW--3tE3DL7ZTHvF-pazD2WV_aQUv5k5UKdOOmVhDJyJXFq7CMn-NoVBgQvMl84X8oZkIXSb1MdgeevvaUdn02aYgN9joQZFQcJLgEm1D8GPp3z4oloxBGX6c2mcqndusmda1iZckkeC_hN-9a0Uqq5azPO4WkbsBz_hPIl8qZbVWoyDaVcLAvS9k42SNox5TLdik9C0Kr6P2FWm9pIq-apNfTogYzGcvtMRp3BjBZ33OYl0rMj0g-D_oHYHyESJjlLwH0Q\",\r\n  \"oth\": [],\r\n  \"x5c\": []\r\n}",
+                "--existingPrivateJwk", "{\"d\":\"Q4x8XiZ3JKn0-ijW-H9plfw7QF4VLK43jHxYtPJvX6GcBuEk_rMedziQuqbBCZrK6aWVspnYS6dQtj33Z2TtSkXu2gy_1xR2nR8h9XeZ6h6QRbL9bj1Qxrk70ry7bXz5WIjyyuPmY73aPw9OFrZ_NDeUQjiEofzTHkr86ZIVjAmNLarVufG9P2V6fz14wwHc3aLBVgUt7Rxx5sFOQR30zYGpd1BH-xK6ykA6n6BdaIc4luWw_SkmVowwO4toScj07qoAYTUR4IFQHYt7sQZNufFG89nB-v_Er0a2tRvtME2NnU_4rn4ea1yyGFlYH_6Amtb8u4-TAeOESjrMw9ylBkvb6vIvtqT0lQdBJJEPI_Hx-655ElvO4zT48HBS6oVZHCARN17d7pQWrnxiSusYEdM9RwJET57ieVayo-baQe3NOvj2Y5V2H034cWCJt_DTh7ye9RXD4gtMnHDQ-tgV6ztwW8GkGvbJzXUnkqGXUvKqjeJAnOc2Ahoxpc-9cnMnW2DrwPnI0f9Jsq0n3hQyqwnnyimIeZn32WVe2Q4XC7d_VB21E8oDZhdeUlxuTZX-foTrYB3xvDKB6tLCaaMbfpzvUsSfSYqbAXQfqhQWosyt7w-ZIYJOY05fWspR3mlpo5IMGkaDp8clvz51f8zdMfSYFTml4e_zjoduvlz2wyE\"}",
+                "--clientId", "88d474a8-07df-4dc4-abb0-6b759c2b99ec"
             };
+
+            // Set environment to development
+            Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "development");
 
             // Redirect console output and input for interactive confirmation
             var originalOutput = Console.Out;
@@ -139,16 +143,13 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
             try
             {
                 // Act
-                var host = BuildHost(args);
-                await host.StartAsync();
-
+                int exitCode = await Program.Main(args);
                 var output = stringWriter.ToString().Trim();
 
                 // Assert
-                Assert.That(output, Contains.Substring("Hosting environment: development"), "Output should show environment information");
-                Assert.That(output, Contains.Substring("Application started"), "Output should show that application started");
-
-                await host.StopAsync(TimeSpan.FromSeconds(10));
+                Assert.That(exitCode, Is.EqualTo(0), "Command should exit with code 0");
+                Assert.That(output, Contains.Substring("Environment: development"), "Output should show environment information");
+                Assert.That(output, Contains.Substring("Update client 88d474a8-07df-4dc4-abb0-6b759c2b99ec"), "Output should show client update process");
             }
             finally
             {
@@ -156,32 +157,6 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
                 Console.SetOut(originalOutput);
                 Console.SetIn(originalInput);
             }
-        }
-
-        private static IHost BuildHost(string[] argsGenerateKey)
-        {
-            return Host.CreateDefaultBuilder(argsGenerateKey)
-                .UseEnvironment("development")
-               .ConfigureAppConfiguration(config =>
-               {
-                   config.AddCommandLine(argsGenerateKey);
-               })
-                .ConfigureServices((context, services) =>
-                {
-                    // TODO: Update for new System.CommandLine implementation
-                    // Program.ConfigureServices(argsGenerateKey, context, services);
-                })
-                .ConfigureLogging(config =>
-                {
-                    Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Debug()
-                    .WriteTo.Console()
-                    .CreateLogger();
-
-                    config.ClearProviders();
-                    config.AddSerilog(Log.Logger, dispose: true);
-                })
-                .Build();
         }
     }
 }
