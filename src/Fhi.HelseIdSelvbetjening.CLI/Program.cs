@@ -33,31 +33,26 @@ public partial class Program
         var rootCommand = new RootCommand("HelseID self-service command line tool");
 
         // Configure generate-key command
-        var generateKeyCommand = new Command("generatekey", "Generate a new RSA key pair");
-        generateKeyCommand.AddAlias("generate-key");
-        
-        var keyNameOption = new Option<string>(
-            ["--keyFileNamePrefix", "-n"],
-            "Prefix for the key file names");
-
-        var keyDirOption = new Option<string>(
-            ["--keyDirectory", "-d"],
-            "Directory to store the generated keys");
-            
-        generateKeyCommand.AddOption(keyNameOption);
-        generateKeyCommand.AddOption(keyDirOption);
-        generateKeyCommand.Handler = CommandHandler.Create<string?, string?>(
-            (keyFileNamePrefix, keyDirectory) => HandleGenerateKeyCommand(keyFileNamePrefix, keyDirectory, host));
+        var generateKeyCommand = GenerateKeyCommand(host);
         rootCommand.AddCommand(generateKeyCommand);
 
         // Configure update-client-key command
+        var updateClientKeyCommand = UpdateClientKeyCommand(host);
+        rootCommand.AddCommand(updateClientKeyCommand);
+
+        // Parse and invoke the command
+        return await rootCommand.InvokeAsync(args);
+    }
+
+    private static Command UpdateClientKeyCommand(IHost host)
+    {
         var updateClientKeyCommand = new Command("updateclientkey", "Update a client key in HelseID");
         updateClientKeyCommand.AddAlias("update-client-key");
         
         var clientIdOption = new Option<string>(
                 ["--clientId", "-c"],
-            "Client ID to update")
-        { IsRequired = true };
+                "Client ID to update")
+            { IsRequired = true };
             
         var newPublicJwkPathOption = new Option<string>(
             ["--newPublicJwkPath", "-np"],
@@ -83,10 +78,28 @@ public partial class Program
         updateClientKeyCommand.Handler = CommandHandler.Create<string, string?, string?, string?, string?>(
             (clientId, newPublicJwkPath, existingPrivateJwkPath, newPublicJwk, existingPrivateJwk) => 
                 HandleUpdateClientKeyCommand(clientId, newPublicJwkPath, existingPrivateJwkPath, newPublicJwk, existingPrivateJwk, host));
-        rootCommand.AddCommand(updateClientKeyCommand);
+        return updateClientKeyCommand;
+    }
 
-        // Parse and invoke the command
-        return await rootCommand.InvokeAsync(args);
+    private static Command GenerateKeyCommand(IHost host)
+    {
+        var generateKeyCommand = new Command("generatekey", "Generate a new RSA key pair");
+        generateKeyCommand.AddAlias("generate-key");
+        
+        var keyNameOption = new Option<string>(
+            ["--keyFileNamePrefix", "-n"],
+            "Prefix for the key file names");
+
+        var keyDirOption = new Option<string>(
+            ["--keyDirectory", "-d"],
+            "Directory to store the generated keys");
+            
+        generateKeyCommand.AddOption(keyNameOption);
+        generateKeyCommand.AddOption(keyDirOption);
+        generateKeyCommand.Handler = CommandHandler.Create<string?, string?>(
+            (keyFileNamePrefix, keyDirectory) 
+                => HandleGenerateKeyCommand(keyFileNamePrefix, keyDirectory, host));
+        return generateKeyCommand;
     }
 
     private static async Task<int> HandleGenerateKeyCommand(string? keyFileNamePrefix, string? keyDirectory, IHost host)
