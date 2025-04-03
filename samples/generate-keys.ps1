@@ -1,4 +1,4 @@
-﻿$exePath = "..\src\Fhi.HelseIdSelvebetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvebetjening.CLI.exe"
+$exePath = "..\src\Fhi.HelseIdSelvbetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvbetjening.CLI.exe"
 
 
 $env:DOTNET_ENVIRONMENT = "Development"
