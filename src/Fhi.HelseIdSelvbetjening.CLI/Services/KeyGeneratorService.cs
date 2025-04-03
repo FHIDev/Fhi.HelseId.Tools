@@ -1,10 +1,9 @@
 ﻿using Fhi.IdentityModel.Tokens;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Fhi.HelseIdSelvbetjening.Services
 {
-    internal class KeyGeneratorService : IHostedService
+    internal class KeyGeneratorService
     {
         private readonly GenerateKeyParameters _parameters;
         private readonly IFileHandler _fileWriter;
@@ -23,9 +22,8 @@ namespace Fhi.HelseIdSelvbetjening.Services
         /// privateKey will be named FileName_private.json
         /// privateKey will be named FileName_public.json 
         /// </summary>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task StartAsync(CancellationToken cancellationToken)
+        public Task ExecuteAsync()
         {
             var keyPath = _parameters.KeyDirectory ?? Environment.CurrentDirectory;
             if (!Directory.Exists(keyPath))
@@ -45,11 +43,6 @@ namespace Fhi.HelseIdSelvbetjening.Services
             _logger.LogInformation("Private key saved: {@PrivateKeyPath}", privateKeyPath);
             _logger.LogInformation("Public key saved: {@PublicKeyPath}", publicKeyPath);
 
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
             return Task.CompletedTask;
         }
     }

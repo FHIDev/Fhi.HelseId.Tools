@@ -15,7 +15,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
             var fileStore = new FileHandlerMock();
 
             var service = new KeyGeneratorService(parameters, fileStore, loggerMock);
-            await service.StartAsync(CancellationToken.None);
+            await service.ExecuteAsync();
 
             var expectedPublicKeyPath = Path.Combine(parameters.KeyDirectory, $"{parameters.KeyFileNamePrefix}_public.json");
             var expectedPrivateKeyPath = Path.Combine(parameters.KeyDirectory, $"{parameters.KeyFileNamePrefix}_private.json");
@@ -51,7 +51,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
 
             var service = new KeyGeneratorService(parameters, fileStore, loggerMock);
 
-            await service.StartAsync(CancellationToken.None);
+            await service.ExecuteAsync();
 
             var expectedPublicKeyPath = Path.Combine(Environment.CurrentDirectory, $"{parameters.KeyFileNamePrefix}_public.json");
             var expectedPrivateKeyPath = Path.Combine(Environment.CurrentDirectory, $"{parameters.KeyFileNamePrefix}_private.json");

@@ -17,8 +17,11 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests
 
             var request = builder.Build();
 
-            Assert.That(request.ClientAssertion.Value, Is.Not.Null);
-            Assert.That(request.ClientAssertion.Type, Is.EqualTo("urn:ietf:params:oauth:client-assertion-type:jwt-bearer"));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(request.ClientAssertion.Value, Is.Not.Null);
+                Assert.That(request.ClientAssertion.Type, Is.EqualTo("urn:ietf:params:oauth:client-assertion-type:jwt-bearer"));
+            }
         }
     }
 }

@@ -7,13 +7,7 @@ namespace Fhi.HelseId.ClientSecret.App.Tests
     {
         public ConcurrentDictionary<string, string> _files = new ConcurrentDictionary<string, string>();
 
-        public string ReadAllText(string path)
-        {
-            if (_files.ContainsKey(path))
-                return _files[path];
-
-            return string.Empty;
-        }
+        public string ReadAllText(string path) => _files.ContainsKey(path) ? _files[path] : string.Empty;
 
         public void WriteAllText(string path, string content)
         {

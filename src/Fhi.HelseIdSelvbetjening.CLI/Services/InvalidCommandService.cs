@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
-internal class InvalidCommandService : IHostedService
+internal class InvalidCommandService
 {
     private readonly ILogger<InvalidCommandService> _logger;
 
@@ -10,11 +9,9 @@ internal class InvalidCommandService : IHostedService
         _logger = logger;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public Task ExecuteAsync()
     {
         _logger.LogError("Invalid command! Use 'generatekey' or 'updateclientkey'.");
         return Task.CompletedTask;
     }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
