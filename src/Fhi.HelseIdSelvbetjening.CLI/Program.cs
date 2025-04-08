@@ -16,7 +16,7 @@ public partial class Program
     /// Main program
     /// </summary>
     /// <param name="args"></param>
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var host = Host.CreateDefaultBuilder(args)
         .ConfigureAppConfiguration(config =>
@@ -39,7 +39,7 @@ public partial class Program
         })
         .Build();
 
-        host.Run();
+        await host.RunAsync();
     }
 
     internal static void ConfigureServices(string[] args, HostBuilderContext context, IServiceCollection services)
@@ -64,21 +64,32 @@ public partial class Program
         }
         else if (command == "updateclientkey")
         {
-            Console.WriteLine($"Environment: {context.HostingEnvironment.EnvironmentName}");
-            Console.WriteLine($"Update client in environment {context.HostingEnvironment.EnvironmentName}? y/n");
-
-            var input = Console.ReadLine();
-            if (input?.Trim().ToLower() != "y")
-            {
-                Console.WriteLine("Operation cancelled.");
-                return;
-            }
-
             var configuration = new ConfigurationBuilder()
-                            .SetBasePath(AppContext.BaseDirectory)
-                            .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: false)
-                            .AddCommandLine(args)
-                            .Build();
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: false)
+                .AddCommandLine(args)
+                .Build();
+            
+            var skipConfirmation =  args.Contains("--yes") || args.Contains("-y");
+            
+            Console.WriteLine($"Environment: {context.HostingEnvironment.EnvironmentName}");
+
+            if (skipConfirmation)
+            {
+                Console.WriteLine("Confirmation skipped");
+                Console.WriteLine($"Update client in environment {context.HostingEnvironment.EnvironmentName}");
+            }
+            else
+            {
+                Console.WriteLine($"Update client in environment {context.HostingEnvironment.EnvironmentName}? y/n");
+    
+                var input = Console.ReadLine();
+                if (input?.Trim().ToLower() != "y")
+                {
+                    Console.WriteLine("Operation cancelled.");
+                    return;
+                }
+            }
 
             services.AddSingleton(provider =>
             {
