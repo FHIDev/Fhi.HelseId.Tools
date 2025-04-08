@@ -39,7 +39,8 @@ public partial class Program
         })
         .Build();
 
-        await host.RunAsync();
+        await host.StartAsync();
+        await host.StopAsync();
     }
 
     internal static void ConfigureServices(string[] args, HostBuilderContext context, IServiceCollection services)
