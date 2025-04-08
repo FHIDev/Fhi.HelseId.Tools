@@ -21,7 +21,7 @@ internal class ClientKeyUpdaterService : IHostedService
         _logger = logger;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -33,12 +33,11 @@ internal class ClientKeyUpdaterService : IHostedService
             var oldKey = !string.IsNullOrEmpty(_parameters.ExisitingPrivateJwk) ? _parameters.NewPublicJwk :
             (!string.IsNullOrEmpty(_parameters.ExistingPrivateJwkPath) ? _fileHandler.ReadAllText(_parameters.ExistingPrivateJwkPath) : string.Empty);
 
-
             if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))
             {
                 _logger.LogInformation("NewKey: {newKey}", newKey);
                 _logger.LogInformation("OldKey: {oldKey}", oldKey);
-                _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
+                await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
             }
             else
             {
@@ -49,8 +48,6 @@ internal class ClientKeyUpdaterService : IHostedService
         {
             _logger.LogError(e.Message);
         }
-
-        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
