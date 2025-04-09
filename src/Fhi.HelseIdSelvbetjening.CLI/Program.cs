@@ -1,3 +1,5 @@
+using System.CommandLine;
+using System.CommandLine.NamingConventionBinder;
 using Fhi.HelseId.Selvbetjening;
 using Fhi.HelseIdSelvbetjening.Services;
 using Fhi.HelseIdSelvbetjening.Services.Models;
@@ -8,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 
 /// <summary>
-/// Executable Program for HelseId Serlvbetjening CLI
+/// Executable Program for HelseId Selvbetjening CLI
 /// </summary>
 public partial class Program
 {
@@ -16,91 +18,181 @@ public partial class Program
     /// Main program
     /// </summary>
     /// <param name="args"></param>
-    public static void Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
-        var host = Host.CreateDefaultBuilder(args)
-        .ConfigureAppConfiguration(config =>
-           {
-               config.AddCommandLine(args);
-           })
-        .ConfigureServices((context, services) =>
-        {
-            ConfigureServices(args, context, services);
-        })
-        .ConfigureLogging((context, config) =>
-        {
-            Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Debug()
-                    .WriteTo.Console()
-                    .CreateLogger();
+        // Setup logging
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .CreateLogger();
 
-            config.ClearProviders();
-            config.AddSerilog(Log.Logger, dispose: true);
-        })
-        .Build();
+        // Create the host
+        var host = CreateHostBuilder(args).Build();
 
-        host.Run();
+        // Create root command
+        var rootCommand = new RootCommand("HelseID self-service command line tool");
+
+        // Configure generate-key command
+        var generateKeyCommand = GenerateKeyCommand(host);
+        rootCommand.AddCommand(generateKeyCommand);
+
+        // Configure update-client-key command
+        var updateClientKeyCommand = UpdateClientKeyCommand(host);
+        rootCommand.AddCommand(updateClientKeyCommand);
+
+        // Parse and invoke the command
+        return await rootCommand.InvokeAsync(args);
     }
 
-    internal static void ConfigureServices(string[] args, HostBuilderContext context, IServiceCollection services)
+    private static Command UpdateClientKeyCommand(IHost host)
     {
-        services.AddSingleton<IFileHandler, FileHandler>();
+        var updateClientKeyCommand = new Command("updateclientkey", "Update a client key in HelseID");
+        updateClientKeyCommand.AddAlias("update-client-key");
+        
+        var clientIdOption = new Option<string>(
+                ["--clientId", "-c"],
+                "Client ID to update")
+            { IsRequired = true };
+            
+        var newPublicJwkPathOption = new Option<string>(
+            ["--newPublicJwkPath", "-np"],
+            "Path to the new public key file");
+            
+        var existingPrivateJwkPathOption = new Option<string>(
+            ["--existingPrivateJwkPath", "-ep"],
+            "Path to the existing private key file");
+            
+        var newPublicJwkOption = new Option<string>(
+            ["--newPublicJwk", "-n"],
+            "New public key value");
+            
+        var existingPrivateJwkOption = new Option<string>(
+            ["--existingPrivateJwk", "-e"],
+            "Existing private key value");
+            
+        updateClientKeyCommand.AddOption(clientIdOption);
+        updateClientKeyCommand.AddOption(newPublicJwkPathOption);
+        updateClientKeyCommand.AddOption(existingPrivateJwkPathOption);
+        updateClientKeyCommand.AddOption(newPublicJwkOption);
+        updateClientKeyCommand.AddOption(existingPrivateJwkOption);
+        updateClientKeyCommand.Handler = CommandHandler.Create<string, string?, string?, string?, string?>(
+            (clientId, newPublicJwkPath, existingPrivateJwkPath, newPublicJwk, existingPrivateJwk) => 
+                HandleUpdateClientKeyCommand(clientId, newPublicJwkPath, existingPrivateJwkPath, newPublicJwk, existingPrivateJwk, host));
+        return updateClientKeyCommand;
+    }
 
-        var command = args.Length > 0 ? args[0] : null;
-        if (command == "generatekey")
+    private static Command GenerateKeyCommand(IHost host)
+    {
+        var generateKeyCommand = new Command("generatekey", "Generate a new RSA key pair");
+        generateKeyCommand.AddAlias("generate-key");
+        
+        var keyNameOption = new Option<string>(
+            ["--keyFileNamePrefix", "-n"],
+            "Prefix for the key file names");
+
+        var keyDirOption = new Option<string>(
+            ["--keyDirectory", "-d"],
+            "Directory to store the generated keys");
+            
+        generateKeyCommand.AddOption(keyNameOption);
+        generateKeyCommand.AddOption(keyDirOption);
+        generateKeyCommand.Handler = CommandHandler.Create<string?, string?>(
+            (keyFileNamePrefix, keyDirectory) 
+                => HandleGenerateKeyCommand(keyFileNamePrefix, keyDirectory, host));
+        return generateKeyCommand;
+    }
+
+    private static async Task<int> HandleGenerateKeyCommand(string? keyFileNamePrefix, string? keyDirectory, IHost host)
+    {
+        try
         {
-            services.AddSingleton(provider =>
+            var parameters = new GenerateKeyParameters
             {
-                var config = provider.GetRequiredService<IConfiguration>();
-                return new GenerateKeyParameters
-                {
-                    KeyFileNamePrefix = config[nameof(GenerateKeyParameters.KeyFileNamePrefix)],
-                    KeyDirectory = config[nameof(GenerateKeyParameters.KeyDirectory)]
-                };
-            });
+                KeyFileNamePrefix = keyFileNamePrefix,
+                KeyDirectory = keyDirectory
+            };
 
-            services.AddHostedService<KeyGeneratorService>();
-
+            var logger = host.Services.GetRequiredService<ILogger<KeyGeneratorService>>();
+            var fileWriter = host.Services.GetRequiredService<IFileHandler>();
+            var service = new KeyGeneratorService(parameters, fileWriter, logger);
+            
+            await service.ExecuteAsync();
+            return 0;
         }
-        else if (command == "updateclientkey")
+        catch (Exception ex)
         {
-            Console.WriteLine($"Environment: {context.HostingEnvironment.EnvironmentName}");
-            Console.WriteLine($"Update client in environment {context.HostingEnvironment.EnvironmentName}? y/n");
+            await Console.Error.WriteLineAsync($"Error generating key: {ex.Message}");
+            return 1;
+        }
+    }
+
+    private static async Task<int> HandleUpdateClientKeyCommand(
+        string clientId, 
+        string? newPublicJwkPath, 
+        string? existingPrivateJwkPath,
+        string? newPublicJwk,
+        string? existingPrivateJwk,
+        IHost host)
+    {
+        try
+        {
+            Console.WriteLine($"Environment: {host.Services.GetRequiredService<IHostEnvironment>().EnvironmentName}");
+            Console.WriteLine($"Update client in environment {host.Services.GetRequiredService<IHostEnvironment>().EnvironmentName}? y/n");
 
             var input = Console.ReadLine();
             if (input?.Trim().ToLower() != "y")
             {
                 Console.WriteLine("Operation cancelled.");
-                return;
+                return 0;
             }
 
-            var configuration = new ConfigurationBuilder()
-                            .SetBasePath(AppContext.BaseDirectory)
-                            .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: false)
-                            .AddCommandLine(args)
-                            .Build();
-
-            services.AddSingleton(provider =>
+            var parameters = new UpdateClientKeyParameters
             {
-                var config = provider.GetRequiredService<IConfiguration>();
-                var clientId = config["ClientId"];
-                return new UpdateClientKeyParameters
-                {
-                    ClientId = config[nameof(UpdateClientKeyParameters.ClientId)] ?? string.Empty,
-                    NewPublicJwkPath = config[nameof(UpdateClientKeyParameters.NewPublicJwkPath)],
-                    ExistingPrivateJwkPath = config[nameof(UpdateClientKeyParameters.ExistingPrivateJwkPath)],
-                    ExisitingPrivateJwk = config[nameof(UpdateClientKeyParameters.ExisitingPrivateJwk)],
-                    NewPublicJwk = config[nameof(UpdateClientKeyParameters.NewPublicJwk)]
-                };
-            });
-            services.AddHostedService<ClientKeyUpdaterService>();
+                ClientId = clientId,
+                NewPublicJwkPath = newPublicJwkPath,
+                ExistingPrivateJwkPath = existingPrivateJwkPath,
+                ExisitingPrivateJwk = existingPrivateJwk,
+                NewPublicJwk = newPublicJwk
+            };
 
-            services.Configure<SelvbetjeningConfiguration>(configuration.GetSection("SelvbetjeningConfiguration"));
-            services.AddSelvbetjeningServices();
+            var logger = host.Services.GetRequiredService<ILogger<ClientKeyUpdaterService>>();
+            var fileHandler = host.Services.GetRequiredService<IFileHandler>();
+            var helseIdService = host.Services.GetRequiredService<IHelseIdSelvbetjeningService>();
+            
+            var service = new ClientKeyUpdaterService(parameters, helseIdService, fileHandler, logger);
+            
+            await service.ExecuteAsync();
+            return 0;
         }
-        else
+        catch (Exception ex)
         {
-            services.AddSingleton<IHostedService, InvalidCommandService>();
+            await Console.Error.WriteLineAsync($"Error updating client key: {ex.Message}");
+            return 1;
         }
     }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((hostContext, config) =>
+            {
+                config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true);
+                config.AddCommandLine(args);
+            })
+            .ConfigureServices((context, services) =>
+            {
+                // Register common services
+                services.AddTransient<IFileHandler, FileHandler>();
+                
+                // Register HelseId services for the updateclientkey command
+                if (args.Length > 0 && args[0].ToLower() == "updateclientkey")
+                {
+                    services.Configure<SelvbetjeningConfiguration>(context.Configuration.GetSection("SelvbetjeningConfiguration"));
+                    services.AddSelvbetjeningServices();
+                }
+            })
+            .ConfigureLogging((context, config) =>
+            {
+                config.ClearProviders();
+                config.AddSerilog(Log.Logger, dispose: true);
+            });
 }
