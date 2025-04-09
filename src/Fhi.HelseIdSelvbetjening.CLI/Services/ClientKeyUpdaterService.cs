@@ -20,7 +20,7 @@ internal class ClientKeyUpdaterService
         _logger = logger;
     }
 
-    public Task ExecuteAsync()
+    public async Task ExecuteAsync()
     {
         try
         {
@@ -37,7 +37,7 @@ internal class ClientKeyUpdaterService
             {
                 _logger.LogInformation("NewKey: {newKey}", newKey);
                 _logger.LogInformation("OldKey: {oldKey}", oldKey);
-                _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
+                await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
             }
             else
             {
@@ -48,7 +48,5 @@ internal class ClientKeyUpdaterService
         {
             _logger.LogError(e.Message);
         }
-
-        return Task.CompletedTask;
     }
 }
