@@ -15,7 +15,18 @@ jobs:
   build-and-publish-executable:
     runs-on: ubuntu-latest
     steps:
+    - name: Debug GITHUB_TOKEN
+      run: |
+        echo "Attempting to debug GITHUB_TOKEN."
+        if [ -n "${{ secrets.GITHUB_TOKEN }}" ] && [ "${{ secrets.GITHUB_TOKEN }}" != "" ]; then
+          echo "GITHUB_TOKEN is present."
+        else
+          echo "GITHUB_TOKEN is EMPTY or not set!"
+        fi
+
     - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
   
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -71,36 +82,38 @@ jobs:
         path: publish_output/
         retention-days: 2  # Optional: Set retention period
 
-  publish-nuget:
-    runs-on: ubuntu-latest
-    # Only run when a release is created
-    if: github.event_name == 'release'
-    steps:
-    - uses: actions/checkout@v4
+  # publish-nuget:
+  #   runs-on: ubuntu-latest
+  #   # Only run when a release is created
+  #   if: github.event_name == 'release'
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #     with:
+  #       token: ${{ secrets.GITHUB_TOKEN }}
   
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
+  #   - name: Setup .NET
+  #     uses: actions/setup-dotnet@v4
+  #     with:
+  #       dotnet-version: 9.0.x
 
-    - name: Get version from tag
-      id: get_version
-      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+  #   - name: Get version from tag
+  #     id: get_version
+  #     run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
-    - name: Pack NuGet package
-      run: |
-        dotnet pack ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj \
-        --configuration Release \
-        -p:PackageVersion=${{ steps.get_version.outputs.VERSION }} \
-        --output nuget-packages
+  #   - name: Pack NuGet package
+  #     run: |
+  #       dotnet pack ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj \
+  #       --configuration Release \
+  #       -p:PackageVersion=${{ steps.get_version.outputs.VERSION }} \
+  #       --output nuget-packages
 
-    - name: Publish NuGet package
-      run: dotnet nuget push ./nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
-      if: github.event_name == 'release'
+  #   - name: Publish NuGet package
+  #     run: dotnet nuget push ./nuget-packages/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+  #     if: github.event_name == 'release'
 
-    - name: Upload NuGet Package Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: nuget-package
-        path: nuget-packages/*.nupkg
-        retention-days: 7
+  #   - name: Upload NuGet Package Artifact
+  #     uses: actions/upload-artifact@v4
+  #     with:
+  #       name: nuget-package
+  #       path: nuget-packages/*.nupkg
+  #       retention-days: 7
