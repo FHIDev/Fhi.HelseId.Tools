@@ -40,7 +40,7 @@ jobs:
       run: dotnet publish  ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj --configuration Release --output publish_output --self-contained true -p:PublishSingleFile=true --runtime win-x64
 
     - name: Get version details from tag
-      #if: github.event_name == 'release'
+      if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
       id: get_version_details
       run: |
         echo "Using github.ref: ${{ github.ref }}"
@@ -84,14 +84,14 @@ jobs:
         echo "Final FILENAME_VERSION_SUFFIX output: ${FILENAME_VERSION_SUFFIX_OUT}"
 
     - name: Zip published files for release
-      #if: github.event_name == 'release'
+      if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
       run: |
         cd publish_output
         zip -r ../helseid-cli-win-x64-${{ steps.get_version_details.outputs.FILENAME_VERSION_SUFFIX }}.zip .
         cd ..
 
     - name: Upload Release Asset (Zip)
-      #if: github.event_name == 'release'
+      if: github.event_name == 'release'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -100,6 +100,14 @@ jobs:
         asset_path: ./helseid-cli-win-x64-${{ steps.get_version_details.outputs.FILENAME_VERSION_SUFFIX }}.zip
         asset_name: helseid-cli-win-x64-${{ steps.get_version_details.outputs.FILENAME_VERSION_SUFFIX }}.zip
         asset_content_type: application/zip
+
+    - name: Upload Zipped Artifact (for manual trigger testing)
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/upload-artifact@v4
+      with:
+        name: zipped-release-candidate-${{ steps.get_version_details.outputs.FILENAME_VERSION_SUFFIX }}
+        path: ./helseid-cli-win-x64-${{ steps.get_version_details.outputs.FILENAME_VERSION_SUFFIX }}.zip
+        retention-days: 7
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
