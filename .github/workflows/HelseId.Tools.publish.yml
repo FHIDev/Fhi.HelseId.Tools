@@ -43,19 +43,45 @@ jobs:
       #if: github.event_name == 'release'
       id: get_version_details
       run: |
-        TAG_NAME="${GITHUB_REF#refs/tags/}"
-        if [[ "$TAG_NAME" == beta_v* ]]; then
-          VERSION_NUMBER="${TAG_NAME#beta_v}"
-          FILENAME_VERSION_SUFFIX="beta-${VERSION_NUMBER}"
-        elif [[ "$TAG_NAME" == v* ]]; then
-          VERSION_NUMBER="${TAG_NAME#v}"
-          FILENAME_VERSION_SUFFIX="v${VERSION_NUMBER}"
+        echo "Using github.ref: ${{ github.ref }}"
+        echo "Using GITHUB_REF env var: $GITHUB_REF"
+        
+        # Determine the raw name from GITHUB_REF (tag name or branch name)
+        RAW_NAME=""
+        # Use the GITHUB_REF environment variable directly in shell logic
+        if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+          RAW_NAME="${GITHUB_REF#refs/tags/}"
+        elif [[ "$GITHUB_REF" == refs/heads/* ]]; then
+          RAW_NAME="${GITHUB_REF#refs/heads/}"
         else
-          VERSION_NUMBER="$TAG_NAME" 
-          FILENAME_VERSION_SUFFIX="$TAG_NAME"
+          RAW_NAME="$GITHUB_REF" # Fallback for other types of refs
         fi
-        echo "VERSION_NUMBER=${VERSION_NUMBER}" >> $GITHUB_OUTPUT
-        echo "FILENAME_VERSION_SUFFIX=${FILENAME_VERSION_SUFFIX}" >> $GITHUB_OUTPUT
+        echo "Raw name extracted: ${RAW_NAME}"
+
+        # Sanitize the raw name: replace slashes with hyphens for use in filenames/versions
+        SANITIZED_NAME=$(echo "${RAW_NAME}" | sed 's|/|-|g')
+        echo "Sanitized name for filename: ${SANITIZED_NAME}"
+
+        VERSION_NUMBER_OUT=""
+        FILENAME_VERSION_SUFFIX_OUT=""
+
+        if [[ "${SANITIZED_NAME}" == beta_v* ]]; then
+          TEMP_VERSION="${SANITIZED_NAME#beta_v}"
+          VERSION_NUMBER_OUT="${TEMP_VERSION}"
+          FILENAME_VERSION_SUFFIX_OUT="beta-${TEMP_VERSION}"
+        elif [[ "${SANITIZED_NAME}" == v* ]]; then
+          TEMP_VERSION="${SANITIZED_NAME#v}"
+          VERSION_NUMBER_OUT="${TEMP_VERSION}"
+          FILENAME_VERSION_SUFFIX_OUT="v${TEMP_VERSION}"
+        else
+          VERSION_NUMBER_OUT="${SANITIZED_NAME}"
+          FILENAME_VERSION_SUFFIX_OUT="${SANITIZED_NAME}"
+        fi
+        
+        echo "VERSION_NUMBER=${VERSION_NUMBER_OUT}" >> $GITHUB_OUTPUT
+        echo "FILENAME_VERSION_SUFFIX=${FILENAME_VERSION_SUFFIX_OUT}" >> $GITHUB_OUTPUT
+        echo "Final VERSION_NUMBER output: ${VERSION_NUMBER_OUT}"
+        echo "Final FILENAME_VERSION_SUFFIX output: ${FILENAME_VERSION_SUFFIX_OUT}"
 
     - name: Zip published files for release
       #if: github.event_name == 'release'
