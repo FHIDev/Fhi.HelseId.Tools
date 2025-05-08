@@ -40,7 +40,7 @@ jobs:
       run: dotnet publish  ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj --configuration Release --output publish_output --self-contained true -p:PublishSingleFile=true --runtime win-x64
 
     - name: Get version details from tag
-      if: github.event_name == 'release'
+      #if: github.event_name == 'release'
       id: get_version_details
       run: |
         TAG_NAME="${GITHUB_REF#refs/tags/}"
@@ -58,14 +58,14 @@ jobs:
         echo "FILENAME_VERSION_SUFFIX=${FILENAME_VERSION_SUFFIX}" >> $GITHUB_OUTPUT
 
     - name: Zip published files for release
-      if: github.event_name == 'release'
+      #if: github.event_name == 'release'
       run: |
         cd publish_output
         zip -r ../helseid-cli-win-x64-${{ steps.get_version_details.outputs.FILENAME_VERSION_SUFFIX }}.zip .
         cd ..
 
     - name: Upload Release Asset (Zip)
-      if: github.event_name == 'release'
+      #if: github.event_name == 'release'
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
