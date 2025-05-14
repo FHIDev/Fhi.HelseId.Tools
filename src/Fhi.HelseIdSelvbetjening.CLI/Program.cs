@@ -8,12 +8,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Fhi.HelseIdSelvbetjening.CLI.Commands;
+using Fhi.HelseIdSelvbetjening.CLI.Services;
 
 /// <summary>
 /// Executable Program for HelseId Selvbetjening CLI
 /// </summary>
 public partial class Program
 {
+    private const string VerifyNewKeysCommandName = "verifynewkeys";
+    private const string UpdateClientKeyCommandName = "updateclientkey";
+    private const string GenerateKeyCommandName = "generatekey";
+
     /// <summary>
     /// Main program
     /// </summary>
@@ -40,13 +46,17 @@ public partial class Program
         var updateClientKeyCommand = UpdateClientKeyCommand(host);
         rootCommand.AddCommand(updateClientKeyCommand);
 
+        // Configure verify-new-keys command using the new configuration class
+        var verifyNewKeysCommand = VerifyNewKeysCommandConfiguration.CreateCommand(host, VerifyNewKeysCommandName);
+        rootCommand.AddCommand(verifyNewKeysCommand);
+
         // Parse and invoke the command
         return await rootCommand.InvokeAsync(args);
     }
 
     private static Command UpdateClientKeyCommand(IHost host)
     {
-        var updateClientKeyCommand = new Command("updateclientkey", "Update a client key in HelseID");
+        var updateClientKeyCommand = new Command(UpdateClientKeyCommandName, "Update a client key in HelseID");
         updateClientKeyCommand.AddAlias("update-client-key");
         
         var clientIdOption = new Option<string>(
@@ -83,7 +93,7 @@ public partial class Program
 
     private static Command GenerateKeyCommand(IHost host)
     {
-        var generateKeyCommand = new Command("generatekey", "Generate a new RSA key pair");
+        var generateKeyCommand = new Command(GenerateKeyCommandName, "Generate a new RSA key pair");
         generateKeyCommand.AddAlias("generate-key");
         
         var keyNameOption = new Option<string>(
@@ -180,15 +190,20 @@ public partial class Program
             })
             .ConfigureServices((context, services) =>
             {
+                services.AddHttpClient();
+                var configuration = context.Configuration;
                 // Register common services
                 services.AddTransient<IFileHandler, FileHandler>();
                 
-                // Register HelseId services for the updateclientkey command
-                if (args.Length > 0 && args[0].ToLower() == "updateclientkey")
+                // Register HelseId services for updateclientkey and verifynewkeys commands
+                if (args.Length > 0 && 
+                    (args[0].ToLower() == UpdateClientKeyCommandName || args[0].ToLower() == VerifyNewKeysCommandName))
                 {
-                    services.Configure<SelvbetjeningConfiguration>(context.Configuration.GetSection("SelvbetjeningConfiguration"));
+                    services.Configure<SelvbetjeningConfiguration>(configuration.GetSection("SelvbetjeningConfiguration"));
                     services.AddSelvbetjeningServices();
                 }
+
+                services.AddScoped<IVerifyNewKeysService, VerifyNewKeysService>();
             })
             .ConfigureLogging((context, config) =>
             {
