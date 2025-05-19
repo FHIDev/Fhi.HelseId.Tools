@@ -21,7 +21,7 @@ public partial class Program
             ICommandBuilder? builder = null;
             if (command == UpdateClientKeyParameterNames.CommandName)
             {
-                builder = new UpdateClientKeyCommandBuilder(input.Args);
+                builder = new UpdateClientKeyCommandBuilder();
             }
             else if (command == GenerateKeyParameterNames.CommandName)
             {

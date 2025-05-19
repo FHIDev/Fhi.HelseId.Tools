@@ -13,12 +13,6 @@ public partial class Program
 {
     public class UpdateClientKeyCommandBuilder : ICommandBuilder
     {
-        public UpdateClientKeyCommandBuilder(string[] args)
-        {
-            Args = args;
-        }
-        public string[] Args { get; private set; }
-
         public Action<IServiceCollection>? Services => services =>
         {
             services.AddTransient<IFileHandler, FileHandler>();
