@@ -3,7 +3,7 @@ using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Fhi.HelseId.Selvbetjening
+namespace Fhi.HelseIdSelvbetjening
 {
     /// <summary>
     /// Extensions for adding Selvbetjening services to an application
