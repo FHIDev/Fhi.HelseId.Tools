@@ -14,20 +14,20 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
     public class ClientUpdateTests
     {
         [Test]
-        public void UpdateClientKeysFromPath()
+        public void UpdateClientKeys_KeysFromPath_Ok()
         {
             // TODO: Implement test logic for updating client keys from file path
         }
 
         [Test]
-        public void UpdateClientKeysFromParameters()
+        public void UpdateClientKeys_KeysFromParameters_Ok()
         {
             // TODO: Implement test logic for updating client keys from parameters
         }
 
         [TestCase("", "c:\\temp")]
         [TestCase("c:\\temp", "")]
-        public async Task ClientKeyUpdate_EmptyNewKeyPath_GiveErrorMessage(string newKeyPath, string oldkeyPath)
+        public async Task UpdateClientKey_EmptyNewKeyPath_GiveErrorMessage(string newKeyPath, string oldkeyPath)
         {
             var args = new[]
             {
@@ -54,7 +54,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         }
 
         [Test]
-        public async Task ClientKeyUpdate_WithValidParameters_UpdatesClientSecret()
+        public async Task UpdateClientKey_WithValidParameters_Ok()
         {
             var loggerMock = Substitute.For<ILogger<ClientKeyUpdaterService>>();
             var helseIdServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();

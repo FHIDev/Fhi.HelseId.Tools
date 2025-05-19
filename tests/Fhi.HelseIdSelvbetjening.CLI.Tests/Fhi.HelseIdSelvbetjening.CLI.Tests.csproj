@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="IntegrationTests\TestData\test_public.json">
+    <Content Include="AcceptanceTests\TestData\test_public.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -38,10 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="appsettings.development.json">
+    <None Update="AcceptanceTests\appsettings.development.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="IntegrationTests\TestData\oldkey.json">
+    <None Update="AcceptanceTests\TestData\oldkey.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
