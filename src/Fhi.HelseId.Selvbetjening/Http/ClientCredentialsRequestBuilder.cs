@@ -1,7 +1,7 @@
 using Duende.IdentityModel;
 using Duende.IdentityModel.Client;
+using Fhi.Authentication.Tokens;
 using Fhi.IdentityModel.Tokens;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Fhi.HelseIdSelvbetjening.Http
 {
@@ -89,26 +89,7 @@ namespace Fhi.HelseIdSelvbetjening.Http
         /// <returns></returns>
         public ClientCredentialRequestBuilder WithClientAssertion(string issuer, string privateJwk, string type = OidcConstants.ClientAssertionTypes.JwtBearer)
         {
-            var clientAssertion = ClientAssertionBuilder.CreateClientAssertionJwt(issuer, _request.ClientId, privateJwk);
-            _request.ClientAssertion = new()
-            {
-                Type = type,
-                Value = clientAssertion
-            };
-
-            return this;
-        }
-
-        /// <summary>
-        /// Create Client assertion token from private jwk and add ClientAssertion to ClientCredentialsTokenRequest
-        /// </summary>
-        /// <param name="issuer"></param>
-        /// <param name="jsonWebKey"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public ClientCredentialRequestBuilder WithClientAssertion(string issuer, JsonWebKey jsonWebKey, string type = OidcConstants.ClientAssertionTypes.JwtBearer)
-        {
-            var clientAssertion = ClientAssertionBuilder.CreateClientAssertionJwt(issuer, _request.ClientId, jsonWebKey);
+            var clientAssertion = ClientAssertionTokenHandler.CreateJwtToken(issuer, _request.ClientId, privateJwk);
             _request.ClientAssertion = new()
             {
                 Type = type,
