@@ -35,7 +35,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 var oldKey = !string.IsNullOrEmpty(_parameters.ExisitingPrivateJwk) ? _parameters.NewPublicJwk :
                 !string.IsNullOrEmpty(_parameters.ExistingPrivateJwkPath) ? _fileHandler.ReadAllText(_parameters.ExistingPrivateJwkPath) : string.Empty;
 
-
+                //TODO: handled by the options? Set required parameters?
                 if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))
                 {
                     _logger.LogInformation("NewKey: {newKey}", newKey);

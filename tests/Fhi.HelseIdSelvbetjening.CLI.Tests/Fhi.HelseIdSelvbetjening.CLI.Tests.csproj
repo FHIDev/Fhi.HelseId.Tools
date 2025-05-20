@@ -10,12 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="AcceptanceTests\TestData\test_public.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
@@ -38,9 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="AcceptanceTests\appsettings.development.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="AcceptanceTests\TestData\oldkey.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -27,6 +27,7 @@ public partial class Program
 
     internal static RootCommand BuildRootCommand(CommandInput input)
     {
+        //TODO: CommandbilderFactory should probably return a collaction of commands instead that will be added to rootcommand. Use Composite pattern?
         var commandBuilder = CommandBuilderFactory.Create(input);
         var host = HostBuilder.CreateHost(input.Args, services =>
         {
@@ -38,7 +39,6 @@ public partial class Program
         var command = commandBuilder?.Build(host);
         rootCommand.AddCommand(command ?? CreateInvalidCommand());
         return rootCommand;
-
     }
 
     /// <summary>

@@ -19,6 +19,7 @@ namespace Fhi.HelseIdSelvbetjening
         {
             services.AddSingleton<IOptions<SelvbetjeningConfiguration>, OptionsManager<SelvbetjeningConfiguration>>();
             services.AddTransient<IHelseIdSelvbetjeningService, HelseIdSelvbetjeningService>();
+            services.AddTransient<ITokenService, TokenService>();
             services.AddHttpClient();
 
             return services;

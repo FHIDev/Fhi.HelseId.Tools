@@ -16,19 +16,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         [TestCase(GenerateKeyParameterNames.KeyFileNamePrefixShort, GenerateKeyParameterNames.KeyDirectoryShort)]
         public async Task GenerateKeys(string filePrefix, string directory)
         {
+            var fileHandlerMock = new FileHandlerMock();
+            var loggerMock = Substitute.For<ILogger<KeyGeneratorService>>();
+
             var args = new[]
             {
                 GenerateKeyParameterNames.CommandName,
                 $"--{filePrefix}", "integration_test",
                 $"--{directory}", "c:\\temp"
             };
-            var fileHandlerMock = new FileHandlerMock();
-            var loggerMock = Substitute.For<ILogger<KeyGeneratorService>>();
-
             var rootCommand = CreateRootCommand(args, fileHandlerMock, loggerMock);
             int exitCode = await rootCommand.InvokeAsync(args);
 
-            Assert.That(exitCode, Is.EqualTo(0));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(fileHandlerMock.Files, Has.Count.EqualTo(2));
+                Assert.That(exitCode, Is.EqualTo(0));
+            }
             loggerMock.Received(1).Log(
               LogLevel.Information,
               Arg.Any<EventId>(),
@@ -44,34 +48,32 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
               Arg.Any<Func<object, Exception?, string>>());
         }
 
-
         [Test]
         [Ignore("TODO: figure out how to return proper message")]
         public async Task GenerateKeys_InvalidParameterAsync()
         {
+            var loggerMock = Substitute.For<ILogger<KeyGeneratorService>>();
+            using var stringWriter = new StringWriter();
+            Console.SetOut(stringWriter);
+
             var args = new[]
             {
                 GenerateKeyParameterNames.CommandName,
                 "--invalidparameter", "integration_test"
             };
-            var fileHandlerMock = new FileHandlerMock();
-            var loggerMock = Substitute.For<ILogger<KeyGeneratorService>>();
-
-            using var stringWriter = new StringWriter();
-            Console.SetOut(stringWriter);
-
-            var rootCommand = CreateRootCommand(args, fileHandlerMock, loggerMock);
+            var rootCommand = CreateRootCommand(args, new FileHandlerMock(), loggerMock);
             int exitCode = await rootCommand.InvokeAsync(args);
 
             var output = stringWriter.ToString();
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.Not.EqualTo(0));
+                //TODO:Figure out what error message should be
+                Assert.That(output, Does.Contain("Unrecognized option '--invalidparameter'").IgnoreCase
+                    .Or.Contain("Unknown option").IgnoreCase
+                    .Or.Contain("is not a recognized option").IgnoreCase);
+            }
 
-            // Check for System.CommandLine error output for unknown option
-            Assert.That(exitCode, Is.Not.EqualTo(0));
-            Assert.That(output, Does.Contain("Unrecognized option '--invalidparameter'").IgnoreCase
-                .Or.Contain("Unknown option").IgnoreCase
-                .Or.Contain("is not a recognized option").IgnoreCase);
-
-            // Optionally, check that no keys were saved/logged
             loggerMock.DidNotReceive().Log(
                 LogLevel.Information,
                 Arg.Any<EventId>(),
@@ -86,13 +88,13 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         {
             var loggerMock = Substitute.For<ILogger<KeyGeneratorService>>();
             var fileHandlerMock = new FileHandlerMock();
+
             var args = new[]
             {
                 GenerateKeyParameterNames.CommandName,
                 $"--{GenerateKeyParameterNames.KeyFileNamePrefixLong}", "TestClient",
                 $"--{GenerateKeyParameterNames.KeyDirectoryLong}", "C:\\TestKeys"
             };
-
             var rootCommand = CreateRootCommand(args, fileHandlerMock, loggerMock);
             int exitCode = await rootCommand.InvokeAsync(args);
 
@@ -113,7 +115,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Arg.Any<Func<object, Exception?, string>>());
 
 
-            var privateKey = fileHandlerMock._files[expectedPrivateKeyPath];
+            var privateKey = fileHandlerMock.Files[expectedPrivateKeyPath];
             var privateJwk = new JsonWebKey(privateKey);
             Assert.That(privateJwk, Is.Not.Null);
             Assert.That(privateJwk.Alg, Is.EqualTo(SecurityAlgorithms.RsaSha512));
@@ -150,7 +152,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>());
 
-            var privateKey = fileHandlerMock._files[expectedPrivateKeyPath];
+            var privateKey = fileHandlerMock.Files[expectedPrivateKeyPath];
             var privateJwk = new JsonWebKey(privateKey);
             Assert.That(privateJwk, Is.Not.Null);
             Assert.That(privateJwk.Alg, Is.EqualTo(SecurityAlgorithms.RsaSha512));

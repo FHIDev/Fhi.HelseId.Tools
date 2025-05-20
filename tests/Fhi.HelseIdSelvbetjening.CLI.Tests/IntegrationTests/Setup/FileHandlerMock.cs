@@ -5,7 +5,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup
 {
     internal class FileHandlerMock : IFileHandler
     {
-        public ConcurrentDictionary<string, string> _files = new();
+        public ConcurrentDictionary<string, string> Files = new();
 
         public void CreateDirectory(string path)
         {
@@ -18,7 +18,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup
 
         public string ReadAllText(string path)
         {
-            if (_files.TryGetValue(path, out string? value))
+            if (Files.TryGetValue(path, out string? value))
                 return value;
 
             return string.Empty;
@@ -26,7 +26,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup
 
         public void WriteAllText(string path, string content)
         {
-            _files.TryAdd(path, content);
+            Files.TryAdd(path, content);
         }
     }
 }

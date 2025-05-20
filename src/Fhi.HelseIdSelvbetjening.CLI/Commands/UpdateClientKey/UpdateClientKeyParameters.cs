@@ -10,6 +10,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         public static readonly UpdateClientKeyOptionNames ExistingPrivateJwkPath = new("ExistingPrivateJwkPath", "ep");
         public static readonly UpdateClientKeyOptionNames NewPublicJwk = new("NewPublicJwk", "n");
         public static readonly UpdateClientKeyOptionNames ExistingPrivateJwk = new("ExistingPrivateJwk", "e");
+        public static readonly UpdateClientKeyOptionNames YesOption = new("yes", "y");
     }
 
 
