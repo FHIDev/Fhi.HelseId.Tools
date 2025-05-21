@@ -8,7 +8,7 @@ namespace Fhi.HelseIdSelvbetjening.Http
     /// <summary>
     ///  Build ClientCredentialsTokenRequest
     /// </summary>
-    internal class ClientCredentialRequestBuilder
+    public class ClientCredentialRequestBuilder
     {
         private static ClientCredentialsTokenRequest _request = new();
         /// <summary>
