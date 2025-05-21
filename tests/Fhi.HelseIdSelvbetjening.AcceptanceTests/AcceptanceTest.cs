@@ -104,6 +104,8 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
         [Test]
         public async Task VerifyNewKeys_WithGeneratedKey_Succeeds()
         {
+            Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "development");
+            
             var originalOutput = Console.Out;
             var originalError = Console.Error;
 
@@ -112,46 +114,37 @@ namespace Fhi.HelseId.ClientSecret.App.Tests.AcceptanceTests
             Console.SetOut(stringWriter);
             Console.SetError(errorWriter);
 
-            try
+            var oldKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData", "oldkey.json");
+            var privateJwkContent = await File.ReadAllTextAsync(oldKeyPath);
+
+            var verifyArgs = new[]
             {
-                var testDirectory = Path.Combine(Environment.CurrentDirectory, "TestData");
-                var privateJwkFilePath = Path.Combine(testDirectory, "oldkey.json");
-                var privateJwkContent = await File.ReadAllTextAsync(privateJwkFilePath);
+                "verifynewkeys",
+                "--clientId", 
+                "88d474a8-07df-4dc4-abb0-6b759c2b99ec",
+                "--privateJwk",
+                privateJwkContent
+            };
+             
+            stringWriter.GetStringBuilder().Clear();
+            errorWriter.GetStringBuilder().Clear();
 
-                var verifyArgs = new[]
-                {
-                    "verifynewkeys",
-                    "--clientId", 
-                    "88d474a8-07df-4dc4-abb0-6b759c2b99ec",
-                    "--privateJwk",
-                    privateJwkContent
-                };
-                 
-                stringWriter.GetStringBuilder().Clear();
-                errorWriter.GetStringBuilder().Clear();
-
-                var exitCode = await Program.Main(verifyArgs);
-                
-                var currentOutput = stringWriter.ToString();
-                var currentError = errorWriter.ToString();
-                
-                if (exitCode != 0 && (currentOutput.Contains("invalid_client") || currentError.Contains("invalid_client")))
-                {
-                    Assert.Warn($"verifynewkeys command failed with 'invalid_client' from HelseID. This likely indicates an issue with the test client ID configuration in the HelseID environment. Output: '{currentOutput}' Error: '{currentError}'");
-                }
-                else
-                {
-                    using (Assert.EnterMultipleScope())
-                    {
-                        Assert.That(exitCode, Is.EqualTo(0), $"verifynewkeys command failed with exit code {exitCode}. Output: '{currentOutput}' Error: '{currentError}'");
-                        Assert.That(currentOutput, Contains.Substring("Successfully obtained token using the new key"), $"Expected success message not found in output. Output: '{currentOutput}'. Error Stream: '{currentError}'");
-                    }
-                }
+            var exitCode = await Program.Main(verifyArgs);
+            
+            var currentOutput = stringWriter.ToString();
+            var currentError = errorWriter.ToString();
+            
+            if (exitCode != 0 && (currentOutput.Contains("invalid_client") || currentError.Contains("invalid_client")))
+            {
+                Assert.Warn($"verifynewkeys command failed with 'invalid_client' from HelseID. This likely indicates an issue with the test client ID configuration in the HelseID environment. Output: '{currentOutput}' Error: '{currentError}'");
             }
-            finally
+            else
             {
-                Console.SetOut(originalOutput);
-                Console.SetError(originalError);
+                using (Assert.EnterMultipleScope())
+                {
+                    Assert.That(exitCode, Is.EqualTo(0), $"verifynewkeys command failed with exit code {exitCode}. Output: '{currentOutput}' Error: '{currentError}'");
+                    Assert.That(currentOutput, Contains.Substring("Successfully obtained token using the new key"), $"Expected success message not found in output. Output: '{currentOutput}'. Error Stream: '{currentError}'");
+                }
             }
         }
 
