@@ -54,7 +54,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
             ]);
 
             output = stringWriter.ToString();
-            Assert.That(exitCodeUpdateClient, Is.EqualTo(0), "Update of client keys successed");
+            Assert.That(exitCodeUpdateClient, Is.EqualTo(0), "Update of client keys succeeded");
         }
     }
 }
