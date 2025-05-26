@@ -1,4 +1,6 @@
 using System.CommandLine;
+using Fhi.HelseIdSelvbetjening.CLI;
+using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Serilog;
 
 /// <summary>
@@ -23,7 +25,7 @@ public partial class Program
 
     internal static RootCommand BuildRootCommand(CommandInput input)
     {
-        //TODO: CommandBuilderFactory should probably return a collection of commands that will be added to RootCommand instead. Use the Composite pattern?
+        //TODO: CommandbilderFactory should probably return a collaction of commands instead that will be added to rootcommand. Use Composite pattern?
         var commandBuilder = CommandBuilderFactory.Create(input);
         var host = HostBuilder.CreateHost(input.Args, services =>
         {

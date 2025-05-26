@@ -1,4 +1,5 @@
-﻿using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
+﻿using Fhi.HelseIdSelvbetjening.CLI.Commands;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Fhi.HelseIdSelvbetjening.Services;
@@ -7,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.CommandLine;
-using static Program;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
-public partial class Program
+namespace Fhi.HelseIdSelvbetjening.CLI
 {
     internal static class HostBuilder
     {

@@ -1,6 +1,4 @@
 using System.CommandLine;
-using Fhi.HelseIdSelvbetjening;
-using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Fhi.HelseIdSelvbetjening.Services;
 using Fhi.HelseIdSelvbetjening.Services.Models;
@@ -9,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-public partial class Program
+namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
 {
     public class UpdateClientKeyCommandBuilder : ICommandBuilder
     {
@@ -97,7 +95,7 @@ public partial class Program
                         ClientId = clientId,
                         NewPublicJwkPath = newPublicJwkPath,
                         ExistingPrivateJwkPath = existingPrivateJwkPath,
-                        ExisitingPrivateJwk = existingPrivateJwk,
+                        ExistingPrivateJwk = existingPrivateJwk,
                         NewPublicJwk = newPublicJwk
                     };
 

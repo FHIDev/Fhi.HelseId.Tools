@@ -2,9 +2,8 @@ using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Microsoft.Extensions.DependencyInjection;
 
-public partial class Program
+namespace Fhi.HelseIdSelvbetjening.CLI.Commands
 {
-
     public class CommandInput
     {
         public string[] Args { get; set; } = [];
