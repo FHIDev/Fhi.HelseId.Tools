@@ -15,7 +15,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
         /// </summary>
         /// <param name="clientId">Client Identifier</param>
         /// <param name="jwk">The private json web key for client assertion</param>
-        /// <param name="scopes">Separeted list of scopes</param>
+        /// <param name="scopes">Separated list of scopes</param>
         /// <param name="dPopJwk">The private json web key for DPoP</param>
         /// <returns></returns>
         public Task<TokenResponse> CreateDpopToken(string clientId, string jwk, string scopes, string dPopJwk);
