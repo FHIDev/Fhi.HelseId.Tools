@@ -36,7 +36,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
             ]);
 
             var output = stringWriter.ToString();
-            Assert.That(exitCodeGenerateKeys, Is.EqualTo(0), "Generation of keys successed");
+            Assert.That(exitCodeGenerateKeys, Is.EqualTo(0), "Generation of keys succeeded");
 
             /******************************************************************************************
              * Update Client with new keys
