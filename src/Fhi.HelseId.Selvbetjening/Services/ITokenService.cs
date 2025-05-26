@@ -18,7 +18,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
         /// <param name="scopes">Separated list of scopes</param>
         /// <param name="dPopJwk">The private json web key for DPoP</param>
         /// <returns></returns>
-        public Task<TokenResponse> CreateDpopToken(string clientId, string jwk, string scopes, string dPopJwk);
+        public Task<TokenResponse> CreateDPoPToken(string clientId, string jwk, string scopes, string dPopJwk);
     }
 
     internal class TokenService(
@@ -27,7 +27,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
         IHttpClientFactory HttpClientFactory)
         : ITokenService
     {
-        public async Task<TokenResponse> CreateDpopToken(
+        public async Task<TokenResponse> CreateDPoPToken(
            string clientId,
            string jwk,
            string scopes,
@@ -38,7 +38,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
             var discovery = await client.GetDiscoveryDocumentAsync(Options.Value.Authority);
             if (discovery.IsError || discovery.Issuer is null || discovery.TokenEndpoint is null) throw new Exception(discovery.Error);
 
-            Logger.LogDebug("Dpop token nonce request");
+            Logger.LogDebug("DPoP token nonce request");
             var nonceRequest = new ClientCredentialRequestBuilder()
                 .Create(discovery.TokenEndpoint, clientId)
                 .WithDPoP(discovery.TokenEndpoint, HttpMethod.Post.ToString(), dPopJwk, "PS256")
@@ -49,7 +49,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
 
             if (response.Error == "use_dpop_nonce" && response.DPoPNonce is not null)
             {
-                Logger.LogDebug("Dpop token request with nonce");
+                Logger.LogDebug("DPoP token request with nonce");
                 var tokenRequest = new ClientCredentialRequestBuilder()
                     .Create(discovery.TokenEndpoint, clientId)
                     .WithDPoPNonce(discovery.TokenEndpoint, HttpMethod.Post.ToString(), dPopJwk, "PS256", response.DPoPNonce)

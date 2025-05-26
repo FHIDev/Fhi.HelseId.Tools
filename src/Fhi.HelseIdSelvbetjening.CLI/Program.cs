@@ -18,11 +18,7 @@ public partial class Program
             .CreateLogger();
 
         var rootCommand = BuildRootCommand(new CommandInput() { Args = args });
-        if (rootCommand != null)
-        {
-            return await rootCommand.InvokeAsync(args);
-        }
-        return 1;
+        return await rootCommand.InvokeAsync(args);
     }
 
     internal static RootCommand BuildRootCommand(CommandInput input)

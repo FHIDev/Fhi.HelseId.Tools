@@ -1,10 +1,9 @@
 using System.CommandLine;
-using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-public partial class Program
+namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
 {
     public class GenerateKeyCommandBuilder : ICommandBuilder
     {

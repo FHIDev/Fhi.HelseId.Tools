@@ -39,6 +39,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var rootCommand = CreateRootCommand(args, fileHandlerMock, loggerMock, helseIdServiceMock);
             int exitCode = await rootCommand.InvokeAsync(args);
 
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0));
+            }
             await helseIdServiceMock.Received(1).UpdateClientSecret(
                 Arg.Is<ClientConfiguration>(c => c.ClientId == clientId),
                 Arg.Any<string>());

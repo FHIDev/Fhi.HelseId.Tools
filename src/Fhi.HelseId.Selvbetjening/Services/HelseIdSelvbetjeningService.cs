@@ -34,7 +34,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
             {
                 _logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
                 var dPoPKey = CreateDPoPKey();
-                var response = await _tokenService.CreateDpopToken(clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
+                var response = await _tokenService.CreateDPoPToken(clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
                 if (!response.IsError && response.AccessToken is not null)
                 {
                     var uri = new Uri(new Uri(_selvbetjeningConfig.BaseAddress), _selvbetjeningConfig.ClientSecretEndpoint);

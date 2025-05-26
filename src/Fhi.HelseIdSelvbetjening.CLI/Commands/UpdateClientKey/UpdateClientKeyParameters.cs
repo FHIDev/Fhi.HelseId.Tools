@@ -15,7 +15,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
 
 
     /// <summary>
-    /// Parameters used when updating a client secret (jwk's)
+    /// Parameters used when updating a client secret (JWK's)
     /// </summary>
     internal class UpdateClientKeyParameters
     {
@@ -32,7 +32,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         /// </summary>
         public string? ExistingPrivateJwk { get; set; }
         /// <summary>
-        /// Path to the new public generated client secret (jwk). Will use <NewKey></NewKey> first.
+        /// Path to the new public generated client secret (JWK). Will use <NewKey></NewKey> first.
         /// </summary>
         public string? NewPublicJwkPath { get; set; }
         /// <summary>

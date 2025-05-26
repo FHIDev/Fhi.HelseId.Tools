@@ -79,7 +79,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
 
         public HelseIdSelvbetjeningServiceBuilder WithDPopTokenResponse(TokenResponse tokenResponse)
         {
-            TokenService.CreateDpopToken(
+            TokenService.CreateDPoPToken(
                 Arg.Any<string>(),
                 Arg.Any<string>(),
                 Arg.Any<string>(),
