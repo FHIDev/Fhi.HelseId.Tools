@@ -18,7 +18,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
         /// </summary>
         /// <returns></returns>
         [Test]
-        [Ignore("This test generates keys and update client with new keys should be run manually.")]
+        [Explicit("This test generates keys and update client with new keys should be run manually.")]
         public async Task GenerateKeys_And_UpdateClientKeysFromPath()
         {
             using var stringWriter = new StringWriter();
