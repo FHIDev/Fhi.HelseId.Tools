@@ -82,7 +82,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Arg.Any<Func<object, Exception?, string>>());
         }
 
-
         [Test]
         public async Task GenerateKeys_PathIsNotEmpty_AddKeysToSpecifiedPath()
         {
@@ -170,6 +169,5 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 }
             });
         }
-
     }
 }

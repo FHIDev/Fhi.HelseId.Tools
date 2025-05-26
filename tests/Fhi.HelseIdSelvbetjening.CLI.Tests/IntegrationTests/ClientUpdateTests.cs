@@ -101,7 +101,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
         [TestCase("", "c:\\temp")]
         [TestCase("c:\\temp", "")]
-        public async Task UpdateClientKey_EmptyNewKeyPathOrOldKeyPath_GiveErrorMessage(string newKeyPath, string oldkeyPath)
+        public async Task UpdateClientKey_EmptyNewKeyPathOrOldKeyPath_GiveErrorMessage(string newKeyPath, string oldKeyPath)
         {
             var loggerMock = Substitute.For<ILogger<ClientKeyUpdaterService>>();
             var helseIdServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();
@@ -110,7 +110,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 UpdateClientKeyParameterNames.CommandName,
                 $"--{UpdateClientKeyParameterNames.NewPublicJwkPath.Long}", newKeyPath,
-                $"--{UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Long}", oldkeyPath,
+                $"--{UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Long}", oldKeyPath,
                 $"--{UpdateClientKeyParameterNames.ClientId.Long}", "88d474a8-07df-4dc4-abb0-6b759c2b99ec",
                 $"--{UpdateClientKeyParameterNames.YesOption.Long}"
             };
@@ -151,8 +151,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Assert.That(output, Does.Contain("Missing required parameter Client ID").IgnoreCase);
             }
         }
-
-
 
         private static RootCommand CreateRootCommand(
             string[] args,

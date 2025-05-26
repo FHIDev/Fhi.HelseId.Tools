@@ -30,37 +30,29 @@ namespace Fhi.HelseIdSelvbetjening.Services
 
         public async Task<ClientSecretUpdateResponse> UpdateClientSecret(ClientConfiguration clientToUpdate, string newPublicJwk)
         {
-            try
+            _logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
+            var dPoPKey = CreateDPoPKey();
+            var response = await _tokenService.CreateDPoPToken(clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
+            if (!response.IsError && response.AccessToken is not null)
             {
-                _logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
-                var dPoPKey = CreateDPoPKey();
-                var response = await _tokenService.CreateDPoPToken(clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
-                if (!response.IsError && response.AccessToken is not null)
-                {
-                    var uri = new Uri(new Uri(_selvbetjeningConfig.BaseAddress), _selvbetjeningConfig.ClientSecretEndpoint);
-                    var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri)
-                       .WithDpop(uri.ToString(), HttpMethod.Post.ToString(), dPoPKey, "PS256", response.AccessToken)
-                       .WithContent(JsonContent.Create(newPublicJwk, options: CreateJsonSerializerOptions()))
-                       .WithHeader("Accept", "application/json");
-                    var client = _httpClientFactory.CreateClient();
-                    var clientSecretUpdateResponse = await client.SendAsync(requestMessage);
+                var uri = new Uri(new Uri(_selvbetjeningConfig.BaseAddress), _selvbetjeningConfig.ClientSecretEndpoint);
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri)
+                    .WithDpop(uri.ToString(), HttpMethod.Post.ToString(), dPoPKey, "PS256", response.AccessToken)
+                    .WithContent(JsonContent.Create(newPublicJwk, options: CreateJsonSerializerOptions()))
+                    .WithHeader("Accept", "application/json");
+                var client = _httpClientFactory.CreateClient();
+                var clientSecretUpdateResponse = await client.SendAsync(requestMessage);
 
-                    _logger.LogInformation(
-                        "Client update response: {@StatusCode}  Response: {@Response}",
-                        clientSecretUpdateResponse.StatusCode,
-                         await clientSecretUpdateResponse.Content.ReadAsStringAsync());
+                _logger.LogInformation(
+                    "Client update response: {@StatusCode}  Response: {@Response}",
+                    clientSecretUpdateResponse.StatusCode,
+                        await clientSecretUpdateResponse.Content.ReadAsStringAsync());
 
-                    return new ClientSecretUpdateResponse(clientSecretUpdateResponse.StatusCode, "successfully updated client secret");
-                }
-
-                _logger.LogError("Could not update client {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientToUpdate.ClientId, response.HttpStatusCode, response.Error);
-                return new(response.HttpStatusCode, response.Error);
+                return new ClientSecretUpdateResponse(clientSecretUpdateResponse.StatusCode, "successfully updated client secret");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
+
+            _logger.LogError("Could not update client {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientToUpdate.ClientId, response.HttpStatusCode, response.Error);
+            return new(response.HttpStatusCode, response.Error);
         }
         private static JsonSerializerOptions CreateJsonSerializerOptions()
         {

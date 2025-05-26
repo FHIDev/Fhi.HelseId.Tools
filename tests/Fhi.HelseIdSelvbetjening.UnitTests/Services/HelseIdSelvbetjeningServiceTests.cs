@@ -8,7 +8,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
 {
     public class HelseIdSelvbetjeningServiceTests
     {
-
         [Test]
         public async Task UpdateClientSecret_InvalidClient_ReturnError()
         {
