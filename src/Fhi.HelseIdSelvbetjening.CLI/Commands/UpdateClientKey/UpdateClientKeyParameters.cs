@@ -30,7 +30,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         /// <summary>
         /// The Clients existing client secret (private Jwk)
         /// </summary>
-        public string? ExisitingPrivateJwk { get; set; }
+        public string? ExistingPrivateJwk { get; set; }
         /// <summary>
         /// Path to the new public generated client secret (jwk). Will use <NewKey></NewKey> first.
         /// </summary>
