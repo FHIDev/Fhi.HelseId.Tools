@@ -4,7 +4,7 @@ using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
 {
     /// <summary>
-    /// Manual acceptance tests for the CLI. These tests should be runned against test environment.
+    /// Manual acceptance tests for the CLI. These tests should be run against test environment.
     /// </summary>
     public class AcceptanceTests
     {
