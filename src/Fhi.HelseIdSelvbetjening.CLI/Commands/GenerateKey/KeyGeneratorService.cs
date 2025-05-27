@@ -1,18 +1,19 @@
-﻿using Fhi.IdentityModel.Tokens;
+using Fhi.Authentication.Tokens;
+using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Fhi.HelseIdSelvbetjening.Services
+namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
 {
     internal class KeyGeneratorService
     {
         private readonly GenerateKeyParameters _parameters;
-        private readonly IFileHandler _fileWriter;
+        private readonly IFileHandler _fileHandler;
         private readonly ILogger<KeyGeneratorService> _logger;
 
-        public KeyGeneratorService(GenerateKeyParameters parameters, IFileHandler fileWriter, ILogger<KeyGeneratorService> logger)
+        public KeyGeneratorService(GenerateKeyParameters parameters, IFileHandler fileHandler, ILogger<KeyGeneratorService> logger)
         {
             _parameters = parameters;
-            _fileWriter = fileWriter;
+            _fileHandler = fileHandler;
             _logger = logger;
         }
 
@@ -26,10 +27,10 @@ namespace Fhi.HelseIdSelvbetjening.Services
         public Task ExecuteAsync()
         {
             var keyPath = _parameters.KeyDirectory ?? Environment.CurrentDirectory;
-            if (!Directory.Exists(keyPath))
+            if (!_fileHandler.PathExists(keyPath))
             {
                 _logger.LogInformation("Key path did not exist. Creating folder {@KeyPath}", keyPath);
-                Directory.CreateDirectory(keyPath);
+                _fileHandler.CreateDirectory(keyPath);
             }
 
             var keyPair = JwkGenerator.GenerateRsaJwk();
@@ -37,8 +38,8 @@ namespace Fhi.HelseIdSelvbetjening.Services
             var privateKeyPath = Path.Combine(keyPath, $"{_parameters.KeyFileNamePrefix}_private.json");
             var publicKeyPath = Path.Combine(keyPath, $"{_parameters.KeyFileNamePrefix}_public.json");
 
-            _fileWriter.WriteAllText(privateKeyPath, keyPair.PrivateKey);
-            _fileWriter.WriteAllText(publicKeyPath, keyPair.PublicKey);
+            _fileHandler.WriteAllText(privateKeyPath, keyPair.PrivateKey);
+            _fileHandler.WriteAllText(publicKeyPath, keyPair.PublicKey);
 
             _logger.LogInformation("Private key saved: {@PrivateKeyPath}", privateKeyPath);
             _logger.LogInformation("Public key saved: {@PublicKeyPath}", publicKeyPath);

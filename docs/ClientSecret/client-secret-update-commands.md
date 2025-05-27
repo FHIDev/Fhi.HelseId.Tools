@@ -20,10 +20,10 @@
 ## Commands
 
 ```
- updateclientkey --ClientId <CLIENT_ID> --NewPublicJwk <NEW_KEY> --env dev --ExistingPrivateJwk <OLD_KEY>
+ updateclientkey --ClientId <CLIENT_ID> --NewPublicJwk <NEW_KEY>  --ExistingPrivateJwk <OLD_KEY>
 ```
 
 
 ```
- updateclientkey --ClientId <CLIENT_ID> --NewPublicJwkPath <PATH> --env dev --ExistingPrivateJwkPath <PATH>
+ updateclientkey --ClientId <CLIENT_ID> --NewPublicJwkPath <PATH> --ExistingPrivateJwkPath <PATH>
 ```
