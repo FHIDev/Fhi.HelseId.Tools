@@ -1,4 +1,5 @@
 using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +26,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands
             else if (command == GenerateKeyParameterNames.CommandName)
             {
                 builder = new GenerateKeyCommandBuilder();
+            }
+            else if (command == ReadClientSecretExpirationParameterNames.CommandName)
+            {
+                builder = new ReadClientSecretExpirationCommandBuilder();
             }
 
             return builder;

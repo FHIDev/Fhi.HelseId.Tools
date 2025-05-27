@@ -58,11 +58,135 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             var service = builder.Build();
 
             var response = await service.UpdateClientSecret(new ClientConfiguration("client", "old-jwk"), "new-jwk");
-
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
                 Assert.That(response.Message, Is.EqualTo("successfully updated client secret"));
+            }
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_InvalidClient_ReturnError()
+        {
+            var builder = new HelseIdSelvbetjeningServiceBuilder()
+                .WithDefaultOptions()
+                .WithDPopTokenResponse(new TokenResponse(null, true, "invalid_token", HttpStatusCode.BadRequest));
+            var service = builder.Build();
+
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("invalid-client", "private-jwk"));
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.BadRequest));
+                Assert.That(response.Message, Is.EqualTo("invalid_token"));
+                Assert.That(response.ExpirationDate, Is.Null);
+            }
+
+            builder.Logger.Received(1).Log(
+                LogLevel.Information,
+                Arg.Any<EventId>(),
+                Arg.Is<object>(o => o.ToString()!.Contains("Reading client secret expiration for client")),
+                null,
+                Arg.Any<Func<object, Exception?, string>>()
+            );
+            builder.Logger.Received(1).Log(
+               LogLevel.Error,
+               Arg.Any<EventId>(),
+               Arg.Is<object>(o => o.ToString()!.Contains("Could not read client secret expiration for invalid-client. StatusCode: BadRequest  Error: invalid_token")),
+               null,
+               Arg.Any<Func<object, Exception?, string>>()
+           );
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_ValidClient_ReturnOkWithExpirationDate()
+        {
+            var expirationDate = DateTime.UtcNow.AddDays(30);
+            var responseJson = $"{{\"expirationDate\":\"{expirationDate:yyyy-MM-ddTHH:mm:ssZ}\"}}";
+            
+            var handler = new TestHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(responseJson)
+            });
+
+            var httpClient = new HttpClient(handler);
+
+            var builder = new HelseIdSelvbetjeningServiceBuilder()
+                .WithDefaultOptions()
+                .WithDPopTokenResponse(new TokenResponse("access-token", false, null, HttpStatusCode.OK))
+                .WithHttpClient(httpClient);
+
+            var service = builder.Build();
+
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("client", "private-jwk"));
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.Message, Is.EqualTo("Successfully retrieved client secret expiration"));
+                Assert.That(response.ExpirationDate, Is.Not.Null);
+                Assert.That(response.ExpirationDate!.Value.Date, Is.EqualTo(expirationDate.Date));
+            }
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_ValidClient_ReturnOkWithUnixTimestamp()
+        {
+            var expirationDate = DateTime.UtcNow.AddDays(30);
+            var unixTimestamp = ((DateTimeOffset)expirationDate).ToUnixTimeSeconds();
+            var responseJson = $"{{\"exp\":{unixTimestamp}}}";
+            
+            var handler = new TestHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(responseJson)
+            });
+
+            var httpClient = new HttpClient(handler);
+
+            var builder = new HelseIdSelvbetjeningServiceBuilder()
+                .WithDefaultOptions()
+                .WithDPopTokenResponse(new TokenResponse("access-token", false, null, HttpStatusCode.OK))
+                .WithHttpClient(httpClient);
+
+            var service = builder.Build();
+
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("client", "private-jwk"));
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.Message, Is.EqualTo("Successfully retrieved client secret expiration"));
+                Assert.That(response.ExpirationDate, Is.Not.Null);
+                Assert.That(response.ExpirationDate!.Value.Date, Is.EqualTo(expirationDate.Date));
+            }
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_ValidClient_NoExpirationInResponse_ReturnOkWithoutDate()
+        {
+            var responseJson = "{\"someOtherField\":\"value\"}";
+            
+            var handler = new TestHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(responseJson)
+            });
+
+            var httpClient = new HttpClient(handler);
+
+            var builder = new HelseIdSelvbetjeningServiceBuilder()
+                .WithDefaultOptions()
+                .WithDPopTokenResponse(new TokenResponse("access-token", false, null, HttpStatusCode.OK))
+                .WithHttpClient(httpClient);
+
+            var service = builder.Build();
+
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("client", "private-jwk"));
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.Message, Is.EqualTo("Successfully retrieved client secret expiration"));
+                Assert.That(response.ExpirationDate, Is.Null);
             }
         }
     }
