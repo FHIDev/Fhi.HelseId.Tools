@@ -31,29 +31,38 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 
                 var privateKey = !string.IsNullOrEmpty(_parameters.ExistingPrivateJwk) ? _parameters.ExistingPrivateJwk :
                     !string.IsNullOrEmpty(_parameters.ExistingPrivateJwkPath) ? _fileHandler.ReadAllText(_parameters.ExistingPrivateJwkPath) : string.Empty;
-
                 if (!string.IsNullOrEmpty(privateKey))
                 {
                     _logger.LogInformation("Using private key for authentication");
-                    var response = await _helseIdSelvbetjeningService.ReadClientSecretExpiration(new ClientConfiguration(_parameters.ClientId, privateKey));
-                    
-                    if (response.HttpStatus == System.Net.HttpStatusCode.OK)
+
+                    try
                     {
-                        if (response.ExpirationDate.HasValue)
+                        var response = await _helseIdSelvbetjeningService.ReadClientSecretExpiration(new ClientConfiguration(_parameters.ClientId, privateKey));
+
+                        if (response.HttpStatus == System.Net.HttpStatusCode.OK)
                         {
-                            _logger.LogInformation("Successfully retrieved expiration date: {ExpirationDate}", response.ExpirationDate.Value);
-                            Console.WriteLine($"Client secret expiration date: {response.ExpirationDate.Value:yyyy-MM-dd HH:mm:ss}");
+                            if (response.ExpirationDate.HasValue)
+                            {
+                                _logger.LogInformation("Successfully retrieved expiration date: {ExpirationDate}", response.ExpirationDate.Value);
+                                Console.WriteLine($"Client secret expiration date: {response.ExpirationDate.Value:yyyy-MM-dd HH:mm:ss}");
+                            }
+                            else
+                            {
+                                _logger.LogWarning("Expiration date not found in successful response");
+                                Console.WriteLine("Client secret expiration date not available in response");
+                            }
                         }
                         else
                         {
-                            _logger.LogWarning("Expiration date not found in successful response");
-                            Console.WriteLine("Client secret expiration date not available in response");
+                            _logger.LogError("Failed to read expiration. Status: {Status}, Message: {Message}", response.HttpStatus, response.Message);
+                            Console.WriteLine($"Failed to read client secret expiration: {response.Message}");
                         }
                     }
-                    else
+                    catch (Exception serviceEx)
                     {
-                        _logger.LogError("Failed to read expiration. Status: {Status}, Message: {Message}", response.HttpStatus, response.Message);
-                        Console.WriteLine($"Failed to read client secret expiration: {response.Message}");
+                        _logger.LogError(serviceEx, "Service error while reading client secret expiration");
+                        Console.WriteLine($"Error reading client secret expiration: {serviceEx.Message}");
+                        throw;
                     }
                 }
                 else

@@ -57,7 +57,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 try
                 {
                     var environment = host.Services.GetRequiredService<IHostEnvironment>().EnvironmentName;
-                    Console.WriteLine($"Environment: {environment}");
 
                     var parameters = new ReadClientSecretExpirationParameters
                     {

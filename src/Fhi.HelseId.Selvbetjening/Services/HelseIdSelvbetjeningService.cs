@@ -49,67 +49,145 @@ namespace Fhi.HelseIdSelvbetjening.Services
                         await clientSecretUpdateResponse.Content.ReadAsStringAsync());
 
                 return new ClientSecretUpdateResponse(clientSecretUpdateResponse.StatusCode, "successfully updated client secret");
-            }            _logger.LogError("Could not update client {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientToUpdate.ClientId, response.HttpStatusCode, response.Error);
+            }
+            _logger.LogError("Could not update client {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientToUpdate.ClientId, response.HttpStatusCode, response.Error);
             return new(response.HttpStatusCode, response.Error);
-        }
-
+        }          
+        
         public async Task<ClientSecretExpirationResponse> ReadClientSecretExpiration(ClientConfiguration clientConfiguration)
         {
-            _logger.LogInformation("Reading client secret expiration for client {@ClientId}.", clientConfiguration.ClientId);
-            var dPoPKey = CreateDPoPKey();
-            var response = await _tokenService.CreateDPoPToken(clientConfiguration.ClientId, clientConfiguration.Jwk, "nhn:selvbetjening/client", dPoPKey);
-            if (!response.IsError && response.AccessToken is not null)
+            try
             {
-                var uri = new Uri(new Uri(_selvbetjeningConfig.BaseAddress), _selvbetjeningConfig.ClientSecretEndpoint);
-                var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri)
-                    .WithDpop(uri.ToString(), HttpMethod.Get.ToString(), dPoPKey, "PS256", response.AccessToken)
-                    .WithHeader("Accept", "application/json");
-                var client = _httpClientFactory.CreateClient();
-                var clientSecretExpirationResponse = await client.SendAsync(requestMessage);
-
-                _logger.LogInformation(
-                    "Client secret expiration response: {@StatusCode}  Response: {@Response}",
-                    clientSecretExpirationResponse.StatusCode,
-                    await clientSecretExpirationResponse.Content.ReadAsStringAsync());
-
-                if (clientSecretExpirationResponse.IsSuccessStatusCode)
+                if (clientConfiguration == null)
                 {
-                    var content = await clientSecretExpirationResponse.Content.ReadAsStringAsync();
-                    // Try to parse the expiration date from the response
-                    // The exact format depends on the API response structure
-                    DateTime? expirationDate = null;
-                    try
+                    throw new ArgumentNullException(nameof(clientConfiguration));
+                }
+                if (string.IsNullOrWhiteSpace(clientConfiguration.ClientId))
+                {
+                    throw new ArgumentException("ClientId cannot be null or empty", nameof(clientConfiguration));
+                }
+                if (string.IsNullOrWhiteSpace(clientConfiguration.Jwk))
+                {
+                    throw new ArgumentException("Jwk cannot be null or empty", nameof(clientConfiguration));
+                }
+                _logger.LogInformation("Reading client secret expiration for client {@ClientId}.", clientConfiguration.ClientId);
+                var dPoPKey = CreateDPoPKey();
+                var response = await _tokenService.CreateDPoPToken(
+                    clientConfiguration.ClientId, 
+                    clientConfiguration.Jwk, 
+                    "nhn:selvbetjening/client", 
+                    dPoPKey).ConfigureAwait(false);
+                if (response is { IsError: false, AccessToken: not null })
+                {
+                    var uri = new Uri(new Uri(_selvbetjeningConfig.BaseAddress), _selvbetjeningConfig.ClientSecretEndpoint);
+                    var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri)
+                        .WithDpop(uri.ToString(), HttpMethod.Get.ToString(), dPoPKey, "PS256", response.AccessToken)
+                        .WithHeader("Accept", "application/json");
+                    var client = _httpClientFactory.CreateClient();
+
+                    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+                    var clientSecretExpirationResponse = await client.SendAsync(requestMessage, cts.Token).ConfigureAwait(false);
+
+                    var content = await clientSecretExpirationResponse.Content.ReadAsStringAsync(cts.Token).ConfigureAwait(false);
+
+                    _logger.LogInformation(
+                        "Client secret expiration response: {@StatusCode}  Response: {@Response}",
+                        clientSecretExpirationResponse.StatusCode,
+                        content);
+
+                    if (clientSecretExpirationResponse.IsSuccessStatusCode)
                     {
-                        var jsonDoc = JsonDocument.Parse(content);
-                        if (jsonDoc.RootElement.TryGetProperty("expirationDate", out var expDateElement))
+                        DateTime? expirationDate = null;
+                        try
                         {
-                            if (DateTime.TryParse(expDateElement.GetString(), out var parsedDate))
+                            if (!string.IsNullOrWhiteSpace(content))
                             {
-                                expirationDate = parsedDate;
+                                var jsonDoc = JsonDocument.Parse(content);
+
+                                if (jsonDoc.RootElement.ValueKind == JsonValueKind.Array)
+                                {
+                                    foreach (var secretElement in jsonDoc.RootElement.EnumerateArray())
+                                    {
+                                        if (secretElement.TryGetProperty("expiration", out var expProperty) &&
+                                            expProperty.ValueKind != JsonValueKind.Null)
+                                        {
+                                            if (DateTimeOffset.TryParse(expProperty.GetString(), out var parsedDateOffset))
+                                            {
+                                                expirationDate = parsedDateOffset.UtcDateTime;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (jsonDoc.RootElement.TryGetProperty("expirationDate", out var expDateElement))
+                                    {
+                                        if (DateTimeOffset.TryParse(expDateElement.GetString(), out var parsedDateOffset))
+                                        {
+                                            expirationDate = parsedDateOffset.UtcDateTime;
+                                        }
+                                    }
+                                    else if (jsonDoc.RootElement.TryGetProperty("expiration", out var expElement))
+                                    {
+                                        if (expElement.ValueKind != JsonValueKind.Null && DateTimeOffset.TryParse(expElement.GetString(), out var parsedDateOffset))
+                                        {
+                                            expirationDate = parsedDateOffset.UtcDateTime;
+                                        }
+                                    }
+                                    else if (jsonDoc.RootElement.TryGetProperty("exp", out var expTimestampElement))
+                                    {
+                                        if (expTimestampElement.TryGetInt64(out var unixTimestamp))
+                                        {
+                                            expirationDate = DateTimeOffset.FromUnixTimeSeconds(unixTimestamp).DateTime;
+                                        }
+                                    }
+                                }
                             }
                         }
-                        else if (jsonDoc.RootElement.TryGetProperty("exp", out var expElement))
+                        catch (JsonException ex)
                         {
-                            // Handle Unix timestamp format
-                            if (expElement.TryGetInt64(out var unixTimestamp))
-                            {
-                                expirationDate = DateTimeOffset.FromUnixTimeSeconds(unixTimestamp).DateTime;
-                            }
+                            _logger.LogWarning("Could not parse expiration date from response: {Error}", ex.Message);
                         }
-                    }
-                    catch (JsonException ex)
-                    {
-                        _logger.LogWarning("Could not parse expiration date from response: {Error}", ex.Message);
+                        catch (Exception ex)
+                        {
+                            _logger.LogWarning("Unexpected error parsing expiration date from response: {Error}", ex.Message);
+                        }
+
+                        return new ClientSecretExpirationResponse(clientSecretExpirationResponse.StatusCode, "Successfully retrieved client secret expiration", expirationDate);
                     }
 
-                    return new ClientSecretExpirationResponse(clientSecretExpirationResponse.StatusCode, "Successfully retrieved client secret expiration", expirationDate);
+                    return new ClientSecretExpirationResponse(clientSecretExpirationResponse.StatusCode, content);
                 }
 
-                return new ClientSecretExpirationResponse(clientSecretExpirationResponse.StatusCode, await clientSecretExpirationResponse.Content.ReadAsStringAsync());
+                _logger.LogError("Could not read client secret expiration for {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientConfiguration.ClientId, response.HttpStatusCode, response.Error);
+                return new(response.HttpStatusCode, response.Error);
             }
-
-            _logger.LogError("Could not read client secret expiration for {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientConfiguration.ClientId, response.HttpStatusCode, response.Error);
-            return new(response.HttpStatusCode, response.Error);
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "HTTP request failed when reading client secret expiration for {@ClientId}", clientConfiguration.ClientId);
+                return new(System.Net.HttpStatusCode.ServiceUnavailable, $"HTTP request failed: {ex.Message}");
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "Request timeout when reading client secret expiration for {@ClientId}", clientConfiguration.ClientId);
+                return new(System.Net.HttpStatusCode.RequestTimeout, $"Request timeout: {ex.Message}");
+            }
+            catch (UriFormatException ex)
+            {
+                _logger.LogError(ex, "Invalid URI configuration when reading client secret expiration for {@ClientId}", clientConfiguration.ClientId);
+                return new(System.Net.HttpStatusCode.InternalServerError, $"Invalid URI configuration: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError(ex, "Invalid argument when reading client secret expiration for {@ClientId}", clientConfiguration!.ClientId);
+                return new(System.Net.HttpStatusCode.BadRequest, $"Invalid argument: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error when reading client secret expiration for {@ClientId}", clientConfiguration.ClientId);
+                return new(System.Net.HttpStatusCode.InternalServerError, $"Unexpected error: {ex.Message}");
+            }
         }
 
         private static JsonSerializerOptions CreateJsonSerializerOptions()

@@ -11,31 +11,36 @@ dotnet run -- readclientsecretexpiration --ClientId <client-id> [--ExistingPriva
 ## Example Usage
 
 ### Using a private key file
+
 ```bash
 dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwkPath "./my-private-key.jwk"
 ```
 
 ### Using a private key value directly:
+
 ```bash
 dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk '{"kty":"RSA","d":"...","n":"...","e":"AQAB"}'
 ```
 
 ## Expected Output
 
-### Success Case:
-```
+### Success Case
+
+``` text
 Reading client secret expiration for client: my-client-id
 ✓ Client secret expires: 2024-12-31T23:59:59Z
 ```
 
-### Error Case (Invalid Client):
-```
+### Error Case (Invalid Client)
+
+``` text
 Reading client secret expiration for client: invalid-client
 ✗ Error: Client not found or access denied
 ```
 
-### No Expiration Date Available:
-```
+### No Expiration Date Available
+
+``` text
 Reading client secret expiration for client: my-client-id
 ℹ Client secret expiration date not available
 ```
@@ -43,6 +48,7 @@ Reading client secret expiration for client: my-client-id
 ## Integration with Automation Systems
 
 ### Octopus Deploy Variable
+
 You can capture the output for use in automation:
 
 ```bash
@@ -60,6 +66,7 @@ fi
 ```
 
 ### PowerShell Example
+
 ```powershell
 $result = & dotnet run -- readclientsecretexpiration --ClientId $ClientId --ExistingPrivateJwkPath $KeyPath
 if ($LASTEXITCODE -eq 0) {

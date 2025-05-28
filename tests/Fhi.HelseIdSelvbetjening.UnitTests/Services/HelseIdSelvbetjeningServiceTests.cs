@@ -189,6 +189,66 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
                 Assert.That(response.ExpirationDate, Is.Null);
             }
         }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_ArrayResponseWithExpiration_ReturnExpirationDate()
+        {
+            var arrayResponse = @"[
+                {""expiration"":null,""kid"":""-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4"",""jwkThumbprint"":""-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4"",""origin"":""Gui"",""publicJwk"":null},
+                {""expiration"":null,""kid"":""ISinWp6jrRwTF_yhD1FBJ2amBT-uPwumswyRhmdjbWk"",""jwkThumbprint"":""ISinWp6jrRwTF_yhD1FBJ2amBT-uPwumswyRhmdjbWk"",""origin"":""Gui"",""publicJwk"":null},
+                {""expiration"":""2025-06-20T00:00:00Z"",""kid"":""VOLmwuVJtP2NEAW0-Hl2ZRymWcgvyZtPnDivec2dZrM"",""jwkThumbprint"":""VOLmwuVJtP2NEAW0-Hl2ZRymWcgvyZtPnDivec2dZrM"",""origin"":""Api"",""publicJwk"":null}
+            ]";
+
+            var handler = new TestHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(arrayResponse)
+            });
+
+            var builder = new HelseIdSelvbetjeningServiceBuilder()
+                .WithDefaultOptions()
+                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
+                .WithHttpClient(new HttpClient(handler));
+            var service = builder.Build();
+
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", "test-jwk"));
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.Message, Is.EqualTo("Successfully retrieved client secret expiration"));
+                Assert.That(response.ExpirationDate, Is.Not.Null);
+                Assert.That(response.ExpirationDate!.Value, Is.EqualTo(new DateTime(2025, 6, 20, 0, 0, 0, DateTimeKind.Utc)));
+            }
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_ArrayResponseAllNullExpirations_ReturnNoExpiration()
+        {
+            var arrayResponse = @"[
+                {""expiration"":null,""kid"":""-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4"",""jwkThumbprint"":""-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4"",""origin"":""Gui"",""publicJwk"":null},
+                {""expiration"":null,""kid"":""ISinWp6jrRwTF_yhD1FBJ2amBT-uPwumswyRhmdjbWk"",""jwkThumbprint"":""ISinWp6jrRwTF_yhD1FBJ2amBT-uPwumswyRhmdjbWk"",""origin"":""Gui"",""publicJwk"":null}
+            ]";
+
+            var handler = new TestHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(arrayResponse)
+            });
+
+            var builder = new HelseIdSelvbetjeningServiceBuilder()
+                .WithDefaultOptions()
+                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
+                .WithHttpClient(new HttpClient(handler));
+            var service = builder.Build();
+
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", "test-jwk"));
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.Message, Is.EqualTo("Successfully retrieved client secret expiration"));
+                Assert.That(response.ExpirationDate, Is.Null);
+            }
+        }
     }
 
     internal class HelseIdSelvbetjeningServiceBuilder
