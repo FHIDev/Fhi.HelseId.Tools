@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../acceptance-tests-guide/">
+        <link rel="prev" href="../client-secret-update-commands/">
       
       
-        <link rel="next" href="../demo-usage-example/">
+        <link rel="next" href="../generatekey-command/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Update client with new keys Commands - FHI HelseID Tools</title>
+        <title>Demo Usage Example for ReadClientSecretExpiration Command - FHI HelseID Tools</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#update-client-with-new-keys-commands" class="md-skip">
+        <a href="#demo-usage-example-for-readclientsecretexpiration-command" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Update client with new keys Commands
+              Demo Usage Example for ReadClientSecretExpiration Command
             
           </span>
         </div>
@@ -284,6 +284,29 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../client-secret-update-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Update client with new keys Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -301,7 +324,7 @@
   
   
   <span class="md-ellipsis">
-    Update client with new keys Commands
+    Demo Usage Example for ReadClientSecretExpiration Command
     
   </span>
   
@@ -314,7 +337,7 @@
   
   
   <span class="md-ellipsis">
-    Update client with new keys Commands
+    Demo Usage Example for ReadClientSecretExpiration Command
     
   </span>
   
@@ -337,18 +360,126 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#command-syntax" class="md-nav__link">
     <span class="md-ellipsis">
-      Parameters
+      Command Syntax
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
+  <a href="#example-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Commands
+      Example Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-a-private-key-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using a private key file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-a-private-key-value-directly" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using a private key value directly:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expected-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expected Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Expected Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#success-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Case
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-case-invalid-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Case (Invalid Client)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-expiration-date-available" class="md-nav__link">
+    <span class="md-ellipsis">
+      No Expiration Date Available
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-automation-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Automation Systems
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration with Automation Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#octopus-deploy-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Octopus Deploy Variable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#powershell-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      PowerShell Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
     </span>
   </a>
   
@@ -358,29 +489,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo-usage-example/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Demo Usage Example for ReadClientSecretExpiration Command
-    
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -489,18 +597,126 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#command-syntax" class="md-nav__link">
     <span class="md-ellipsis">
-      Parameters
+      Command Syntax
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
+  <a href="#example-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Commands
+      Example Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-a-private-key-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using a private key file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-a-private-key-value-directly" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using a private key value directly:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expected-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expected Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Expected Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#success-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Case
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-case-invalid-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Case (Invalid Client)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-expiration-date-available" class="md-nav__link">
+    <span class="md-ellipsis">
+      No Expiration Date Available
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-automation-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Automation Systems
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration with Automation Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#octopus-deploy-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Octopus Deploy Variable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#powershell-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      PowerShell Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
     </span>
   </a>
   
@@ -522,54 +738,86 @@
 
 
 
-<h1 id="update-client-with-new-keys-commands">Update client with new keys Commands</h1>
-<ol>
-<li><strong>User Request:</strong> A user initiates a request to upgrade/rotate the client secret for an application through the tools console interface.</li>
-<li><strong>Authentication:</strong> The Client Secret Tool authenticates with Helse ID using the old secret and client ID to verify its identity to get an access token.</li>
-<li><strong>Secret Update Process:</strong> The tool updates the client configuration throuhg the Helse ID Selvbetjening API passing the access token. The updated secret is then stored in the Client Configuration inside Helse ID.</li>
-</ol>
-<h2 id="parameters">Parameters</h2>
-<table>
-<thead>
-<tr>
-<th>Parameter name</th>
-<th>Descrition</th>
-<th>Sample</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ClientId</td>
-<td>The Client to updates unique Identifier found in Klient konfigurasjon in HelseId Selvbetjening</td>
-<td><code>37a08838-db82-4de0-bfe1-bed876e7086e</code></td>
-</tr>
-<tr>
-<td>NewPublicJwkPath</td>
-<td>Path to the new public key.</td>
-<td><code>C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_public.json</code></td>
-</tr>
-<tr>
-<td>NewPublicJwk</td>
-<td>public key string</td>
-<td><code>{\"alg\":\"PS512\",\"d\":\"xxx .....}</code></td>
-</tr>
-<tr>
-<td>ExistingPrivateJwkPath</td>
-<td>Path to the new private key</td>
-<td><code>C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json</code></td>
-</tr>
-<tr>
-<td>ExistingPrivateJwk</td>
-<td>private key string</td>
-<td><code>{\"alg\":\"PS512\",\"d\":\"xxx .....}</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="commands">Commands</h2>
-<pre><code> updateclientkey --ClientId &lt;CLIENT_ID&gt; --NewPublicJwk &lt;NEW_KEY&gt;  --ExistingPrivateJwk &lt;OLD_KEY&gt;
+<h1 id="demo-usage-example-for-readclientsecretexpiration-command">Demo Usage Example for ReadClientSecretExpiration Command</h1>
+<p>This document demonstrates how to use the new <code>readclientsecretexpiration</code> command.</p>
+<h2 id="command-syntax">Command Syntax</h2>
+<pre><code class="language-bash">dotnet run -- readclientsecretexpiration --ClientId &lt;client-id&gt; [--ExistingPrivateJwkPath &lt;path&gt;] [--ExistingPrivateJwk &lt;jwk&gt;]
 </code></pre>
-<pre><code> updateclientkey --ClientId &lt;CLIENT_ID&gt; --NewPublicJwkPath &lt;PATH&gt; --ExistingPrivateJwkPath &lt;PATH&gt;
+<h2 id="example-usage">Example Usage</h2>
+<h3 id="using-a-private-key-file">Using a private key file</h3>
+<pre><code class="language-bash">dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwkPath &quot;./my-private-key.jwk&quot;
 </code></pre>
+<h3 id="using-a-private-key-value-directly">Using a private key value directly:</h3>
+<pre><code class="language-bash">dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk '{&quot;kty&quot;:&quot;RSA&quot;,&quot;d&quot;:&quot;...&quot;,&quot;n&quot;:&quot;...&quot;,&quot;e&quot;:&quot;AQAB&quot;}'
+</code></pre>
+<h2 id="expected-output">Expected Output</h2>
+<h3 id="success-case">Success Case</h3>
+<pre><code class="language-text">Reading client secret expiration for client: my-client-id
+1735689599
+</code></pre>
+<h3 id="error-case-invalid-client">Error Case (Invalid Client)</h3>
+<pre><code class="language-text">Reading client secret expiration for client: invalid-client
+✗ Error: Client not found or access denied
+</code></pre>
+<h3 id="no-expiration-date-available">No Expiration Date Available</h3>
+<pre><code class="language-text">Reading client secret expiration for client: my-client-id
+Client secret expiration date not available in response
+</code></pre>
+<h2 id="integration-with-automation-systems">Integration with Automation Systems</h2>
+<h3 id="octopus-deploy-variable">Octopus Deploy Variable</h3>
+<p>You can capture the output for use in automation:</p>
+<pre><code class="language-bash"># Capture exit code and output
+output=$(dotnet run -- readclientsecretexpiration --ClientId &quot;$CLIENT_ID&quot; --ExistingPrivateJwkPath &quot;$KEY_PATH&quot; 2&gt;&amp;1)
+exit_code=$?
+
+if [ $exit_code -eq 0 ]; then
+    echo &quot;Output: $output&quot;
+    # Extract epoch timestamp from output (the numeric value)
+    epoch_time=$(echo &quot;$output&quot; | grep -o &quot;[0-9]\+$&quot;)
+    if [ ! -z &quot;$epoch_time&quot; ]; then
+        echo &quot;Secret expires at epoch: $epoch_time&quot;
+        # Calculate days until expiration
+        current_epoch=$(date +%s)
+        days_until_expiry=$(( ($epoch_time - $current_epoch) / 86400 ))
+        echo &quot;Days until expiry: $days_until_expiry&quot;
+    fi
+else
+    echo &quot;Failed to read expiration: $output&quot;
+    exit 1
+fi
+</code></pre>
+<h3 id="powershell-example">PowerShell Example</h3>
+<pre><code class="language-powershell">$result = &amp; dotnet run -- readclientsecretexpiration --ClientId $ClientId --ExistingPrivateJwkPath $KeyPath
+if ($LASTEXITCODE -eq 0) {
+    Write-Host &quot;Secret expiration retrieved successfully: $result&quot;
+
+    # Extract epoch timestamp from output (the numeric value)
+    if ($result -match &quot;(\d+)$&quot;) {
+        $epochTime = [long]$matches[1]
+        $expirationDate = [DateTimeOffset]::FromUnixTimeSeconds($epochTime).DateTime
+        $daysUntilExpiry = ($expirationDate - (Get-Date)).Days
+
+        Write-Host &quot;Expiration epoch: $epochTime&quot;
+        Write-Host &quot;Expiration date: $expirationDate&quot;
+        Write-Host &quot;Days until expiry: $daysUntilExpiry&quot;
+
+        # Schedule renewal logic here
+        if ($daysUntilExpiry -lt 30) {
+            Write-Warning &quot;Secret expires in less than 30 days!&quot;
+        }
+    }
+} else {
+    Write-Error &quot;Failed to read secret expiration: $result&quot;
+}
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>The command uses the same authentication mechanism as other HelseID commands</li>
+<li>Requires appropriate permissions (<code>nhn:selvbetjening/client</code> scope)</li>
+<li>Returns exit code 0 on success, non-zero on error for automation purposes</li>
+<li>Output is a simple epoch timestamp (Unix timestamp) for easy parsing in automation scripts</li>
+<li>Epoch timestamp enables precise date calculations and automation logic</li>
+</ul>
 
 
 

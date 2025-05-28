@@ -1,0 +1,1070 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../client-secret-update-commands/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Acceptance Tests for ReadClientSecretExpiration Command - FHI HelseID Tools</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#acceptance-tests-for-readclientsecretexpiration-command" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="FHI HelseID Tools" class="md-header__button md-logo" aria-label="FHI HelseID Tools" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            FHI HelseID Tools
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Acceptance Tests for ReadClientSecretExpiration Command
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="FHI HelseID Tools" class="md-nav__button md-logo" aria-label="FHI HelseID Tools" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    FHI HelseID Tools
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fhi.HelseId.Tools
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    ClientSecret
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            ClientSecret
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Acceptance Tests for ReadClientSecretExpiration Command
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Acceptance Tests for ReadClientSecretExpiration Command
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Tests
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-readclientsecretexpiration_frompath" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. ReadClientSecretExpiration_FromPath
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-readclientsecretexpiration_fromdirectkey" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. ReadClientSecretExpiration_FromDirectKey
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setup Instructions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup Instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-test-client-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Configure Test Client ID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-prepare-test-data-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Prepare Test Data Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-set-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Set Environment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the Tests
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running the Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-visual-studio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via Visual Studio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via Command Line
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expected-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expected Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Expected Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#success-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Case
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#failure-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Failure Case
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sample-private-key-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sample Private Key Format
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Tips
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with CI/CD
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../client-secret-update-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Update client with new keys Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo-usage-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Demo Usage Example for ReadClientSecretExpiration Command
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generatekey-command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Generate new keys Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tool for update HelseId Client secrets (Jwk)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../read-client-secret-expiration-command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Read Client Secret Expiration Command
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Tests
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-readclientsecretexpiration_frompath" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. ReadClientSecretExpiration_FromPath
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-readclientsecretexpiration_fromdirectkey" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. ReadClientSecretExpiration_FromDirectKey
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setup Instructions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup Instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-test-client-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Configure Test Client ID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-prepare-test-data-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Prepare Test Data Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-set-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Set Environment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the Tests
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running the Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-visual-studio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via Visual Studio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-command-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      Via Command Line
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expected-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expected Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Expected Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#success-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Case
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#failure-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      Failure Case
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sample-private-key-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sample Private Key Format
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Tips
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with CI/CD
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="acceptance-tests-for-readclientsecretexpiration-command">Acceptance Tests for ReadClientSecretExpiration Command</h1>
+<p>This document explains how to run the acceptance tests for the new <code>readclientsecretexpiration</code> command.</p>
+<h2 id="overview">Overview</h2>
+<p>The acceptance tests verify that the CLI command works end-to-end against a real test environment. These tests are marked as <code>[Explicit]</code> and must be run manually.</p>
+<h2 id="available-tests">Available Tests</h2>
+<h3 id="1-readclientsecretexpiration_frompath">1. ReadClientSecretExpiration_FromPath</h3>
+<p>Tests reading client secret expiration using a private key file.</p>
+<h3 id="2-readclientsecretexpiration_fromdirectkey">2. ReadClientSecretExpiration_FromDirectKey</h3>
+<p>Tests reading client secret expiration using a private key value directly.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before running these tests, you need:</p>
+<ol>
+<li><strong>Test Environment</strong>: Access to HelseID test environment</li>
+<li><strong>Valid Test Client</strong>: A client configured with:</li>
+<li>The <code>nhn:selvbetjening/client</code> scope</li>
+<li>Valid client secret (private key)</li>
+<li><strong>Test Data</strong>: Private key file in <code>TestData/oldkey.json</code></li>
+</ol>
+<h2 id="setup-instructions">Setup Instructions</h2>
+<h3 id="1-configure-test-client-id">1. Configure Test Client ID</h3>
+<p>Edit the test methods in <code>AcceptanceTests.cs</code> and replace:</p>
+<pre><code class="language-csharp">var clientId = &quot;88d474a8-07df-4dc4-abb0-6b759c2b99ec&quot;; // Replace with your test client ID
+</code></pre>
+<h3 id="2-prepare-test-data-directory">2. Prepare Test Data Directory</h3>
+<p>Create a <code>TestData</code> directory in the test project root (not in bin folder) and add your private key file:</p>
+<pre><code>tests/Fhi.HelseIdSelvbetjening.CLI.Tests/TestData/
+└── oldkey.json  // Your test client's private key
+</code></pre>
+<p><strong>Important</strong>: The test will automatically locate the correct TestData directory relative to the test project, not the bin output directory.</p>
+<h3 id="3-set-environment">3. Set Environment</h3>
+<p>The tests automatically set <code>DOTNET_ENVIRONMENT=Test</code> to use test configuration.</p>
+<h2 id="running-the-tests">Running the Tests</h2>
+<h3 id="via-visual-studio">Via Visual Studio</h3>
+<ol>
+<li>Open Test Explorer</li>
+<li>Find the acceptance tests under <code>Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests</code></li>
+<li>Right-click on the specific test you want to run</li>
+<li>Select "Run Selected Tests"</li>
+</ol>
+<h3 id="via-command-line">Via Command Line</h3>
+<pre><code class="language-powershell"># Run specific acceptance test
+cd &quot;c:\git\Fhi.HelseId.Tools&quot;
+dotnet test tests\Fhi.HelseIdSelvbetjening.CLI.Tests\Fhi.HelseIdSelvbetjening.CLI.Tests.csproj --filter &quot;ReadClientSecretExpiration_FromPath&quot;
+
+# Run all acceptance tests
+dotnet test tests\Fhi.HelseIdSelvbetjening.CLI.Tests\Fhi.HelseIdSelvbetjening.CLI.Tests.csproj --filter &quot;AcceptanceTests&quot;
+</code></pre>
+<h2 id="expected-results">Expected Results</h2>
+<h3 id="success-case">Success Case</h3>
+<ul>
+<li>Exit code: 0</li>
+<li>Output contains: "Reading client secret expiration for client"</li>
+<li>May contain expiration date or "expiration date not available"</li>
+</ul>
+<h3 id="failure-case">Failure Case</h3>
+<ul>
+<li>Exit code: non-zero</li>
+<li>Output contains error message explaining the issue</li>
+</ul>
+<h2 id="sample-private-key-format">Sample Private Key Format</h2>
+<p>Your <code>oldkey.json</code> should contain a valid RSA private key in JWK format:</p>
+<pre><code class="language-json">{
+  &quot;kty&quot;: &quot;RSA&quot;,
+  &quot;d&quot;: &quot;...&quot;,
+  &quot;n&quot;: &quot;...&quot;,
+  &quot;e&quot;: &quot;AQAB&quot;,
+  &quot;use&quot;: &quot;sig&quot;,
+  &quot;kid&quot;: &quot;...&quot;
+}
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<ol>
+<li><strong>"Client not found or access denied"</strong></li>
+<li>Verify client ID is correct</li>
+<li>Ensure client has <code>nhn:selvbetjening/client</code> scope</li>
+<li>
+<p>Check private key matches the client</p>
+</li>
+<li>
+<p><strong>"No private key provided"</strong></p>
+</li>
+<li>Verify <code>TestData/oldkey.json</code> exists and is valid JSON</li>
+<li>
+<p>Check file path is correct</p>
+</li>
+<li>
+<p><strong>Network/Environment Issues</strong></p>
+</li>
+<li>Verify test environment is accessible</li>
+<li>Check if authentication service is responding</li>
+</ol>
+<h3 id="debug-tips">Debug Tips</h3>
+<ul>
+<li>The tests capture console output for inspection</li>
+<li>Exit codes and output are printed for debugging</li>
+<li>Use the explicit nature of tests to run them individually</li>
+</ul>
+<h2 id="integration-with-cicd">Integration with CI/CD</h2>
+<p>While these are manual acceptance tests, you could potentially:</p>
+<ol>
+<li>Set up dedicated test environment with known test clients</li>
+<li>Store test keys securely in CI/CD secrets</li>
+<li>Run as part of release validation (not regular CI)</li>
+</ol>
+<p>Note: Be careful with real credentials in automated environments.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>

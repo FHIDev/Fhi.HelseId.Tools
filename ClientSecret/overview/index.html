@@ -12,6 +12,8 @@
         <link rel="prev" href="../generatekey-command/">
       
       
+        <link rel="next" href="../read-client-secret-expiration-command/">
+      
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
@@ -262,12 +264,58 @@
   
   
     <li class="md-nav__item">
+      <a href="../acceptance-tests-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Acceptance Tests for ReadClientSecretExpiration Command
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../client-secret-update-commands/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     Update client with new keys Commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../demo-usage-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Demo Usage Example for ReadClientSecretExpiration Command
     
   </span>
   
@@ -334,6 +382,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../read-client-secret-expiration-command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Read Client Secret Expiration Command
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -378,15 +449,16 @@
 <h1 id="tool-for-update-helseid-client-secrets-jwk">Tool for update HelseId Client secrets (Jwk)</h1>
 <p>Client Secret Tool is a console application that facilitates the secure rotation of client secrets for applications integrated with Helse ID. A user initiates a request to upgrade/rotate the client secret for an application through the tools console interface. The tool provides commands for:</p>
 <ul>
-<li><strong>Generateion of new keys</strong> Command for generate new private and public Json Web Keys (jwk). See <a href="../generatekey-command/">overview of key generation commands</a></li>
+<li><strong>Generation of new keys</strong> Command for generate new private and public Json Web Keys (jwk). See <a href="../generatekey-command/">overview of key generation commands</a></li>
 <li><strong>Update client keys in HelseID client configuration:</strong> Command for update secrets (public key) on a HelseID client. See <a href="../client-secret-update-commands/">overview of update client secret commands</a></li>
+<li><strong>Read client secret expiration:</strong> Command for reading the expiration date of client secrets to enable automated monitoring and renewal scheduling. See <a href="../read-client-secret-expiration-command/">overview of read client secret expiration commands</a></li>
 </ul>
 <p>The image below illustrates the steps for updating a client keys (secrets)</p>
-<p><img alt="" src="../ClientSecretManagement.jpg" /></p>
+<p><img alt="Client Secret Management" src="../ClientSecretManagement.jpg" /></p>
 <ol>
-<li><strong>Update Klientkonfiguration scope:</strong> In order for an application to use the tool the Client must have registered <em>nhn:selvbetjening/client</em> scope. The scope <em>nhn:selvbetjening/client</em> to klientsystem must be added to the client system and  klientkonfigurasjon </li>
-<li><strong>Generate new keys:</strong> The tool generate two new json web keys (jwk), private and public, with the command <code>generatekey</code> . The public key is used by HelseID to validate the client assertion. The private key is used by the application to generate a client assertion token.</li>
-<li><strong>Update client with publik key:</strong> After new keys are generated HelseId should be updated with the new public key with the command <code>updateclientkey</code>. </li>
+<li><strong>Update Klientkonfiguration scope:</strong> In order for an application to use the tool the Client must have registered <em>nhn:selvbetjening/client</em> scope. The scope <em>nhn:selvbetjening/client</em> to klientsystem must be added to the client system and klientkonfigurasjon</li>
+<li><strong>Generate new keys:</strong> The tool generate two new json web keys (jwk), private and public, with the command <code>generatekey</code>. The public key is used by HelseID to validate the client assertion. The private key is used by the application to generate a client assertion token.</li>
+<li><strong>Update client with publik key:</strong> After new keys are generated HelseId should be updated with the new public key with the command <code>updateclientkey</code>.</li>
 <li><strong>Update application with private key</strong>: The application configuration must be updated with the new private key.</li>
 </ol>
 
