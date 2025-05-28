@@ -37,14 +37,15 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 
                     try
                     {
-                        var response = await _helseIdSelvbetjeningService.ReadClientSecretExpiration(new ClientConfiguration(_parameters.ClientId, privateKey));
-
-                        if (response.HttpStatus == System.Net.HttpStatusCode.OK)
+                        var response = await _helseIdSelvbetjeningService.ReadClientSecretExpiration(new ClientConfiguration(_parameters.ClientId, privateKey));                        if (response.HttpStatus == System.Net.HttpStatusCode.OK)
                         {
                             if (response.ExpirationDate.HasValue)
                             {
-                                _logger.LogInformation("Successfully retrieved expiration date: {ExpirationDate}", response.ExpirationDate.Value);
-                                Console.WriteLine($"Client secret expiration date: {response.ExpirationDate.Value:yyyy-MM-dd HH:mm:ss}");
+                                var expirationDate = response.ExpirationDate.Value;
+                                var epochTime = ((DateTimeOffset)expirationDate).ToUnixTimeSeconds();
+
+                                _logger.LogInformation("Successfully retrieved expiration date: {ExpirationDate}", expirationDate);
+                                Console.WriteLine(epochTime);
                             }
                             else
                             {

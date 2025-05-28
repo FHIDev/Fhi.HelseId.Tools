@@ -28,7 +28,7 @@ dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPri
 
 ``` text
 Reading client secret expiration for client: my-client-id
-✓ Client secret expires: 2024-12-31T23:59:59Z
+1735689599
 ```
 
 ### Error Case (Invalid Client)
@@ -42,7 +42,7 @@ Reading client secret expiration for client: invalid-client
 
 ``` text
 Reading client secret expiration for client: my-client-id
-ℹ Client secret expiration date not available
+Client secret expiration date not available in response
 ```
 
 ## Integration with Automation Systems
@@ -53,14 +53,22 @@ You can capture the output for use in automation:
 
 ```bash
 # Capture exit code and output
-expiration_date=$(dotnet run -- readclientsecretexpiration --ClientId "$CLIENT_ID" --ExistingPrivateJwkPath "$KEY_PATH" 2>&1)
+output=$(dotnet run -- readclientsecretexpiration --ClientId "$CLIENT_ID" --ExistingPrivateJwkPath "$KEY_PATH" 2>&1)
 exit_code=$?
 
 if [ $exit_code -eq 0 ]; then
-    echo "Secret expires: $expiration_date"
-    # Schedule renewal based on expiration date
+    echo "Output: $output"
+    # Extract epoch timestamp from output (the numeric value)
+    epoch_time=$(echo "$output" | grep -o "[0-9]\+$")
+    if [ ! -z "$epoch_time" ]; then
+        echo "Secret expires at epoch: $epoch_time"
+        # Calculate days until expiration
+        current_epoch=$(date +%s)
+        days_until_expiry=$(( ($epoch_time - $current_epoch) / 86400 ))
+        echo "Days until expiry: $days_until_expiry"
+    fi
 else
-    echo "Failed to read expiration: $expiration_date"
+    echo "Failed to read expiration: $output"
     exit 1
 fi
 ```
@@ -71,7 +79,22 @@ fi
 $result = & dotnet run -- readclientsecretexpiration --ClientId $ClientId --ExistingPrivateJwkPath $KeyPath
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Secret expiration retrieved successfully: $result"
-    # Add logic to schedule renewal
+    
+    # Extract epoch timestamp from output (the numeric value)
+    if ($result -match "(\d+)$") {
+        $epochTime = [long]$matches[1]
+        $expirationDate = [DateTimeOffset]::FromUnixTimeSeconds($epochTime).DateTime
+        $daysUntilExpiry = ($expirationDate - (Get-Date)).Days
+        
+        Write-Host "Expiration epoch: $epochTime"
+        Write-Host "Expiration date: $expirationDate"
+        Write-Host "Days until expiry: $daysUntilExpiry"
+        
+        # Schedule renewal logic here
+        if ($daysUntilExpiry -lt 30) {
+            Write-Warning "Secret expires in less than 30 days!"
+        }
+    }
 } else {
     Write-Error "Failed to read secret expiration: $result"
 }
@@ -82,4 +105,5 @@ if ($LASTEXITCODE -eq 0) {
 - The command uses the same authentication mechanism as other HelseID commands
 - Requires appropriate permissions (`nhn:selvbetjening/client` scope)
 - Returns exit code 0 on success, non-zero on error for automation purposes
-- Handles both ISO 8601 date strings and Unix timestamps from the API
+- Output is a simple epoch timestamp (Unix timestamp) for easy parsing in automation scripts
+- Epoch timestamp enables precise date calculations and automation logic
