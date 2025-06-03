@@ -249,6 +249,163 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
                 Assert.That(response.ExpirationDate, Is.Null);
             }
         }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_MultipleKeysFirstExpired_ShouldReturnLatestNotFirst()
+        {
+            var expiredDate = DateTime.UtcNow.AddDays(-30); // Expired 30 days ago
+            var validDate = DateTime.UtcNow.AddDays(60);    // Valid for 60 more days
+            
+            var arrayResponseWithExpiredFirst = $@"[
+                {{""expiration"":""{expiredDate:yyyy-MM-ddTHH:mm:ssZ}"",""kid"":""expired-key-id"",""jwkThumbprint"":""expired-thumb"",""origin"":""Api"",""publicJwk"":null}},
+                {{""expiration"":""{validDate:yyyy-MM-ddTHH:mm:ssZ}"",""kid"":""valid-key-id"",""jwkThumbprint"":""valid-thumb"",""origin"":""Api"",""publicJwk"":null}}
+            ]";
+
+            var handler = new TestHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(arrayResponseWithExpiredFirst)
+            });
+
+            var builder = new HelseIdSelvbetjeningServiceBuilder()
+                .WithDefaultOptions()
+                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
+                .WithHttpClient(new HttpClient(handler));
+            var service = builder.Build();
+
+            // Client JWK that should match the second (valid) key
+            var clientJwkWithKid = """
+            {
+                "kid": "valid-key-id",
+                "kty": "RSA",
+                "d": "test-private-key-data",
+                "n": "test-modulus",
+                "e": "AQAB"
+            }
+            """;
+
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", clientJwkWithKid));
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.Message, Is.EqualTo("Successfully retrieved client secret expiration"));
+                Assert.That(response.ExpirationDate, Is.Not.Null);
+                // Truncate to seconds to handle precision differences in JSON parsing
+                var expectedValidDate = new DateTime(validDate.Year, validDate.Month, validDate.Day, 
+                    validDate.Hour, validDate.Minute, validDate.Second, DateTimeKind.Utc);
+                var actualDate = new DateTime(response.ExpirationDate!.Value.Year, response.ExpirationDate.Value.Month, 
+                    response.ExpirationDate.Value.Day, response.ExpirationDate.Value.Hour, response.ExpirationDate.Value.Minute, 
+                    response.ExpirationDate.Value.Second, DateTimeKind.Utc);
+                Assert.That(actualDate, Is.EqualTo(expectedValidDate), 
+                    "Service should return latest expiration when no kid matches");
+            }
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_MultipleKeysWithKidMatching_ShouldReturnMatchingKeyExpiration()
+        {
+            var firstKeyDate = DateTime.UtcNow.AddDays(30);
+            var matchingKeyDate = DateTime.UtcNow.AddDays(90);
+            var thirdKeyDate = DateTime.UtcNow.AddDays(45);
+            
+            var arrayResponseWithMultipleKeys = $@"[
+                {{""expiration"":""{firstKeyDate:yyyy-MM-ddTHH:mm:ssZ}"",""kid"":""first-key-id"",""jwkThumbprint"":""first-thumb"",""origin"":""Api"",""publicJwk"":null}},
+                {{""expiration"":""{matchingKeyDate:yyyy-MM-ddTHH:mm:ssZ}"",""kid"":""target-key-id"",""jwkThumbprint"":""target-thumb"",""origin"":""Api"",""publicJwk"":null}},
+                {{""expiration"":""{thirdKeyDate:yyyy-MM-ddTHH:mm:ssZ}"",""kid"":""third-key-id"",""jwkThumbprint"":""third-thumb"",""origin"":""Api"",""publicJwk"":null}}
+            ]";
+
+            var handler = new TestHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(arrayResponseWithMultipleKeys)
+            });
+
+            var builder = new HelseIdSelvbetjeningServiceBuilder()
+                .WithDefaultOptions()
+                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
+                .WithHttpClient(new HttpClient(handler));
+            var service = builder.Build();
+
+            // Client JWK with kid that matches the second key in the response
+            var clientJwkWithTargetKid = """
+            {
+                "kid": "target-key-id",
+                "kty": "RSA", 
+                "d": "test-private-key-data",
+                "n": "test-modulus",
+                "e": "AQAB"
+            }
+            """;
+
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", clientJwkWithTargetKid));
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.Message, Is.EqualTo("Successfully retrieved client secret expiration"));
+                Assert.That(response.ExpirationDate, Is.Not.Null);
+                // Truncate to seconds to handle precision differences in JSON parsing
+                var expectedMatchingDate = new DateTime(matchingKeyDate.Year, matchingKeyDate.Month, matchingKeyDate.Day, 
+                    matchingKeyDate.Hour, matchingKeyDate.Minute, matchingKeyDate.Second, DateTimeKind.Utc);
+                var actualDate = new DateTime(response.ExpirationDate!.Value.Year, response.ExpirationDate.Value.Month, 
+                    response.ExpirationDate.Value.Day, response.ExpirationDate.Value.Hour, response.ExpirationDate.Value.Minute, 
+                    response.ExpirationDate.Value.Second, DateTimeKind.Utc);
+                Assert.That(actualDate, Is.EqualTo(expectedMatchingDate),
+                    "Service should return expiration for matching kid");
+            }
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_MultipleKeysNoKidInClientJwk_ShouldReturnLatestExpiration()
+        {            
+            var firstKeyDate = DateTime.UtcNow.AddDays(15);
+            var latestKeyDate = DateTime.UtcNow.AddDays(75);
+            var middleKeyDate = DateTime.UtcNow.AddDays(45);
+            
+            var arrayResponseWithMultipleKeys = $@"[
+                {{""expiration"":""{firstKeyDate:yyyy-MM-ddTHH:mm:ssZ}"",""kid"":""first-key-id"",""jwkThumbprint"":""first-thumb"",""origin"":""Api"",""publicJwk"":null}},
+                {{""expiration"":""{latestKeyDate:yyyy-MM-ddTHH:mm:ssZ}"",""kid"":""latest-key-id"",""jwkThumbprint"":""latest-thumb"",""origin"":""Api"",""publicJwk"":null}},
+                {{""expiration"":""{middleKeyDate:yyyy-MM-ddTHH:mm:ssZ}"",""kid"":""middle-key-id"",""jwkThumbprint"":""middle-thumb"",""origin"":""Api"",""publicJwk"":null}}
+            ]";
+
+            var handler = new TestHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(arrayResponseWithMultipleKeys)
+            });
+
+            var builder = new HelseIdSelvbetjeningServiceBuilder()
+                .WithDefaultOptions()
+                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
+                .WithHttpClient(new HttpClient(handler));
+            var service = builder.Build();
+
+            // Client JWK without kid
+            var clientJwkWithoutKid = """
+            {
+                "kty": "RSA", 
+                "d": "test-private-key-data",
+                "n": "test-modulus",
+                "e": "AQAB"
+            }
+            """;
+
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", clientJwkWithoutKid));
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(response.HttpStatus, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response.Message, Is.EqualTo("Successfully retrieved client secret expiration"));
+                Assert.That(response.ExpirationDate, Is.Not.Null);
+                
+                // Should return the latest expiration date since no kid matching is possible
+                var expectedLatestDate = new DateTime(latestKeyDate.Year, latestKeyDate.Month, latestKeyDate.Day, 
+                    latestKeyDate.Hour, latestKeyDate.Minute, latestKeyDate.Second, DateTimeKind.Utc);
+                var actualDate = new DateTime(response.ExpirationDate!.Value.Year, response.ExpirationDate.Value.Month, 
+                    response.ExpirationDate.Value.Day, response.ExpirationDate.Value.Hour, response.ExpirationDate.Value.Minute, 
+                    response.ExpirationDate.Value.Second, DateTimeKind.Utc);
+                Assert.That(actualDate, Is.EqualTo(expectedLatestDate),
+                    "Service should return latest expiration when client JWK has no kid");
+            }
+        }
     }
 
     internal class HelseIdSelvbetjeningServiceBuilder

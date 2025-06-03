@@ -12,14 +12,68 @@ dotnet run -- readclientsecretexpiration --ClientId <client-id> [--ExistingPriva
 
 ### Using a private key file
 
-```bash
+```powershell
 dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwkPath "./my-private-key.jwk"
 ```
 
-### Using a private key value directly:
+### Using JSON from HelseID API (with escaped quotes)
 
-```bash
-dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk '{"kty":"RSA","d":"...","n":"...","e":"AQAB"}'
+When HelseID APIs return JWK data, it comes with escaped quotes like: `{\"kty\":\"RSA\",\"kid\":\"...\"}`
+
+#### **🥇 Best: PowerShell variable (preserves API response exactly):**
+
+```powershell
+# Get JWK from API response - use as-is without modification
+$apiJwkResponse = '{\"kty\":\"RSA\",\"kid\":\"my-key-2024\",\"d\":\"MIIEowIBAAKCAQEA...\",\"n\":\"xGHNF7qI...\",\"e\":\"AQAB\"}'
+
+dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk $apiJwkResponse
+```
+
+#### **🥈 Alternative: PowerShell here-string (preserves API response):**
+
+```powershell
+# Wrap API response in here-string without modification
+$json = @"
+{\"kty\":\"RSA\",\"kid\":\"my-key-2024\",\"d\":\"MIIEowIBAAKCAQEA...\",\"n\":\"xGHNF7qI...\",\"e\":\"AQAB\"}
+"@
+
+dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk $json
+```
+
+### ❌ Don't do this - Command line parsing will break
+
+```powershell
+# This fails because shell parsing breaks the escaped quotes
+dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk "{\"kty\":\"RSA\"}"
+```
+
+## PowerShell Tips for Command Line JSON
+
+### ✅ Simple approaches that preserve API responses
+
+**Use PowerShell variables to wrap escaped JSON:**
+
+```powershell
+# API returns: {\"kty\":\"RSA\",\"kid\":\"...\"}
+# Just assign to variable and use as-is:
+$apiResponse = '{\"kty\":\"RSA\",\"kid\":\"my-key\"}'
+dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk $apiResponse
+```
+
+**Use here-strings for multi-line API responses:**
+
+```powershell
+$apiResponse = @"
+{\"kty\":\"RSA\",\"kid\":\"my-key\",\"d\":\"...\",\"n\":\"...\",\"e\":\"AQAB\"}
+"@
+dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk $apiResponse
+```
+
+### ❌ Avoid direct command line usage with escaped JSON
+
+```powershell
+# This will fail due to shell parsing issues:
+dotnet run -- readclientsecretexpiration --ExistingPrivateJwk "{\"kty\":\"RSA\"}"
 ```
 
 ## Expected Output
@@ -73,30 +127,35 @@ else
 fi
 ```
 
-### PowerShell Example
+### PowerShell Automation Example
 
 ```powershell
-$result = & dotnet run -- readclientsecretexpiration --ClientId $ClientId --ExistingPrivateJwkPath $KeyPath
+# Real-world example: Get JWK from HelseID API and check expiration
+$clientId = "my-client-id"
+
+# API response comes with escaped quotes - use as-is
+$jwkFromApi = '{\"kty\":\"RSA\",\"kid\":\"my-key-2024\",\"d\":\"MIIEowIBAAKCAQEA...\"}'
+
+# Pass API response directly without modification
+$result = & dotnet run -- readclientsecretexpiration --ClientId $clientId --ExistingPrivateJwk $jwkFromApi
+
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "Secret expiration retrieved successfully: $result"
+    Write-Host "Secret expiration retrieved: $result"
     
-    # Extract epoch timestamp from output (the numeric value)
+    # Extract epoch timestamp and calculate days until expiry
     if ($result -match "(\d+)$") {
         $epochTime = [long]$matches[1]
         $expirationDate = [DateTimeOffset]::FromUnixTimeSeconds($epochTime).DateTime
         $daysUntilExpiry = ($expirationDate - (Get-Date)).Days
         
-        Write-Host "Expiration epoch: $epochTime"
-        Write-Host "Expiration date: $expirationDate"
-        Write-Host "Days until expiry: $daysUntilExpiry"
+        Write-Host "Expires: $expirationDate ($daysUntilExpiry days)"
         
-        # Schedule renewal logic here
         if ($daysUntilExpiry -lt 30) {
-            Write-Warning "Secret expires in less than 30 days!"
+            Write-Warning "Secret expires soon - schedule renewal!"
         }
     }
 } else {
-    Write-Error "Failed to read secret expiration: $result"
+    Write-Error "Failed: $result"
 }
 ```
 

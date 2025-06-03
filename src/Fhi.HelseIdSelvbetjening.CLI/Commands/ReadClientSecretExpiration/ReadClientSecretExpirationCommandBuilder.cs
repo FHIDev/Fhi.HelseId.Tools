@@ -1,8 +1,6 @@
 using System.CommandLine;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Fhi.HelseIdSelvbetjening.Services;
-using Fhi.HelseIdSelvbetjening.Services.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -14,7 +12,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
         public Action<IServiceCollection>? Services => services =>
         {
             services.AddTransient<IFileHandler, FileHandler>();
-            services.Configure<SelvbetjeningConfiguration>(services.BuildServiceProvider().GetRequiredService<IConfiguration>().GetSection("SelvbetjeningConfiguration"));
             services.AddSelvbetjeningServices();
         };
 
@@ -54,6 +51,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 string? existingPrivateJwkPath,
                 string? existingPrivateJwk) =>
             {
+                var logger = host.Services.GetRequiredService<ILogger<ClientSecretExpirationReaderService>>();
+
                 try
                 {
                     var environment = host.Services.GetRequiredService<IHostEnvironment>().EnvironmentName;
@@ -65,7 +64,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                         ExistingPrivateJwk = existingPrivateJwk
                     };
 
-                    var logger = host.Services.GetRequiredService<ILogger<ClientSecretExpirationReaderService>>();
                     var fileHandler = host.Services.GetRequiredService<IFileHandler>();
                     var helseIdService = host.Services.GetRequiredService<IHelseIdSelvbetjeningService>();
 
@@ -75,7 +73,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 }
                 catch (Exception ex)
                 {
-                    await Console.Error.WriteLineAsync($"Error reading client secret expiration: {ex.Message}");
+                    var sanitizedMessage = "Error reading client secret expiration. Check logs for details.";
+                    logger.LogError(ex, "Error in ReadClientSecretExpiration command. Exception type: {ExceptionType}", ex.GetType().Name);
+                    await Console.Error.WriteLineAsync(sanitizedMessage);
                 }
             },
             clientIdOption, existingPrivateJwkPathOption, existingPrivateJwkOption);

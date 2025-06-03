@@ -14,7 +14,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         public Action<IServiceCollection>? Services => services =>
         {
             services.AddTransient<IFileHandler, FileHandler>();
-            services.Configure<SelvbetjeningConfiguration>(services.BuildServiceProvider().GetRequiredService<IConfiguration>().GetSection("SelvbetjeningConfiguration"));
             services.AddSelvbetjeningServices();
         };
 

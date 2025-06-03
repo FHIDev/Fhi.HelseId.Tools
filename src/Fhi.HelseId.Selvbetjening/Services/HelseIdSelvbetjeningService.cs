@@ -52,8 +52,8 @@ namespace Fhi.HelseIdSelvbetjening.Services
             }
             _logger.LogError("Could not update client {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientToUpdate.ClientId, response.HttpStatusCode, response.Error);
             return new(response.HttpStatusCode, response.Error);
-        }          
-        
+        }
+
         public async Task<ClientSecretExpirationResponse> ReadClientSecretExpiration(ClientConfiguration clientConfiguration)
         {
             try
@@ -73,9 +73,9 @@ namespace Fhi.HelseIdSelvbetjening.Services
                 _logger.LogInformation("Reading client secret expiration for client {@ClientId}.", clientConfiguration.ClientId);
                 var dPoPKey = CreateDPoPKey();
                 var response = await _tokenService.CreateDPoPToken(
-                    clientConfiguration.ClientId, 
-                    clientConfiguration.Jwk, 
-                    "nhn:selvbetjening/client", 
+                    clientConfiguration.ClientId,
+                    clientConfiguration.Jwk,
+                    "nhn:selvbetjening/client",
                     dPoPKey).ConfigureAwait(false);
                 if (response is { IsError: false, AccessToken: not null })
                 {
@@ -103,9 +103,25 @@ namespace Fhi.HelseIdSelvbetjening.Services
                             if (!string.IsNullOrWhiteSpace(content))
                             {
                                 var jsonDoc = JsonDocument.Parse(content);
-
                                 if (jsonDoc.RootElement.ValueKind == JsonValueKind.Array)
                                 {
+                                    string? clientKid = null;
+                                    try
+                                    {
+                                        var clientJwkDoc = JsonDocument.Parse(clientConfiguration.Jwk);
+                                        if (clientJwkDoc.RootElement.TryGetProperty("kid", out var kidProperty))
+                                        {
+                                            clientKid = kidProperty.GetString();
+                                        }
+                                    }
+                                    catch (JsonException)
+                                    {
+                                        _logger.LogWarning("Could not parse client JWK to extract kid for matching");
+                                    }
+
+                                    DateTime? latestExpiration = null;
+                                    DateTime? matchingKidExpiration = null;
+
                                     foreach (var secretElement in jsonDoc.RootElement.EnumerateArray())
                                     {
                                         if (secretElement.TryGetProperty("expiration", out var expProperty) &&
@@ -113,10 +129,37 @@ namespace Fhi.HelseIdSelvbetjening.Services
                                         {
                                             if (DateTimeOffset.TryParse(expProperty.GetString(), out var parsedDateOffset))
                                             {
-                                                expirationDate = parsedDateOffset.UtcDateTime;
-                                                break;
+                                                var currentExpiration = parsedDateOffset.UtcDateTime;
+
+                                                if (!string.IsNullOrEmpty(clientKid) &&
+                                                    secretElement.TryGetProperty("kid", out var responseKidProperty))
+                                                {
+                                                    var responseKid = responseKidProperty.GetString();
+                                                    if (string.Equals(clientKid, responseKid, StringComparison.Ordinal))
+                                                    {
+                                                        matchingKidExpiration = currentExpiration;
+                                                        _logger.LogInformation("Found matching kid '{Kid}' with expiration {Expiration}",
+                                                            clientKid, currentExpiration);
+                                                    }
+                                                }
+
+                                                if (latestExpiration == null || currentExpiration > latestExpiration)
+                                                {
+                                                    latestExpiration = currentExpiration;
+                                                }
                                             }
                                         }
+                                    }
+
+                                    expirationDate = matchingKidExpiration ?? latestExpiration;
+
+                                    if (matchingKidExpiration.HasValue)
+                                    {
+                                        _logger.LogInformation("Using expiration from matching kid: {Expiration}", matchingKidExpiration);
+                                    }
+                                    else if (latestExpiration.HasValue)
+                                    {
+                                        _logger.LogInformation("No matching kid found, using latest expiration: {Expiration}", latestExpiration);
                                     }
                                 }
                                 else

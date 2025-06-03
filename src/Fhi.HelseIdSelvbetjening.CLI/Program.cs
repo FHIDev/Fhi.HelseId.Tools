@@ -7,15 +7,21 @@ using Serilog;
 /// Executable Program for HelseId Selvbetjening CLI
 /// </summary>
 public partial class Program
-{
+{   
     /// <summary>
     /// Main program
     /// </summary>
     /// <param name="args"></param>
     public static async Task<int> Main(string[] args)
     {
+        // Set log level based on environment
+        var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Test";
+        var logLevel = environment.Equals("Development", StringComparison.OrdinalIgnoreCase)
+            ? Serilog.Events.LogEventLevel.Debug
+            : Serilog.Events.LogEventLevel.Information;
+
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
+            .MinimumLevel.Is(logLevel)
             .WriteTo.Console()
             .CreateLogger();
 

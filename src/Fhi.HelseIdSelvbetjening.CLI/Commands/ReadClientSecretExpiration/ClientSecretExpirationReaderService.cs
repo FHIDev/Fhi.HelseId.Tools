@@ -28,16 +28,16 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
             try
             {
                 _logger.LogInformation("Reading client secret expiration for client {@ClientId}", _parameters.ClientId);
-
-                var privateKey = !string.IsNullOrEmpty(_parameters.ExistingPrivateJwk) ? _parameters.ExistingPrivateJwk :
-                    !string.IsNullOrEmpty(_parameters.ExistingPrivateJwkPath) ? _fileHandler.ReadAllText(_parameters.ExistingPrivateJwkPath) : string.Empty;
-                if (!string.IsNullOrEmpty(privateKey))
+                var privateKey = !string.IsNullOrWhiteSpace(_parameters.ExistingPrivateJwk) ? _parameters.ExistingPrivateJwk :
+                    !string.IsNullOrWhiteSpace(_parameters.ExistingPrivateJwkPath) ? _fileHandler.ReadAllText(_parameters.ExistingPrivateJwkPath) : string.Empty;
+                if (!string.IsNullOrWhiteSpace(privateKey))
                 {
                     _logger.LogInformation("Using private key for authentication");
 
                     try
                     {
-                        var response = await _helseIdSelvbetjeningService.ReadClientSecretExpiration(new ClientConfiguration(_parameters.ClientId, privateKey));                        if (response.HttpStatus == System.Net.HttpStatusCode.OK)
+                        var response = await _helseIdSelvbetjeningService.ReadClientSecretExpiration(new ClientConfiguration(_parameters.ClientId, privateKey));
+                        if (response.HttpStatus == System.Net.HttpStatusCode.OK)
                         {
                             if (response.ExpirationDate.HasValue)
                             {
@@ -62,7 +62,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                     catch (Exception serviceEx)
                     {
                         _logger.LogError(serviceEx, "Service error while reading client secret expiration");
-                        Console.WriteLine($"Error reading client secret expiration: {serviceEx.Message}");
+                        Console.WriteLine("Error reading client secret expiration. Check logs for details.");
                         throw;
                     }
                 }
@@ -74,8 +74,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error reading client secret expiration");
-                Console.WriteLine($"Error: {e.Message}");
+                _logger.LogError(e, "Error reading client secret expiration. Exception type: {ExceptionType}", e.GetType().Name);
+                Console.WriteLine("Error reading client secret expiration. Check logs for details.");
             }
         }
     }
