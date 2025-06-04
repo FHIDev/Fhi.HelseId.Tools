@@ -388,9 +388,75 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-a-private-key-value-directly" class="md-nav__link">
+  <a href="#using-json-from-helseid-api-with-escaped-quotes" class="md-nav__link">
     <span class="md-ellipsis">
-      Using a private key value directly:
+      Using JSON from HelseID API (with escaped quotes)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using JSON from HelseID API (with escaped quotes)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#best-powershell-variable-preserves-api-response-exactly" class="md-nav__link">
+    <span class="md-ellipsis">
+      🥇 Best: PowerShell variable (preserves API response exactly):
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-powershell-here-string-preserves-api-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      🥈 Alternative: PowerShell here-string (preserves API response):
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont-do-this-command-line-parsing-will-break" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Don't do this - Command line parsing will break
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#powershell-tips-for-command-line-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      PowerShell Tips for Command Line JSON
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PowerShell Tips for Command Line JSON">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simple-approaches-that-preserve-api-responses" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Simple approaches that preserve API responses
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#avoid-direct-command-line-usage-with-escaped-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Avoid direct command line usage with escaped JSON
     </span>
   </a>
   
@@ -463,9 +529,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#powershell-example" class="md-nav__link">
+  <a href="#powershell-automation-example" class="md-nav__link">
     <span class="md-ellipsis">
-      PowerShell Example
+      PowerShell Automation Example
     </span>
   </a>
   
@@ -625,9 +691,75 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-a-private-key-value-directly" class="md-nav__link">
+  <a href="#using-json-from-helseid-api-with-escaped-quotes" class="md-nav__link">
     <span class="md-ellipsis">
-      Using a private key value directly:
+      Using JSON from HelseID API (with escaped quotes)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using JSON from HelseID API (with escaped quotes)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#best-powershell-variable-preserves-api-response-exactly" class="md-nav__link">
+    <span class="md-ellipsis">
+      🥇 Best: PowerShell variable (preserves API response exactly):
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-powershell-here-string-preserves-api-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      🥈 Alternative: PowerShell here-string (preserves API response):
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dont-do-this-command-line-parsing-will-break" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Don't do this - Command line parsing will break
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#powershell-tips-for-command-line-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      PowerShell Tips for Command Line JSON
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PowerShell Tips for Command Line JSON">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simple-approaches-that-preserve-api-responses" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Simple approaches that preserve API responses
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#avoid-direct-command-line-usage-with-escaped-json" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ Avoid direct command line usage with escaped JSON
     </span>
   </a>
   
@@ -700,9 +832,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#powershell-example" class="md-nav__link">
+  <a href="#powershell-automation-example" class="md-nav__link">
     <span class="md-ellipsis">
-      PowerShell Example
+      PowerShell Automation Example
     </span>
   </a>
   
@@ -745,10 +877,45 @@
 </code></pre>
 <h2 id="example-usage">Example Usage</h2>
 <h3 id="using-a-private-key-file">Using a private key file</h3>
-<pre><code class="language-bash">dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwkPath &quot;./my-private-key.jwk&quot;
+<pre><code class="language-powershell">dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwkPath &quot;./my-private-key.jwk&quot;
 </code></pre>
-<h3 id="using-a-private-key-value-directly">Using a private key value directly:</h3>
-<pre><code class="language-bash">dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk '{&quot;kty&quot;:&quot;RSA&quot;,&quot;d&quot;:&quot;...&quot;,&quot;n&quot;:&quot;...&quot;,&quot;e&quot;:&quot;AQAB&quot;}'
+<h3 id="using-json-from-helseid-api-with-escaped-quotes">Using JSON from HelseID API (with escaped quotes)</h3>
+<p>When HelseID APIs return JWK data, it comes with escaped quotes like: <code>{\"kty\":\"RSA\",\"kid\":\"...\"}</code></p>
+<h4 id="best-powershell-variable-preserves-api-response-exactly"><strong>🥇 Best: PowerShell variable (preserves API response exactly):</strong></h4>
+<pre><code class="language-powershell"># Get JWK from API response - use as-is without modification
+$apiJwkResponse = '{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key-2024\&quot;,\&quot;d\&quot;:\&quot;MIIEowIBAAKCAQEA...\&quot;,\&quot;n\&quot;:\&quot;xGHNF7qI...\&quot;,\&quot;e\&quot;:\&quot;AQAB\&quot;}'
+
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $apiJwkResponse
+</code></pre>
+<h4 id="alternative-powershell-here-string-preserves-api-response"><strong>🥈 Alternative: PowerShell here-string (preserves API response):</strong></h4>
+<pre><code class="language-powershell"># Wrap API response in here-string without modification
+$json = @&quot;
+{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key-2024\&quot;,\&quot;d\&quot;:\&quot;MIIEowIBAAKCAQEA...\&quot;,\&quot;n\&quot;:\&quot;xGHNF7qI...\&quot;,\&quot;e\&quot;:\&quot;AQAB\&quot;}
+&quot;@
+
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $json
+</code></pre>
+<h3 id="dont-do-this-command-line-parsing-will-break">❌ Don't do this - Command line parsing will break</h3>
+<pre><code class="language-powershell"># This fails because shell parsing breaks the escaped quotes
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk &quot;{\&quot;kty\&quot;:\&quot;RSA\&quot;}&quot;
+</code></pre>
+<h2 id="powershell-tips-for-command-line-json">PowerShell Tips for Command Line JSON</h2>
+<h3 id="simple-approaches-that-preserve-api-responses">✅ Simple approaches that preserve API responses</h3>
+<p><strong>Use PowerShell variables to wrap escaped JSON:</strong></p>
+<pre><code class="language-powershell"># API returns: {\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;...\&quot;}
+# Just assign to variable and use as-is:
+$apiResponse = '{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key\&quot;}'
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $apiResponse
+</code></pre>
+<p><strong>Use here-strings for multi-line API responses:</strong></p>
+<pre><code class="language-powershell">$apiResponse = @&quot;
+{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key\&quot;,\&quot;d\&quot;:\&quot;...\&quot;,\&quot;n\&quot;:\&quot;...\&quot;,\&quot;e\&quot;:\&quot;AQAB\&quot;}
+&quot;@
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $apiResponse
+</code></pre>
+<h3 id="avoid-direct-command-line-usage-with-escaped-json">❌ Avoid direct command line usage with escaped JSON</h3>
+<pre><code class="language-powershell"># This will fail due to shell parsing issues:
+dotnet run -- readclientsecretexpiration --ExistingPrivateJwk &quot;{\&quot;kty\&quot;:\&quot;RSA\&quot;}&quot;
 </code></pre>
 <h2 id="expected-output">Expected Output</h2>
 <h3 id="success-case">Success Case</h3>
@@ -786,28 +953,33 @@ else
     exit 1
 fi
 </code></pre>
-<h3 id="powershell-example">PowerShell Example</h3>
-<pre><code class="language-powershell">$result = &amp; dotnet run -- readclientsecretexpiration --ClientId $ClientId --ExistingPrivateJwkPath $KeyPath
-if ($LASTEXITCODE -eq 0) {
-    Write-Host &quot;Secret expiration retrieved successfully: $result&quot;
+<h3 id="powershell-automation-example">PowerShell Automation Example</h3>
+<pre><code class="language-powershell"># Real-world example: Get JWK from HelseID API and check expiration
+$clientId = &quot;my-client-id&quot;
 
-    # Extract epoch timestamp from output (the numeric value)
+# API response comes with escaped quotes - use as-is
+$jwkFromApi = '{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key-2024\&quot;,\&quot;d\&quot;:\&quot;MIIEowIBAAKCAQEA...\&quot;}'
+
+# Pass API response directly without modification
+$result = &amp; dotnet run -- readclientsecretexpiration --ClientId $clientId --ExistingPrivateJwk $jwkFromApi
+
+if ($LASTEXITCODE -eq 0) {
+    Write-Host &quot;Secret expiration retrieved: $result&quot;
+
+    # Extract epoch timestamp and calculate days until expiry
     if ($result -match &quot;(\d+)$&quot;) {
         $epochTime = [long]$matches[1]
         $expirationDate = [DateTimeOffset]::FromUnixTimeSeconds($epochTime).DateTime
         $daysUntilExpiry = ($expirationDate - (Get-Date)).Days
 
-        Write-Host &quot;Expiration epoch: $epochTime&quot;
-        Write-Host &quot;Expiration date: $expirationDate&quot;
-        Write-Host &quot;Days until expiry: $daysUntilExpiry&quot;
+        Write-Host &quot;Expires: $expirationDate ($daysUntilExpiry days)&quot;
 
-        # Schedule renewal logic here
         if ($daysUntilExpiry -lt 30) {
-            Write-Warning &quot;Secret expires in less than 30 days!&quot;
+            Write-Warning &quot;Secret expires soon - schedule renewal!&quot;
         }
     }
 } else {
-    Write-Error &quot;Failed to read secret expiration: $result&quot;
+    Write-Error &quot;Failed: $result&quot;
 }
 </code></pre>
 <h2 id="notes">Notes</h2>
