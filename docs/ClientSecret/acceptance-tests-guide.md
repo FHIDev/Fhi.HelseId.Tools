@@ -1,92 +1,54 @@
-# Acceptance Tests for ReadClientSecretExpiration Command
+# Read Client Secret Expiration Command
 
-This document explains how to run the acceptance tests for the new `readclientsecretexpiration` command.
+This document explains how to use the `readclientsecretexpiration` command, which checks the expiration date for a HelseID client secret.
 
-## Overview
+## Command Usage
 
-The acceptance tests verify that the CLI command works end-to-end against a real test environment. These tests are marked as `[Explicit]` and must be run manually.
+The command allows you to check when a client secret expires in two ways:
 
-## Available Tests
+### 1. Using a Private Key File
 
-### 1. ReadClientSecretExpiration_FromPath
+```bash
+helseid-cli readclientsecretexpiration --clientId "your-client-id" --existingPrivateJwkPath "path/to/private.json"
+```
 
-Tests reading client secret expiration using a private key file.
+Or with short options:
 
-### 2. ReadClientSecretExpiration_FromDirectKey  
+```bash
+helseid-cli readclientsecretexpiration -c "your-client-id" -p "path/to/private.json"
+```
 
-Tests reading client secret expiration using a private key value directly.
+### 2. Using a Direct Private Key Value
+
+```bash
+helseid-cli readclientsecretexpiration --clientId "your-client-id" --existingPrivateJwk "{...jwk json...}"
+```
+
+Or with short options:
+
+```bash
+helseid-cli readclientsecretexpiration -c "your-client-id" -j "{...jwk json...}"
+```
 
 ## Prerequisites
 
-Before running these tests, you need:
+To use this command, you need:
 
-1. **Test Environment**: Access to HelseID test environment
-2. **Valid Test Client**: A client configured with:
-   - The `nhn:selvbetjening/client` scope
-   - Valid client secret (private key)
-3. **Test Data**: Private key file in `TestData/oldkey.json`
+1. Access to HelseID environment
+2. A client with the `nhn:selvbetjening/client` scope
+3. Valid private key for the client
 
-## Setup Instructions
+## Expected Output
 
-### 1. Configure Test Client ID
+When successful, the command will output:
 
-Edit the test methods in `AcceptanceTests.cs` and replace:
-
-```csharp
-var clientId = "88d474a8-07df-4dc4-abb0-6b759c2b99ec"; // Replace with your test client ID
-```
-
-### 2. Prepare Test Data Directory
-
-Create a `TestData` directory in the test project root (not in bin folder) and add your private key file:
-
-```
-tests/Fhi.HelseIdSelvbetjening.CLI.Tests/TestData/
-└── oldkey.json  // Your test client's private key
-```
-
-**Important**: The test will automatically locate the correct TestData directory relative to the test project, not the bin output directory.
-
-### 3. Set Environment
-
-The tests automatically set `DOTNET_ENVIRONMENT=Test` to use test configuration.
-
-## Running the Tests
-
-### Via Visual Studio
-
-1. Open Test Explorer
-2. Find the acceptance tests under `Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests`
-3. Right-click on the specific test you want to run
-4. Select "Run Selected Tests"
-
-### Via Command Line
-
-```powershell
-# Run specific acceptance test
-cd "c:\git\Fhi.HelseId.Tools"
-dotnet test tests\Fhi.HelseIdSelvbetjening.CLI.Tests\Fhi.HelseIdSelvbetjening.CLI.Tests.csproj --filter "ReadClientSecretExpiration_FromPath"
-
-# Run all acceptance tests
-dotnet test tests\Fhi.HelseIdSelvbetjening.CLI.Tests\Fhi.HelseIdSelvbetjening.CLI.Tests.csproj --filter "AcceptanceTests"
-```
-
-## Expected Results
-
-### Success Case
-
-- Exit code: 0
-- Output contains: "Reading client secret expiration for client"
-- May contain expiration date or "expiration date not available"
-
-### Failure Case
-
-- Exit code: non-zero
-- Output contains error message explaining the issue
+- Information about the client ID being checked
+- The expiration date of the client secret (if available)
+- Or a message indicating that the expiration date is not available
 
 ## Sample Private Key Format
 
-Your `oldkey.json` should contain a valid RSA private key in JWK format:
+Your private key file should contain a valid RSA private key in JWK format:
 
 ```json
 {
@@ -109,25 +71,9 @@ Your `oldkey.json` should contain a valid RSA private key in JWK format:
    - Check private key matches the client
 
 2. **"No private key provided"**
-   - Verify `TestData/oldkey.json` exists and is valid JSON
+   - Ensure the private key file exists and contains valid JSON
    - Check file path is correct
 
 3. **Network/Environment Issues**
-   - Verify test environment is accessible
-   - Check if authentication service is responding
-
-### Debug Tips
-
-- The tests capture console output for inspection
-- Exit codes and output are printed for debugging
-- Use the explicit nature of tests to run them individually
-
-## Integration with CI/CD
-
-While these are manual acceptance tests, you could potentially:
-
-1. Set up dedicated test environment with known test clients
-2. Store test keys securely in CI/CD secrets
-3. Run as part of release validation (not regular CI)
-
-Note: Be careful with real credentials in automated environments.
+   - Verify the HelseID environment is accessible
+   - Check your network connection

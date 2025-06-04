@@ -65,6 +65,16 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
         /// 2. Set clientId to a valid test client
         /// 
         /// Note: In order to read secret expiration the nhn:selvbetjening/client scope must be set on the client
+        /// 
+        /// Setup Instructions:
+        /// 1. Configure Test Client ID in this file (replace the clientId below)
+        /// 2. Create a TestData directory in the test project root (not in bin folder)
+        /// 3. Add your private key file as TestData/oldkey.json
+        /// 4. The test will automatically set DOTNET_ENVIRONMENT=Test
+        /// 
+        /// Expected Results:
+        /// - Success: Exit code 0, Output contains "Reading client secret expiration for client"
+        /// - Failure: Non-zero exit code with error message
         /// </summary>
         /// <returns></returns>        
         [Test]
@@ -79,13 +89,14 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
             Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Test");            
             var testProjectDirectory = TestPathHelper.GetTestProjectDirectory();
             var existingKeyPath = Path.Combine(testProjectDirectory, "AcceptanceTests", "TestData", "oldkey.json");
-            var clientId = "88d474a8-07df-4dc4-abb0-6b759c2b99ec";
+            var clientId = "88d474a8-07df-4dc4-abb0-6b759c2b99ec"; // Replace with your test client ID
             if (!File.Exists(existingKeyPath))
             {
                 Assert.Fail($"Test key file not found at: {existingKeyPath}\n" +
                            $"Please ensure your test client's private key is available at TestData/oldkey.json.\n" +
                            $"Test project directory: {testProjectDirectory}");
-            }            int exitCode = await Program.Main(
+            }
+            int exitCode = await Program.Main(
             [
                 ReadClientSecretExpirationParameterNames.CommandName,
                 $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", clientId,
@@ -97,13 +108,32 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
             Assert.That(exitCode, Is.EqualTo(0), "Reading client secret expiration succeeded");
             Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");
         }
-
+        
         /// <summary>
         /// In order to run this test:
         /// 1. Set clientId to a valid test client
         /// 2. Set existingPrivateJwk to a valid private key JSON
         /// 
         /// Note: In order to read secret expiration the nhn:selvbetjening/client scope must be set on the client
+        /// 
+        /// Setup Instructions:
+        /// 1. Configure Test Client ID in this file (replace the clientId below)
+        /// 2. Replace the existingPrivateJwk with a valid private key JSON
+        /// 3. The test will automatically set DOTNET_ENVIRONMENT=Test
+        /// 
+        /// Format for the private key:
+        /// {
+        ///   "kty": "RSA",
+        ///   "d": "...",
+        ///   "n": "...",
+        ///   "e": "AQAB",
+        ///   "use": "sig",
+        ///   "kid": "..."
+        /// }
+        /// 
+        /// Expected Results:
+        /// - Success: Exit code 0, Output contains "Reading client secret expiration for client"
+        /// - Failure: Non-zero exit code with error message
         /// </summary>
         /// <returns></returns>
         [Test]

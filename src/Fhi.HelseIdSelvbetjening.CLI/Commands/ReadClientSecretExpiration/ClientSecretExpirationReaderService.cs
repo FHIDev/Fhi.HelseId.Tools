@@ -39,9 +39,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                         var response = await _helseIdSelvbetjeningService.ReadClientSecretExpiration(new ClientConfiguration(_parameters.ClientId, privateKey));
                         if (response.HttpStatus == System.Net.HttpStatusCode.OK)
                         {
-                            if (response.ExpirationDate.HasValue)
+                            if (response.ExpirationDate != DateTime.MinValue)
                             {
-                                var expirationDate = response.ExpirationDate.Value;
+                                var expirationDate = response.ExpirationDate;
                                 var epochTime = ((DateTimeOffset)expirationDate).ToUnixTimeSeconds();
 
                                 _logger.LogInformation("Successfully retrieved expiration date: {ExpirationDate}", expirationDate);
@@ -55,8 +55,20 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                         }
                         else
                         {
-                            _logger.LogError("Failed to read expiration. Status: {Status}, Message: {Message}", response.HttpStatus, response.Message);
-                            Console.WriteLine($"Failed to read client secret expiration: {response.Message}");
+                            if (response.HasValidationErrors)
+                            {
+                                _logger.LogError("Validation failed: {ValidationErrors}", string.Join(", ", response.ValidationErrors!));
+                                Console.WriteLine("Validation errors:");
+                                foreach (var error in response.ValidationErrors!)
+                                {
+                                    Console.WriteLine($"  - {error}");
+                                }
+                            }
+                            else
+                            {
+                                _logger.LogError("Failed to read expiration. Status: {Status}, Message: {Message}", response.HttpStatus, response.Message);
+                                Console.WriteLine($"Failed to read client secret expiration: {response.Message}");
+                            }
                         }
                     }
                     catch (Exception serviceEx)
