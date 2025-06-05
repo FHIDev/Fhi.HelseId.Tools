@@ -9,16 +9,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
 {
-    public class UpdateClientKeyCommandBuilder : ICommandBuilder
-    {
-        public Action<IServiceCollection>? Services => services =>
+    public class UpdateClientKeyCommandBuilder : BaseCommandBuilder
+    {        public override Action<IServiceCollection>? Services => services =>
         {
             services.AddTransient<IFileHandler, FileHandler>();
             services.Configure<SelvbetjeningConfiguration>(services.BuildServiceProvider().GetRequiredService<IConfiguration>().GetSection("SelvbetjeningConfiguration"));
             services.AddSelvbetjeningServices();
         };
 
-        public Command Build(IHost host)
+        public override Command Build(IHost host)
         {
             //TODO: should have description on options
             var updateClientKeyCommand = new Command(UpdateClientKeyParameterNames.CommandName, "Update a client key in HelseID");
@@ -63,10 +62,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
 
             var yesOption = new Option<bool>(
                 [$"--{UpdateClientKeyParameterNames.YesOption.Long}", $"--{UpdateClientKeyParameterNames.YesOption.Short}"],
-                "Automatically confirm update without prompting");
-            updateClientKeyCommand.AddOption(yesOption);
+                "Automatically confirm update without prompting");            updateClientKeyCommand.AddOption(yesOption);
+            
+            var exceptionHandler = GetExceptionHandler(host);
 
-            updateClientKeyCommand.SetHandler(async (
+            updateClientKeyCommand.SetHandler(exceptionHandler.WrapHandler(async (
                 string clientId,
                 string? newPublicJwkPath,
                 string? existingPrivateJwkPath,
@@ -74,45 +74,38 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 string? existingPrivateJwk,
                 bool yes) =>
             {
-                try
+                //TODO: write to log and not console?
+                var environment = host.Services.GetRequiredService<IHostEnvironment>().EnvironmentName;
+                Console.WriteLine($"Environment: {environment}");
+                if (!yes)
                 {
-                    //TODO: write to log and not console?
-                    var environment = host.Services.GetRequiredService<IHostEnvironment>().EnvironmentName;
-                    Console.WriteLine($"Environment: {environment}");
-                    if (!yes)
+                    Console.WriteLine($"Update client in environment {environment}? y/n");
+                    var input = Console.ReadLine();
+                    if (input?.Trim().ToLower() != "y")
                     {
-                        Console.WriteLine($"Update client in environment {environment}? y/n");
-                        var input = Console.ReadLine();
-                        if (input?.Trim().ToLower() != "y")
-                        {
-                            Console.WriteLine("Operation cancelled.");
-                            return;
-                        }
+                        Console.WriteLine("Operation cancelled.");
+                        return;
                     }
-
-                    var parameters = new UpdateClientKeyParameters
-                    {
-                        ClientId = clientId,
-                        NewPublicJwkPath = newPublicJwkPath,
-                        ExistingPrivateJwkPath = existingPrivateJwkPath,
-                        ExistingPrivateJwk = existingPrivateJwk,
-                        NewPublicJwk = newPublicJwk
-                    };
-
-                    var logger = host.Services.GetRequiredService<ILogger<ClientKeyUpdaterService>>();
-                    var fileHandler = host.Services.GetRequiredService<IFileHandler>();
-                    var helseIdService = host.Services.GetRequiredService<IHelseIdSelvbetjeningService>();
-
-                    //TODO: Do we need ClientUpdateService? potentially move logic to that service. Now logic is in two places
-                    var service = new ClientKeyUpdaterService(parameters, helseIdService, fileHandler, logger);
-
-                    await service.ExecuteAsync();
                 }
-                catch (Exception ex)
+
+                var parameters = new UpdateClientKeyParameters
                 {
-                    await Console.Error.WriteLineAsync($"Error updating client key: {ex.Message}");
-                }
-            },
+                    ClientId = clientId,
+                    NewPublicJwkPath = newPublicJwkPath,
+                    ExistingPrivateJwkPath = existingPrivateJwkPath,
+                    ExistingPrivateJwk = existingPrivateJwk,
+                    NewPublicJwk = newPublicJwk
+                };
+
+                var logger = host.Services.GetRequiredService<ILogger<ClientKeyUpdaterService>>();
+                var fileHandler = host.Services.GetRequiredService<IFileHandler>();
+                var helseIdService = host.Services.GetRequiredService<IHelseIdSelvbetjeningService>();
+
+                //TODO: Do we need ClientUpdateService? potentially move logic to that service. Now logic is in two places
+                var service = new ClientKeyUpdaterService(parameters, helseIdService, fileHandler, logger);
+
+                await service.ExecuteAsync();
+            }),
             clientIdOption, newPublicJwkPathOption, existingPrivateJwkPathOption, newPublicJwkOption, existingPrivateJwkOption, yesOption);
 
             return updateClientKeyCommand;
