@@ -1,7 +1,6 @@
 ﻿using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
-using Fhi.HelseIdSelvbetjening.CLI.Tests.Utilities;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
 {
@@ -86,8 +85,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
             /******************************************************************************************
              * Read Client Secret Expiration
              *****************************************************************************************/
-            Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Test");            
-            var testProjectDirectory = TestPathHelper.GetTestProjectDirectory();
+            Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Test");
+            var testProjectDirectory = GetTestProjectDirectory();
             var existingKeyPath = Path.Combine(testProjectDirectory, "AcceptanceTests", "TestData", "oldkey.json");
             var clientId = "88d474a8-07df-4dc4-abb0-6b759c2b99ec"; // Replace with your test client ID
             if (!File.Exists(existingKeyPath))
@@ -104,11 +103,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
             ]);
 
             var output = stringWriter.ToString();
-            
+
             Assert.That(exitCode, Is.EqualTo(0), "Reading client secret expiration succeeded");
             Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");
         }
-        
+
         /// <summary>
         /// In order to run this test:
         /// 1. Set clientId to a valid test client
@@ -151,16 +150,37 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
             var existingPrivateJwk = "{\"kty\":\"RSA\",\"d\":\"...\",\"n\":\"...\",\"e\":\"AQAB\"}"; // Replace with valid private key
 
             int exitCode = await Program.Main(
-            [                
+            [
                 ReadClientSecretExpirationParameterNames.CommandName,
                 $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", clientId,
                 $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long}", existingPrivateJwk
             ]);
 
             var output = stringWriter.ToString();
-              
+
             Assert.That(exitCode, Is.EqualTo(0), "Reading client secret expiration succeeded");
-            Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");        
+            Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");
+        }
+
+        private static string GetTestProjectDirectory()
+        {
+            // Start from the current directory (bin/Debug/net9.0) and navigate back to the test project root
+            var currentDirectory = new DirectoryInfo(Environment.CurrentDirectory);
+            
+            // Navigate up until we find the .csproj file or reach a reasonable limit
+            while (currentDirectory != null && currentDirectory.Parent != null)
+            {
+                var csprojFiles = currentDirectory.GetFiles("*.csproj");
+                if (csprojFiles.Length > 0)
+                {
+                    return currentDirectory.FullName;
+                }
+                currentDirectory = currentDirectory.Parent;
+            }
+            
+            // Fallback: assume we're in bin/Debug/net9.0 and go up 3 levels
+            var fallbackPath = Path.Combine(Environment.CurrentDirectory, "..", "..", "..");
+            return Path.GetFullPath(fallbackPath);
         }
     }
 }
