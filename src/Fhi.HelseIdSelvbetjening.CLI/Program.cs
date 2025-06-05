@@ -1,6 +1,8 @@
 using System.CommandLine;
 using Fhi.HelseIdSelvbetjening.CLI;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
+using Fhi.HelseIdSelvbetjening.CLI.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 /// <summary>
@@ -21,14 +23,15 @@ public partial class Program
 
         var rootCommand = BuildRootCommand(new CommandInput() { Args = args });
         return await rootCommand.InvokeAsync(args);
-    }
-
-    internal static RootCommand BuildRootCommand(CommandInput input)
+    }    internal static RootCommand BuildRootCommand(CommandInput input)
     {
         //TODO: CommandbilderFactory should probably return a collaction of commands instead that will be added to rootcommand. Use Composite pattern?
         var commandBuilder = CommandBuilderFactory.Create(input);
         var host = HostBuilder.CreateHost(input.Args, services =>
         {
+            // Register global exception handler at the application level
+            services.AddTransient<GlobalExceptionHandler>();
+            
             commandBuilder?.Services?.Invoke(services);
             input.OverrideServices?.Invoke(services);
         });
@@ -46,9 +49,12 @@ public partial class Program
     private static Command CreateInvalidCommand()
     {
         var invalidCommand = new Command("invalid", "Invalid command.");
+
+        // Use a simple synchronous handler since we can't access the DI container here
         invalidCommand.SetHandler(() =>
         {
             Console.Error.WriteLine("Invalid command.");
+            Environment.ExitCode = 1;
         });
 
         return invalidCommand;

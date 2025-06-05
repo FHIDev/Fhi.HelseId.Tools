@@ -5,15 +5,15 @@ using Microsoft.Extensions.Hosting;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
 {
-    public class GenerateKeyCommandBuilder : ICommandBuilder
+    public class GenerateKeyCommandBuilder : BaseCommandBuilder
     {
-        public Action<IServiceCollection>? Services => services =>
+        public override Action<IServiceCollection>? Services => services =>
         {
             services.AddTransient<IFileHandler, FileHandler>();
         };
 
 
-        public Command? Build(IHost host)
+        public override Command? Build(IHost host)
         {
             var generateKeyCommand = new Command(GenerateKeyParameterNames.CommandName, "Generate a new RSA key pair");
 
@@ -23,27 +23,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
             var keyDirOption = new Option<string>([$"--{GenerateKeyParameterNames.KeyDirectory.Long}", $"--{GenerateKeyParameterNames.KeyDirectory.Short}"], "Directory to store the generated keys");
             generateKeyCommand.AddOption(keyDirOption);
             generateKeyCommand.TreatUnmatchedTokensAsErrors = true;
-            generateKeyCommand.SetHandler(async (string? keyFileNamePrefix, string? keyDirectory) =>
+
+            var exceptionHandler = GetExceptionHandler(host);
+
+            generateKeyCommand.SetHandler(exceptionHandler.WrapHandler(async (string? keyFileNamePrefix, string? keyDirectory) =>
             {
-                try
+                var parameters = new GenerateKeyParameters
                 {
-                    var parameters = new GenerateKeyParameters
-                    {
-                        KeyFileNamePrefix = keyFileNamePrefix,
-                        KeyDirectory = keyDirectory
-                    };
+                    KeyFileNamePrefix = keyFileNamePrefix,
+                    KeyDirectory = keyDirectory
+                };
 
-                    var logger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<KeyGeneratorService>>();
-                    var fileWriter = host.Services.GetRequiredService<IFileHandler>();
-                    var service = new KeyGeneratorService(parameters, fileWriter, logger);
+                var logger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<KeyGeneratorService>>();
+                var fileWriter = host.Services.GetRequiredService<IFileHandler>();
+                var service = new KeyGeneratorService(parameters, fileWriter, logger);
 
-                    await service.ExecuteAsync();
-                }
-                catch (Exception ex)
-                {
-                    await Console.Error.WriteLineAsync($"Error generating key: {ex.Message}");
-                }
-            }, keyNameOption, keyDirOption);
+                await service.ExecuteAsync();
+            }), keyNameOption, keyDirOption);
 
             return generateKeyCommand;
         }
