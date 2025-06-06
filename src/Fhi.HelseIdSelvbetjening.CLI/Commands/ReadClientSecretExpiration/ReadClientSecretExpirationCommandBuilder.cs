@@ -73,9 +73,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 }
                 catch (Exception ex)
                 {
-                    var sanitizedMessage = "Error reading client secret expiration. Check logs for details.";
                     logger.LogError(ex, "Error in ReadClientSecretExpiration command. Exception type: {ExceptionType}", ex.GetType().Name);
-                    await Console.Error.WriteLineAsync(sanitizedMessage);
                 }
             },
             clientIdOption, existingPrivateJwkPathOption, existingPrivateJwkOption);

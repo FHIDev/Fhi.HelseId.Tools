@@ -134,9 +134,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 );
             }
         }
-
+        
         [Test]
-        public async Task ReadClientSecretExpiration_WithServiceValidationErrors_ShouldDisplayValidationErrors()
+        public async Task ReadClientSecretExpiration_WithServiceValidationErrors_ShouldLogValidationErrors()
         {
             // Arrange
             const string clientId = "";
@@ -153,42 +153,28 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             _helseIdServiceMock.ReadClientSecretExpiration(Arg.Any<ClientConfiguration>()).Returns(mockResponse);
 
             var args = CLITestUtilities.CreateDirectJwkArgs(clientId, validJwk);
-
-            // Capture console output
-            using var stringWriter = new StringWriter();
-            var originalOut = Console.Out;
-            Console.SetOut(stringWriter);
-
-            try
-            {
-                var rootCommand = CLITestUtilities.CreateRootCommand(args, _fileHandlerMock, _loggerMock, _helseIdServiceMock);
+            var rootCommand = CLITestUtilities.CreateRootCommand(args, _fileHandlerMock, _loggerMock, _helseIdServiceMock);
                 
-                // Act
-                int exitCode = await rootCommand.InvokeAsync(args);
-
-                var consoleOutput = stringWriter.ToString();
+            // Act
+            int exitCode = await rootCommand.InvokeAsync(args);
                 
-                // Assert
-                using (Assert.EnterMultipleScope())
-                {
-                    Assert.That(exitCode, Is.EqualTo(0), "Command should complete even with validation errors");
-                    Assert.That(consoleOutput, Does.Contain("Validation errors:"), "Should display validation errors header");
-                    Assert.That(consoleOutput, Does.Contain("- ClientId cannot be null or empty"), "Should display specific validation error");
-                    Assert.That(consoleOutput, Does.Contain("- Jwk cannot be null or empty"), "Should display specific validation error");
-
-                    // Verify logging
-                    _loggerMock.Received().Log(
-                        LogLevel.Error,
-                        Arg.Any<EventId>(),
-                        Arg.Is<object>(o => o.ToString()!.Contains("Validation failed")),
-                        Arg.Any<Exception>(),
-                        Arg.Any<Func<object, Exception?, string>>()
-                    );
-                }
-            }
-            finally
+            using (Assert.EnterMultipleScope())
             {
-                Console.SetOut(originalOut);
+                Assert.That(exitCode, Is.EqualTo(0), "Command should complete even with validation errors");
+
+                // Verify that the service was called
+                await _helseIdServiceMock.Received(1).ReadClientSecretExpiration(
+                    Arg.Is<ClientConfiguration>(c => c.ClientId == clientId && c.Jwk == validJwk)
+                );
+
+                // Verify that validation errors were logged
+                _loggerMock.Received().Log(
+                    LogLevel.Error,
+                    Arg.Any<EventId>(),
+                    Arg.Is<object>(o => o.ToString()!.Contains("Validation failed: ClientId cannot be null or empty, Jwk cannot be null or empty")),
+                    Arg.Any<Exception>(),
+                    Arg.Any<Func<object, Exception?, string>>()
+                );
             }
         }
     }
