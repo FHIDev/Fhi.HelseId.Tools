@@ -33,8 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fhi.HelseId.Selvbetjening\Fhi.HelseIdSelvbetjening.csproj" />
-  </ItemGroup>
-
+  </ItemGroup>  
   <ItemGroup>
     <None Update="appsettings.Test.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -7,7 +7,7 @@ using Serilog;
 /// Executable Program for HelseId Selvbetjening CLI
 /// </summary>
 public partial class Program
-{
+{   
     /// <summary>
     /// Main program
     /// </summary>
@@ -15,7 +15,7 @@ public partial class Program
     public static async Task<int> Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
+            .MinimumLevel.Information()
             .WriteTo.Console()
             .CreateLogger();
 

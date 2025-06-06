@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Packages.props = Directory.Packages.props
 		.github\workflows\HelseId.Tools.CI.yml = .github\workflows\HelseId.Tools.CI.yml
 		.github\workflows\HelseId.Tools.publish.yml = .github\workflows\HelseId.Tools.publish.yml
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fhi.HelseIdSelvbetjening.CLI.Tests", "tests\Fhi.HelseIdSelvbetjening.CLI.Tests\Fhi.HelseIdSelvbetjening.CLI.Tests.csproj", "{E0CF0C1A-5767-06A6-B8EC-D592021EAE2B}"

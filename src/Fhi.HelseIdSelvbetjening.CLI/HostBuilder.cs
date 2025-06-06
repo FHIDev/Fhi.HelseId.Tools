@@ -23,6 +23,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI
                 })
                 .ConfigureServices((context, services) =>
                 {
+                    // Configure SelvbetjeningConfiguration from the properly loaded configuration
+                    services.Configure<Fhi.HelseIdSelvbetjening.Services.Models.SelvbetjeningConfiguration>(
+                        context.Configuration.GetSection("SelvbetjeningConfiguration"));
+
                     configureServices(services);
                 })
                 .Build();
