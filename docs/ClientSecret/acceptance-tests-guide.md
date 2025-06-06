@@ -60,20 +60,3 @@ Your private key file should contain a valid RSA private key in JWK format:
   "kid": "..."
 }
 ```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **"Client not found or access denied"**
-   - Verify client ID is correct
-   - Ensure client has `nhn:selvbetjening/client` scope
-   - Check private key matches the client
-
-2. **"No private key provided"**
-   - Ensure the private key file exists and contains valid JSON
-   - Check file path is correct
-
-3. **Network/Environment Issues**
-   - Verify the HelseID environment is accessible
-   - Check your network connection
