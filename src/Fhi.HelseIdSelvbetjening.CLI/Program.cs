@@ -14,14 +14,8 @@ public partial class Program
     /// <param name="args"></param>
     public static async Task<int> Main(string[] args)
     {
-        // Set log level based on environment
-        var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Test";
-        var logLevel = environment.Equals("Development", StringComparison.OrdinalIgnoreCase)
-            ? Serilog.Events.LogEventLevel.Debug
-            : Serilog.Events.LogEventLevel.Information;
-
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Is(logLevel)
+            .MinimumLevel.Information()
             .WriteTo.Console()
             .CreateLogger();
 
