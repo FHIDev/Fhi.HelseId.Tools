@@ -33,7 +33,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var mockResponse = new ClientSecretExpirationResponse(
                 HttpStatusCode.OK,
                 null,
-                DateTime.Now.AddDays(30)
+                DateTime.UtcNow.AddDays(30)
             );
             _helseIdServiceMock.ReadClientSecretExpiration(Arg.Any<ClientConfiguration>()).Returns(mockResponse);
         }
@@ -60,7 +60,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 _loggerMock.Received().Log(
                     LogLevel.Information,
                     Arg.Any<EventId>(),
-                    Arg.Is<object>(o => o.ToString()!.Contains("Using private key for authentication")),
+                    Arg.Is<object>(o => o.ToString()!.Contains("Using private key for authentication with Client ID") && o.ToString()!.Contains("Key ID (kid)")),
                     Arg.Any<Exception>(),
                     Arg.Any<Func<object, Exception?, string>>()
                 );
@@ -94,5 +94,123 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 );
             }
         }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_Success_LogsEpochTimestamp()
+        {
+            // Arrange
+            var mockResponse = new ClientSecretExpirationResponse(HttpStatusCode.OK, null, DateTime.UtcNow.AddDays(30));
+            _helseIdServiceMock.ReadClientSecretExpiration(Arg.Any<ClientConfiguration>()).Returns(mockResponse);
+
+            var args = CLITestUtilities.CreateDirectJwkArgs(TestClientId, @"{""kty"":""RSA""}");
+            var rootCommand = CLITestUtilities.CreateRootCommand(args, _fileHandlerMock, _loggerMock, _helseIdServiceMock);
+
+            // Act
+            await rootCommand.InvokeAsync(args);
+
+            // Assert - Should log a valid epoch timestamp
+            _loggerMock.Received().Log(
+                LogLevel.Information,
+                Arg.Any<EventId>(),
+                Arg.Is<object>(o => CLITestUtilities.IsValidEpochTimestamp(o.ToString()!)),
+                null,
+                Arg.Any<Func<object, Exception?, string>>()
+            );
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_FailedRequest_ShouldLogErrorAndSetExitCode1()
+        {
+            // Arrange
+            var mockResponse = new ClientSecretExpirationResponse(
+                HttpStatusCode.BadRequest,
+                "Invalid client",
+                DateTime.MinValue
+            );
+            _helseIdServiceMock.ReadClientSecretExpiration(Arg.Any<ClientConfiguration>()).Returns(mockResponse);
+
+            var testJwk = @"{""kid"":""test-key"",""kty"":""RSA""}";
+            var args = CLITestUtilities.CreateDirectJwkArgs(TestClientId, testJwk);
+            var rootCommand = CLITestUtilities.CreateRootCommand(args, _fileHandlerMock, _loggerMock, _helseIdServiceMock);
+
+            // Act
+            int exitCode = await rootCommand.InvokeAsync(args);
+
+            // Assert
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0), "Command invocation should complete (Environment.ExitCode is set separately)");
+                Assert.That(Environment.ExitCode, Is.EqualTo(1), "Exit code should be set to 1");
+                await _helseIdServiceMock.Received(1).ReadClientSecretExpiration(Arg.Any<ClientConfiguration>());
+                _loggerMock.Received().Log(
+                    LogLevel.Error,
+                    Arg.Any<EventId>(),
+                    Arg.Is<object>(o => o.ToString()!.Contains("Failed to read expiration")),
+                    Arg.Any<Exception>(),
+                    Arg.Any<Func<object, Exception?, string>>()
+                );
+            }
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_NoExpirationDate_ShouldLogErrorAndSetExitCode1()
+        {
+            // Arrange
+            var mockResponse = new ClientSecretExpirationResponse(
+                HttpStatusCode.OK,
+                "Success but no expiration",
+                DateTime.MinValue
+            );
+            _helseIdServiceMock.ReadClientSecretExpiration(Arg.Any<ClientConfiguration>()).Returns(mockResponse);
+
+            var testJwk = @"{""kid"":""test-key"",""kty"":""RSA""}";
+            var args = CLITestUtilities.CreateDirectJwkArgs(TestClientId, testJwk);
+            var rootCommand = CLITestUtilities.CreateRootCommand(args, _fileHandlerMock, _loggerMock, _helseIdServiceMock);
+
+            // Act
+            int exitCode = await rootCommand.InvokeAsync(args);
+
+            // Assert
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0), "Command invocation should complete (Environment.ExitCode is set separately)");
+                Assert.That(Environment.ExitCode, Is.EqualTo(1), "Exit code should be set to 1");
+                await _helseIdServiceMock.Received(1).ReadClientSecretExpiration(Arg.Any<ClientConfiguration>());
+                _loggerMock.Received().Log(
+                    LogLevel.Error,
+                    Arg.Any<EventId>(),
+                    Arg.Is<object>(o => o.ToString()!.Contains("Expiration date not found")),
+                    Arg.Any<Exception>(),
+                    Arg.Any<Func<object, Exception?, string>>()
+                );
+            }
+        }
+
+        [Test]
+        public async Task ReadClientSecretExpiration_WithMissingPrivateKey_ShouldLogErrorAndSetExitCode1()
+        {
+            // Arrange - no private key provided
+            var args = new[] { "readclientsecretexpiration", "-c", TestClientId };
+            var rootCommand = CLITestUtilities.CreateRootCommand(args, _fileHandlerMock, _loggerMock, _helseIdServiceMock);
+
+            // Act
+            int exitCode = await rootCommand.InvokeAsync(args);
+
+            // Assert
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0), "Command invocation should complete (Environment.ExitCode is set separately)");
+                Assert.That(Environment.ExitCode, Is.EqualTo(1), "Exit code should be set to 1");
+                await _helseIdServiceMock.DidNotReceive().ReadClientSecretExpiration(Arg.Any<ClientConfiguration>());
+                _loggerMock.Received().Log(
+                    LogLevel.Error,
+                    Arg.Any<EventId>(),
+                    Arg.Is<object>(o => o.ToString()!.Contains("No private key provided")),
+                    Arg.Any<Exception>(),
+                    Arg.Any<Func<object, Exception?, string>>()
+                );
+            }
+        }
+
     }
 }
