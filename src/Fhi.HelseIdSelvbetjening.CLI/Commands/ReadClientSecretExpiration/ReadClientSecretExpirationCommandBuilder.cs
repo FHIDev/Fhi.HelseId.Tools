@@ -69,11 +69,13 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 
                     var service = new ClientSecretExpirationReaderService(parameters, helseIdService, fileHandler, logger);
 
-                    await service.ExecuteAsync();
+                    var exitCode = await service.ExecuteAsync();
+                    Environment.ExitCode = exitCode;
                 }
                 catch (Exception ex)
                 {
                     logger.LogError(ex, "Error in ReadClientSecretExpiration command. Exception type: {ExceptionType}", ex.GetType().Name);
+                    Environment.ExitCode = 1;
                 }
             },
             clientIdOption, existingPrivateJwkPathOption, existingPrivateJwkOption);

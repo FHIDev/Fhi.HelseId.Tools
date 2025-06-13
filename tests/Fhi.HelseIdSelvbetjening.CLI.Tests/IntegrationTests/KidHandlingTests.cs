@@ -70,10 +70,12 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 // 1. Extracting the kid from the request JWK
                 // 2. Either matching the kid to a specific key's expiration
                 // 3. Or returning the latest (furthest in future) expiration date
+                // Should log the epoch timestamp
+                var expectedEpoch = ((DateTimeOffset)mockResponse.ExpirationDate).ToUnixTimeSeconds();
                 _loggerMock.Received().Log(
                     LogLevel.Information,
                     Arg.Any<EventId>(),
-                    Arg.Is<object>(o => o.ToString()!.Contains("Successfully retrieved expiration date")),
+                    Arg.Is<object>(o => o.ToString()!.Contains(expectedEpoch.ToString())),
                     Arg.Any<Exception>(),
                     Arg.Any<Func<object, Exception?, string>>()
                 );

@@ -38,7 +38,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
                 var uri = new Uri(new Uri(_selvbetjeningConfig.BaseAddress), _selvbetjeningConfig.ClientSecretEndpoint);
                 var requestMessage = new HttpRequestMessage(HttpMethod.Post, uri)
                     .WithDpop(uri.ToString(), HttpMethod.Post.ToString(), dPoPKey, "PS256", response.AccessToken)
-                    .WithContent(JsonContent.Create(newPublicJwk, options: CreateJsonSerializerOptions()))
+                    .WithContent(JsonContent.Create(newPublicJwk, options: JsonHelper.CreateJsonSerializerOptions()))
                     .WithHeader("Accept", "application/json");
                 var client = _httpClientFactory.CreateClient();
                 var clientSecretUpdateResponse = await client.SendAsync(requestMessage);
@@ -161,7 +161,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
         /// <returns>Array of client secrets or null if parsing fails</returns>
         private static ClientSecret[]? ParseArrayResponse(string jsonContent)
         {
-            return JsonSerializer.Deserialize<ClientSecret[]>(jsonContent, CreateJsonSerializerOptions());
+            return JsonSerializer.Deserialize<ClientSecret[]>(jsonContent, JsonHelper.CreateJsonSerializerOptions());
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
         /// <returns>Single expiration response or null if parsing fails</returns>
         private static SingleExpirationResponse? ParseSingleResponse(string jsonContent)
         {
-            return JsonSerializer.Deserialize<SingleExpirationResponse>(jsonContent, CreateJsonSerializerOptions());
+            return JsonSerializer.Deserialize<SingleExpirationResponse>(jsonContent, JsonHelper.CreateJsonSerializerOptions());
         }
 
         /// <summary>
@@ -216,20 +216,10 @@ namespace Fhi.HelseIdSelvbetjening.Services
                 return string.Empty;
             }
 
-            var jwk = JsonSerializer.Deserialize<JsonWebKey>(jwkJson, CreateJsonSerializerOptions());
+            var jwk = JsonSerializer.Deserialize<JsonWebKey>(jwkJson, JsonHelper.CreateJsonSerializerOptions());
             return jwk?.Kid ?? string.Empty;
         }
 
-        private static JsonSerializerOptions CreateJsonSerializerOptions()
-        {
-            return new JsonSerializerOptions(JsonSerializerDefaults.Web)
-            {
-                WriteIndented = false,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-                IgnoreReadOnlyProperties = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-        }
 
         private static string CreateDPoPKey()
         {
