@@ -20,7 +20,7 @@
     
     
       
-        <title>Acceptance Tests for ReadClientSecretExpiration Command - FHI HelseID Tools</title>
+        <title>Read Client Secret Expiration Command - FHI HelseID Tools</title>
       
     
     
@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#acceptance-tests-for-readclientsecretexpiration-command" class="md-skip">
+        <a href="#read-client-secret-expiration-command" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Acceptance Tests for ReadClientSecretExpiration Command
+              Read Client Secret Expiration Command
             
           </span>
         </div>
@@ -278,7 +278,7 @@
   
   
   <span class="md-ellipsis">
-    Acceptance Tests for ReadClientSecretExpiration Command
+    Read Client Secret Expiration Command
     
   </span>
   
@@ -291,7 +291,7 @@
   
   
   <span class="md-ellipsis">
-    Acceptance Tests for ReadClientSecretExpiration Command
+    Read Client Secret Expiration Command
     
   </span>
   
@@ -314,37 +314,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#command-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Command Usage
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#available-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Available Tests
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Available Tests">
+    <nav class="md-nav" aria-label="Command Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-readclientsecretexpiration_frompath" class="md-nav__link">
+  <a href="#1-using-a-private-key-file" class="md-nav__link">
     <span class="md-ellipsis">
-      1. ReadClientSecretExpiration_FromPath
+      1. Using a Private Key File
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-readclientsecretexpiration_fromdirectkey" class="md-nav__link">
+  <a href="#2-using-a-direct-private-key-value" class="md-nav__link">
     <span class="md-ellipsis">
-      2. ReadClientSecretExpiration_FromDirectKey
+      2. Using a Direct Private Key Value
     </span>
   </a>
   
@@ -365,110 +356,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setup-instructions" class="md-nav__link">
+  <a href="#expected-output" class="md-nav__link">
     <span class="md-ellipsis">
-      Setup Instructions
+      Expected Output
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Setup Instructions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-configure-test-client-id" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Configure Test Client ID
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-prepare-test-data-directory" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Prepare Test Data Directory
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-set-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Set Environment
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-the-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Running the Tests
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Running the Tests">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#via-visual-studio" class="md-nav__link">
-    <span class="md-ellipsis">
-      Via Visual Studio
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#via-command-line" class="md-nav__link">
-    <span class="md-ellipsis">
-      Via Command Line
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#expected-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      Expected Results
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Expected Results">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#success-case" class="md-nav__link">
-    <span class="md-ellipsis">
-      Success Case
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#failure-case" class="md-nav__link">
-    <span class="md-ellipsis">
-      Failure Case
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -476,48 +368,6 @@
   <a href="#sample-private-key-format" class="md-nav__link">
     <span class="md-ellipsis">
       Sample Private Key Format
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Troubleshooting
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Troubleshooting">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#common-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      Common Issues
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#debug-tips" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debug Tips
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#integration-with-cicd" class="md-nav__link">
-    <span class="md-ellipsis">
-      Integration with CI/CD
     </span>
   </a>
   
@@ -545,29 +395,6 @@
   
   <span class="md-ellipsis">
     Update client with new keys Commands
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../demo-usage-example/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Demo Usage Example for ReadClientSecretExpiration Command
     
   </span>
   
@@ -636,7 +463,7 @@
   
   
   <span class="md-ellipsis">
-    Read Client Secret Expiration Command
+    Read client secret expiration command
     
   </span>
   
@@ -681,37 +508,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#command-usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Overview
+      Command Usage
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#available-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Available Tests
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Available Tests">
+    <nav class="md-nav" aria-label="Command Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-readclientsecretexpiration_frompath" class="md-nav__link">
+  <a href="#1-using-a-private-key-file" class="md-nav__link">
     <span class="md-ellipsis">
-      1. ReadClientSecretExpiration_FromPath
+      1. Using a Private Key File
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-readclientsecretexpiration_fromdirectkey" class="md-nav__link">
+  <a href="#2-using-a-direct-private-key-value" class="md-nav__link">
     <span class="md-ellipsis">
-      2. ReadClientSecretExpiration_FromDirectKey
+      2. Using a Direct Private Key Value
     </span>
   </a>
   
@@ -732,110 +550,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setup-instructions" class="md-nav__link">
+  <a href="#expected-output" class="md-nav__link">
     <span class="md-ellipsis">
-      Setup Instructions
+      Expected Output
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Setup Instructions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-configure-test-client-id" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Configure Test Client ID
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-prepare-test-data-directory" class="md-nav__link">
-    <span class="md-ellipsis">
-      2. Prepare Test Data Directory
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#3-set-environment" class="md-nav__link">
-    <span class="md-ellipsis">
-      3. Set Environment
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-the-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      Running the Tests
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Running the Tests">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#via-visual-studio" class="md-nav__link">
-    <span class="md-ellipsis">
-      Via Visual Studio
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#via-command-line" class="md-nav__link">
-    <span class="md-ellipsis">
-      Via Command Line
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#expected-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      Expected Results
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Expected Results">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#success-case" class="md-nav__link">
-    <span class="md-ellipsis">
-      Success Case
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#failure-case" class="md-nav__link">
-    <span class="md-ellipsis">
-      Failure Case
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -843,48 +562,6 @@
   <a href="#sample-private-key-format" class="md-nav__link">
     <span class="md-ellipsis">
       Sample Private Key Format
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      Troubleshooting
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Troubleshooting">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#common-issues" class="md-nav__link">
-    <span class="md-ellipsis">
-      Common Issues
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#debug-tips" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debug Tips
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#integration-with-cicd" class="md-nav__link">
-    <span class="md-ellipsis">
-      Integration with CI/CD
     </span>
   </a>
   
@@ -906,67 +583,38 @@
 
 
 
-<h1 id="acceptance-tests-for-readclientsecretexpiration-command">Acceptance Tests for ReadClientSecretExpiration Command</h1>
-<p>This document explains how to run the acceptance tests for the new <code>readclientsecretexpiration</code> command.</p>
-<h2 id="overview">Overview</h2>
-<p>The acceptance tests verify that the CLI command works end-to-end against a real test environment. These tests are marked as <code>[Explicit]</code> and must be run manually.</p>
-<h2 id="available-tests">Available Tests</h2>
-<h3 id="1-readclientsecretexpiration_frompath">1. ReadClientSecretExpiration_FromPath</h3>
-<p>Tests reading client secret expiration using a private key file.</p>
-<h3 id="2-readclientsecretexpiration_fromdirectkey">2. ReadClientSecretExpiration_FromDirectKey</h3>
-<p>Tests reading client secret expiration using a private key value directly.</p>
+<h1 id="read-client-secret-expiration-command">Read Client Secret Expiration Command</h1>
+<p>This document explains how to use the <code>readclientsecretexpiration</code> command, which checks the expiration date for a HelseID client secret.</p>
+<h2 id="command-usage">Command Usage</h2>
+<p>The command allows you to check when a client secret expires in two ways:</p>
+<h3 id="1-using-a-private-key-file">1. Using a Private Key File</h3>
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration --clientId &quot;your-client-id&quot; --existingPrivateJwkPath &quot;path/to/private.json&quot;
+</code></pre>
+<p>Or with short options:</p>
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration -c &quot;your-client-id&quot; -p &quot;path/to/private.json&quot;
+</code></pre>
+<h3 id="2-using-a-direct-private-key-value">2. Using a Direct Private Key Value</h3>
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration --clientId &quot;your-client-id&quot; --existingPrivateJwk &quot;{...jwk json...}&quot;
+</code></pre>
+<p>Or with short options:</p>
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration -c &quot;your-client-id&quot; -j &quot;{...jwk json...}&quot;
+</code></pre>
 <h2 id="prerequisites">Prerequisites</h2>
-<p>Before running these tests, you need:</p>
+<p>To use this command, you need:</p>
 <ol>
-<li><strong>Test Environment</strong>: Access to HelseID test environment</li>
-<li><strong>Valid Test Client</strong>: A client configured with:</li>
-<li>The <code>nhn:selvbetjening/client</code> scope</li>
-<li>Valid client secret (private key)</li>
-<li><strong>Test Data</strong>: Private key file in <code>TestData/oldkey.json</code></li>
+<li>Access to HelseID environment</li>
+<li>A client with the <code>nhn:selvbetjening/client</code> scope</li>
+<li>Valid private key for the client</li>
 </ol>
-<h2 id="setup-instructions">Setup Instructions</h2>
-<h3 id="1-configure-test-client-id">1. Configure Test Client ID</h3>
-<p>Edit the test methods in <code>AcceptanceTests.cs</code> and replace:</p>
-<pre><code class="language-csharp">var clientId = &quot;88d474a8-07df-4dc4-abb0-6b759c2b99ec&quot;; // Replace with your test client ID
-</code></pre>
-<h3 id="2-prepare-test-data-directory">2. Prepare Test Data Directory</h3>
-<p>Create a <code>TestData</code> directory in the test project root (not in bin folder) and add your private key file:</p>
-<pre><code>tests/Fhi.HelseIdSelvbetjening.CLI.Tests/TestData/
-└── oldkey.json  // Your test client's private key
-</code></pre>
-<p><strong>Important</strong>: The test will automatically locate the correct TestData directory relative to the test project, not the bin output directory.</p>
-<h3 id="3-set-environment">3. Set Environment</h3>
-<p>The tests automatically set <code>DOTNET_ENVIRONMENT=Test</code> to use test configuration.</p>
-<h2 id="running-the-tests">Running the Tests</h2>
-<h3 id="via-visual-studio">Via Visual Studio</h3>
-<ol>
-<li>Open Test Explorer</li>
-<li>Find the acceptance tests under <code>Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests</code></li>
-<li>Right-click on the specific test you want to run</li>
-<li>Select "Run Selected Tests"</li>
-</ol>
-<h3 id="via-command-line">Via Command Line</h3>
-<pre><code class="language-powershell"># Run specific acceptance test
-cd &quot;c:\git\Fhi.HelseId.Tools&quot;
-dotnet test tests\Fhi.HelseIdSelvbetjening.CLI.Tests\Fhi.HelseIdSelvbetjening.CLI.Tests.csproj --filter &quot;ReadClientSecretExpiration_FromPath&quot;
-
-# Run all acceptance tests
-dotnet test tests\Fhi.HelseIdSelvbetjening.CLI.Tests\Fhi.HelseIdSelvbetjening.CLI.Tests.csproj --filter &quot;AcceptanceTests&quot;
-</code></pre>
-<h2 id="expected-results">Expected Results</h2>
-<h3 id="success-case">Success Case</h3>
+<h2 id="expected-output">Expected Output</h2>
+<p>When successful, the command will output:</p>
 <ul>
-<li>Exit code: 0</li>
-<li>Output contains: "Reading client secret expiration for client"</li>
-<li>May contain expiration date or "expiration date not available"</li>
-</ul>
-<h3 id="failure-case">Failure Case</h3>
-<ul>
-<li>Exit code: non-zero</li>
-<li>Output contains error message explaining the issue</li>
+<li>Information about the client ID being checked</li>
+<li>The expiration date of the client secret (if available)</li>
+<li>Or a message indicating that the expiration date is not available</li>
 </ul>
 <h2 id="sample-private-key-format">Sample Private Key Format</h2>
-<p>Your <code>oldkey.json</code> should contain a valid RSA private key in JWK format:</p>
+<p>Your private key file should contain a valid RSA private key in JWK format:</p>
 <pre><code class="language-json">{
   &quot;kty&quot;: &quot;RSA&quot;,
   &quot;d&quot;: &quot;...&quot;,
@@ -976,42 +624,6 @@ dotnet test tests\Fhi.HelseIdSelvbetjening.CLI.Tests\Fhi.HelseIdSelvbetjening.CL
   &quot;kid&quot;: &quot;...&quot;
 }
 </code></pre>
-<h2 id="troubleshooting">Troubleshooting</h2>
-<h3 id="common-issues">Common Issues</h3>
-<ol>
-<li><strong>"Client not found or access denied"</strong></li>
-<li>Verify client ID is correct</li>
-<li>Ensure client has <code>nhn:selvbetjening/client</code> scope</li>
-<li>
-<p>Check private key matches the client</p>
-</li>
-<li>
-<p><strong>"No private key provided"</strong></p>
-</li>
-<li>Verify <code>TestData/oldkey.json</code> exists and is valid JSON</li>
-<li>
-<p>Check file path is correct</p>
-</li>
-<li>
-<p><strong>Network/Environment Issues</strong></p>
-</li>
-<li>Verify test environment is accessible</li>
-<li>Check if authentication service is responding</li>
-</ol>
-<h3 id="debug-tips">Debug Tips</h3>
-<ul>
-<li>The tests capture console output for inspection</li>
-<li>Exit codes and output are printed for debugging</li>
-<li>Use the explicit nature of tests to run them individually</li>
-</ul>
-<h2 id="integration-with-cicd">Integration with CI/CD</h2>
-<p>While these are manual acceptance tests, you could potentially:</p>
-<ol>
-<li>Set up dedicated test environment with known test clients</li>
-<li>Store test keys securely in CI/CD secrets</li>
-<li>Run as part of release validation (not regular CI)</li>
-</ol>
-<p>Note: Be careful with real credentials in automated environments.</p>
 
 
 
