@@ -1,7 +1,5 @@
 using Fhi.HelseIdSelvbetjening.Services;
-using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Fhi.HelseIdSelvbetjening
 {
@@ -17,7 +15,6 @@ namespace Fhi.HelseIdSelvbetjening
         /// <returns></returns>
         public static IServiceCollection AddSelvbetjeningServices(this IServiceCollection services)
         {
-            services.AddSingleton<IOptions<SelvbetjeningConfiguration>, OptionsManager<SelvbetjeningConfiguration>>();
             services.AddTransient<IHelseIdSelvbetjeningService, HelseIdSelvbetjeningService>();
             services.AddTransient<ITokenService, TokenService>();
             services.AddHttpClient();

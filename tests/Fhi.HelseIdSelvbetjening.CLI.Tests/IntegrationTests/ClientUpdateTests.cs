@@ -1,4 +1,4 @@
-﻿using Fhi.HelseIdSelvbetjening.CLI.Commands;
+using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using System.CommandLine;
-
 namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {
     public class ClientUpdateTests
@@ -18,15 +17,12 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         {
             var loggerMock = Substitute.For<ILogger<ClientKeyUpdaterService>>();
             var helseIdServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();
-
             const string clientId = "test-client-id";
             const string existingPrivateJwkPath = "c:\\temp\\existing-private.json";
             const string newPublicJwkPath = "c:\\temp\\new-public.json";
-
             var fileHandlerMock = new FileHandlerMock();
             fileHandlerMock.Files[existingPrivateJwkPath] = existingPrivateJwkPath;
             fileHandlerMock.Files[newPublicJwkPath] = newPublicJwkPath;
-
             var args = new[]
             {
                 UpdateClientKeyParameterNames.CommandName,
@@ -35,10 +31,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 $"--{UpdateClientKeyParameterNames.NewPublicJwkPath.Long}", newPublicJwkPath,
                 $"--{UpdateClientKeyParameterNames.YesOption.Long}"
             };
-
             var rootCommand = CreateRootCommand(args, fileHandlerMock, loggerMock, helseIdServiceMock);
             int exitCode = await rootCommand.InvokeAsync(args);
-
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(exitCode, Is.EqualTo(0));
@@ -46,7 +40,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             await helseIdServiceMock.Received(1).UpdateClientSecret(
                 Arg.Is<ClientConfiguration>(c => c.ClientId == clientId),
                 Arg.Any<string>());
-
             loggerMock.Received(1).Log(
                 LogLevel.Information,
                 Arg.Any<EventId>(),
@@ -54,7 +47,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>()
             );
-
             loggerMock.Received(1).Log(
                 LogLevel.Information,
                 Arg.Any<EventId>(),
@@ -62,7 +54,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception?, string>>()
             );
-
             loggerMock.Received(1).Log(
                 LogLevel.Information,
                 Arg.Any<EventId>(),
@@ -71,17 +62,14 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Arg.Any<Func<object, Exception?, string>>()
             );
         }
-
         [Test]
         public void UpdateClientKeys_WithValidParametersKeysFromParameters_Ok()
         {
             var loggerMock = Substitute.For<ILogger<ClientKeyUpdaterService>>();
             var helseIdServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();
-
             const string clientId = "test-client-id";
             const string existingPrivateJwk = "{\"kid\":\"test-kid\",\"kty\":\"RSA\",\"private\":\"key-data\"}";
             const string newPublicJwk = "{\"kid\":\"new-kid\",\"kty\":\"RSA\",\"public\":\"key-data\"}";
-
             var args = new[]
             {
                 UpdateClientKeyParameterNames.CommandName,
@@ -92,20 +80,17 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             };
             // TODO: Implement test logic for updating client keys from parameters
         }
-
         [Test]
         public void UpdateClientKeys_PromptForEnvironment_StopOnInput()
         {
             // TODO: Implement test logic for prompt
         }
-
         [TestCase("", "c:\\temp")]
         [TestCase("c:\\temp", "")]
         public async Task UpdateClientKey_EmptyNewKeyPathOrOldKeyPath_GiveErrorMessage(string newKeyPath, string oldKeyPath)
         {
             var loggerMock = Substitute.For<ILogger<ClientKeyUpdaterService>>();
             var helseIdServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();
-
             var args = new[]
             {
                 UpdateClientKeyParameterNames.CommandName,
@@ -116,7 +101,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             };
             var rootCommand = CreateRootCommand(args, new FileHandlerMock(), loggerMock, helseIdServiceMock);
             int exitCode = await rootCommand.InvokeAsync(args);
-
             loggerMock.Received(1).Log(
                LogLevel.Error,
                Arg.Any<EventId>(),
@@ -124,7 +108,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                Arg.Any<Exception>(),
                Arg.Any<Func<object, Exception?, string>>());
         }
-
         [Test]
         [Ignore("Need to figure out how to set description when missing required option")]
         public async Task UpdateClientKey_MissingRequiredParameterClientId_GiveErrorMessage()
@@ -133,7 +116,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var helseIdServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();
             using var stringWriter = new StringWriter();
             Console.SetOut(stringWriter);
-
             var args = new[]
             {
                 UpdateClientKeyParameterNames.CommandName,
@@ -143,7 +125,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             };
             var rootCommand = CreateRootCommand(args, new FileHandlerMock(), loggerMock, helseIdServiceMock);
             int exitCode = await rootCommand.InvokeAsync(args);
-
             var output = stringWriter.ToString();
             using (Assert.EnterMultipleScope())
             {
@@ -151,7 +132,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Assert.That(output, Does.Contain("Missing required parameter Client ID").IgnoreCase);
             }
         }
-
         private static RootCommand CreateRootCommand(
             string[] args,
             FileHandlerMock fileHandlerMock,

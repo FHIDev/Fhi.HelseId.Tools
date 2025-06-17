@@ -14,5 +14,12 @@ namespace Fhi.HelseIdSelvbetjening.Services
         /// <param name="newPublicJwk">New public key for client</param>
         /// <returns></returns>
         public Task<ClientSecretUpdateResponse> UpdateClientSecret(ClientConfiguration clientToUpdate, string newPublicJwk);
+
+        /// <summary>
+        /// Read the expiration date of a client secret
+        /// </summary>
+        /// <param name="clientConfiguration">The client configuration</param>
+        /// <returns>Response containing expiration information</returns>
+        public Task<ClientSecretExpirationResponse> ReadClientSecretExpiration(ClientConfiguration clientConfiguration);
     }
 }
