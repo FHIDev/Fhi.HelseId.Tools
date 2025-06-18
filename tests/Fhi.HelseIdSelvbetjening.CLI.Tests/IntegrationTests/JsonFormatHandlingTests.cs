@@ -33,7 +33,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var mockResponse = new ClientSecretExpirationResponse(
                 HttpStatusCode.OK,
                 null,
-                DateTime.Now.AddDays(30)
+                DateTime.UtcNow.AddDays(30)
             );
             _helseIdServiceMock.ReadClientSecretExpiration(Arg.Any<ClientConfiguration>()).Returns(mockResponse);
         }
@@ -60,7 +60,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 _loggerMock.Received().Log(
                     LogLevel.Information,
                     Arg.Any<EventId>(),
-                    Arg.Is<object>(o => o.ToString()!.Contains("Using private key for authentication")),
+                    Arg.Is<object>(o => o.ToString()!.Contains("Using private key for authentication with Client ID") && o.ToString()!.Contains("Key ID (kid)")),
                     Arg.Any<Exception>(),
                     Arg.Any<Func<object, Exception?, string>>()
                 );
@@ -84,11 +84,12 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 await _helseIdServiceMock.Received(1).ReadClientSecretExpiration(
                     Arg.Is<ClientConfiguration>(c => c.ClientId == TestClientId && c.Jwk == CLITestUtilities.TestJwkSamples.RealWorldJwk)
                 );
+                // Should log a valid epoch timestamp
                 _loggerMock.Received().Log(
                     LogLevel.Information,
                     Arg.Any<EventId>(),
-                    Arg.Is<object>(o => o.ToString()!.Contains("Successfully retrieved expiration date")),
-                    Arg.Any<Exception>(),
+                    Arg.Is<object>(o => CLITestUtilities.IsValidEpochTimestamp(o.ToString()!)),
+                    null,
                     Arg.Any<Func<object, Exception?, string>>()
                 );
             }
@@ -114,7 +115,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 _loggerMock.Received().Log(
                     LogLevel.Information,
                     Arg.Any<EventId>(),
-                    Arg.Is<object>(o => o.ToString()!.Contains("Using private key for authentication")),
+                    Arg.Is<object>(o => o.ToString()!.Contains("Using private key for authentication with Client ID") && o.ToString()!.Contains("Key ID (kid)")),
                     Arg.Any<Exception>(),
                     Arg.Any<Func<object, Exception?, string>>()
                 );
