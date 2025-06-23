@@ -1,6 +1,5 @@
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Fhi.Authentication.Tokens;
 using Fhi.HelseIdSelvbetjening.Http;
 using Fhi.HelseIdSelvbetjening.Services.Models;
@@ -53,10 +52,9 @@ namespace Fhi.HelseIdSelvbetjening.Services
             _logger.LogError("Could not update client {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientToUpdate.ClientId, response.HttpStatusCode, response.Error);
             return new(response.HttpStatusCode, response.Error);
         }
-        
+
         public async Task<ClientSecretExpirationResponse> ReadClientSecretExpiration(ClientConfiguration clientConfiguration)
         {
-            // Validate input and collect all errors
             var validationResult = ValidateClientConfiguration(clientConfiguration);
             if (!validationResult.IsValid)
             {
@@ -70,7 +68,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
                 clientConfiguration.Jwk,
                 "nhn:selvbetjening/client",
                 dPoPKey).ConfigureAwait(false);
-            
+
             if (response is { IsError: false, AccessToken: not null })
             {
                 var uri = new Uri(new Uri(_selvbetjeningConfig.BaseAddress), _selvbetjeningConfig.ClientSecretEndpoint);

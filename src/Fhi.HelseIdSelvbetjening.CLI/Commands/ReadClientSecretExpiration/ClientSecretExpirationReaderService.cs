@@ -1,8 +1,8 @@
+using System.Text.Json;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Fhi.HelseIdSelvbetjening.Services;
 using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 {
@@ -31,7 +31,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 !string.IsNullOrWhiteSpace(_parameters.ExistingPrivateJwkPath) ? _fileHandler.ReadAllText(_parameters.ExistingPrivateJwkPath) : string.Empty;
             if (!string.IsNullOrWhiteSpace(privateKey))
             {
-                // Extract kid from JWK for logging
                 var kid = ExtractKidFromJwk(privateKey);
                 _logger.LogInformation("Using private key for authentication with Client ID: {ClientId}, Key ID (kid): {Kid}", _parameters.ClientId, kid ?? "not specified");
 
