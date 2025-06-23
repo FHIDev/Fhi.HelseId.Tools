@@ -330,7 +330,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
         [TestCase("")]
         [TestCase("   \n\t  \r\n  ")]
-        public async Task ReadClientSecretExpiration_EmptyExistingPrivateJwkArument_LogErrorAndSetExitCode1(string jwk)
+        public async Task ReadClientSecretExpiration_EmptyExistingPrivateJwkArgument_LogErrorAndSetExitCode1(string jwk)
         {
             var builder = new RootCommandBuilder()
                 .WithSelvbetjeningService(
