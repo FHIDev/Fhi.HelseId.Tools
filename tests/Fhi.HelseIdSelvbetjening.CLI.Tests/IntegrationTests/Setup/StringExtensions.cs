@@ -1,10 +1,6 @@
 namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup
 {
-    /// <summary>
-    /// Shared utilities for CLI integration tests to eliminate code duplication
-    /// and provide consistent test setup across different test classes.
-    /// </summary>
-    internal static class CLITestUtilities
+    internal static class StringExtensions
     {
         /// <summary>
         /// Validates that a string represents a valid Unix epoch timestamp.
@@ -13,7 +9,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup
         /// </summary>
         /// <param name="value">The string to validate as an epoch timestamp</param>
         /// <returns>True if the string is a valid epoch timestamp, false otherwise</returns>
-        internal static bool IsValidEpochTimestamp(string value)
+        internal static bool IsValidEpochTimestamp(this string value)
         {
             // Check if it's a valid 10-digit epoch timestamp
             if (!long.TryParse(value, out long epochSeconds))

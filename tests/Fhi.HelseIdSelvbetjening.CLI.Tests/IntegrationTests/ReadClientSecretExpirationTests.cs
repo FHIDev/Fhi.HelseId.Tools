@@ -51,7 +51,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 builder.LoggerMock.Received().Log(
                    LogLevel.Information,
                    Arg.Any<EventId>(),
-                   Arg.Is<object>(o => CLITestUtilities.IsValidEpochTimestamp(o.ToString()!)),
+                   Arg.Is<object>(o => o.ToString()!.IsValidEpochTimestamp()),
                    null,
                    Arg.Any<Func<object, Exception?, string>>()
                 );
