@@ -10,7 +10,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
         public SelvbetjeningServiceBuilder()
         {
-            //LoggerMock = Substitute.For<ILogger<ClientSecretExpirationReaderService>>();
             _selvbetjeningServiceMock = Substitute.For<IHelseIdSelvbetjeningService>();
         }
 
