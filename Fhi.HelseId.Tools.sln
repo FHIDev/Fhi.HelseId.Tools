@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{BA5A
 		samples\generate-keys.sh = samples\generate-keys.sh
 		samples\update-clientsecret.ps1 = samples\update-clientsecret.ps1
 		samples\update-clientsecret.sh = samples\update-clientsecret.sh
+		samples\generate_certificates.ps1 = samples\generate_certificates.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C601F527-2B0D-4CF0-9786-062A0D4BEC17}"
