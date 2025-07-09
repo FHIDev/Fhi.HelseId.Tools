@@ -6,6 +6,7 @@ Command line tool for HelseID client configuration and key management.
 
 - Generate RSA key pairs for use with HelseID
 - Update client keys in HelseID
+- Generates self-signed certificates as an alternative to RSA keys for HelseID
 
 ## Installation
 
