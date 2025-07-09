@@ -1,9 +1,9 @@
 using Duende.IdentityModel;
 using Duende.IdentityModel.Client;
 using Fhi.Authentication.Tokens;
-using Fhi.IdentityModel.Tokens;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Tokens;
 
-namespace Fhi.HelseIdSelvbetjening.Http
+namespace Fhi.HelseIdSelvbetjening.Infrastructure
 {
     /// <summary>
     ///  Build ClientCredentialsTokenRequest

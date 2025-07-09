@@ -1,11 +1,10 @@
 using Duende.IdentityModel.Client;
-using Fhi.IdentityModel.Tokens;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Tokens;
 
-namespace Fhi.HelseIdSelvbetjening.Http
+namespace Fhi.HelseIdSelvbetjening.Infrastructure
 {
     internal static class HttpRequestMessageExtensions
     {
-
         public static HttpRequestMessage WithDpop(this HttpRequestMessage httpRequest, string uri, string httpMethod, string privateJwk, string privateJwkAlg, string accessToken)
         {
             var dpopProof = DPoPProofGenerator.CreateDPoPProof(
@@ -29,6 +28,5 @@ namespace Fhi.HelseIdSelvbetjening.Http
             httpRequest.Headers.Add(name, value);
             return httpRequest;
         }
-
     }
 }

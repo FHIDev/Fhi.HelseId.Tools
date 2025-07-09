@@ -14,5 +14,9 @@
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" />
   </ItemGroup>
-
+  <ItemGroup>
+    <InternalsVisibleTo Include="Fhi.HelseIdSelvbetjening.CLI.Tests" />
+    <InternalsVisibleTo Include="Fhi.HelseIdSelvbetjening.UnitTests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
+  </ItemGroup>
 </Project>

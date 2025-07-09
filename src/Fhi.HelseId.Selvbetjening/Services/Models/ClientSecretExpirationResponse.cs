@@ -1,36 +1,26 @@
-using System.Net;
-
 namespace Fhi.HelseIdSelvbetjening.Services.Models
 {
     /// <summary>
     /// Response containing client secret expiration information
     /// </summary>
-    /// <param name="HttpStatus">Status code</param>
-    /// <param name="Message">Message</param>
+    /// <param name="Origin"></param>
     /// <param name="ExpirationDate">The expiration date of the client secret</param>
-    /// <param name="ValidationErrors">List of validation errors, if any</param>
-    public record ClientSecretExpirationResponse(
-        HttpStatusCode HttpStatus,
-        string? Message,
-        DateTime ExpirationDate = default,
-        IReadOnlyList<string>? ValidationErrors = null)
+    /// <param name="KeyId">The JWK key identifier</param>
+    public record ClientSecret(
+        DateTime? ExpirationDate,
+        string? KeyId,
+        string? Origin);
+
+    public class ClientSecretExpirationResponse
     {
         /// <summary>
-        /// Gets whether this response represents a validation failure
+        /// The secret that matches the requested kid (if any).
         /// </summary>
-        public bool HasValidationErrors => ValidationErrors?.Any() == true;
+        public ClientSecret? SelectedSecret { get; set; }
+
         /// <summary>
-        /// Creates a response for validation errors
+        /// All secrets returned by the API.
         /// </summary>
-        /// <param name="validationResult">The validation result containing errors</param>
-        /// <returns>A response indicating validation failure</returns>
-        public static ClientSecretExpirationResponse FromValidationErrors(ValidationResult validationResult)
-        {
-            return new ClientSecretExpirationResponse(
-                HttpStatusCode.BadRequest,
-                "Validation failed",
-                DateTime.MinValue,
-                validationResult.Errors);
-        }
-    };
+        public List<ClientSecret> AllSecrets { get; set; } = [];
+    }
 }

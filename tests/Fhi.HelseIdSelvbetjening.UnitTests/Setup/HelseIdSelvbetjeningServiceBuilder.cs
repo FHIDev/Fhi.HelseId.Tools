@@ -1,19 +1,21 @@
+using Fhi.HelseIdSelvbetjening.Infrastructure;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Dtos;
 using Fhi.HelseIdSelvbetjening.Services;
 using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using System.Net;
 
-namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
+namespace Fhi.HelseIdSelvbetjening.UnitTests.Setup
 {
     internal class HelseIdSelvbetjeningServiceBuilder
     {
         public ILogger<HelseIdSelvbetjeningService> Logger { get; private set; } = Substitute.For<ILogger<HelseIdSelvbetjeningService>>();
-        public IHttpClientFactory HttpClientFactory { get; private set; } = Substitute.For<IHttpClientFactory>();
+
         public Microsoft.Extensions.Options.IOptions<SelvbetjeningConfiguration> Options { get; private set; }
             = Substitute.For<Microsoft.Extensions.Options.IOptions<SelvbetjeningConfiguration>>();
         public ITokenService TokenService { get; private set; } = Substitute.For<ITokenService>();
-        private HttpClient? _httpClient;
+
+        public ISelvbetjeningApi SelvbetjeningApi { get; private set; } = Substitute.For<ISelvbetjeningApi>();
 
         public HelseIdSelvbetjeningServiceBuilder WithDPopTokenResponse(TokenResponse tokenResponse)
         {
@@ -26,22 +28,36 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             return this;
         }
 
-        public HelseIdSelvbetjeningServiceBuilder WithDefaultOptions()
+        public HelseIdSelvbetjeningServiceBuilder WithDefaultConfiguration()
         {
             Options.Value.Returns(new SelvbetjeningConfiguration
             {
                 Authority = "https://authority",
-                BaseAddress = "https://nhn.selvbetjening",
-                ClientSecretEndpoint = "client-secret"
+                BaseAddress = "https://nhn.selvbetjening"
             });
             return this;
         }
 
-        public HelseIdSelvbetjeningServiceBuilder WithHttpClient(HttpClient httpClient)
+        public HelseIdSelvbetjeningServiceBuilder WithUpdateClientSecretResponse(ClientSecretUpdateResult? updateResult = default!, ProblemDetail? problemDetail = null)
         {
-            _httpClient = httpClient;
-            HttpClientFactory.CreateClient(Arg.Any<string>()).Returns(_httpClient);
-            HttpClientFactory.CreateClient().Returns(_httpClient);
+            SelvbetjeningApi.UpdateClientSecretsAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<string>())
+                .Returns(Task.FromResult((updateResult, problemDetail)));
+
+            return this;
+        }
+
+        public HelseIdSelvbetjeningServiceBuilder WithGetClientSecretResponse(IEnumerable<HelseIdSelvbetjening.Infrastructure.Dtos.ClientSecret>? clientSecrets = default!, ProblemDetail? problemDetail = null)
+        {
+            SelvbetjeningApi.GetClientSecretsAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<string>())
+                .Returns(Task.FromResult((clientSecrets, problemDetail)));
+
             return this;
         }
 
@@ -49,25 +65,10 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         {
             return new HelseIdSelvbetjeningService(
                 Options,
-                HttpClientFactory,
                 TokenService,
+                SelvbetjeningApi,
                 Logger
             );
-        }
-    }
-
-    internal class TestHttpMessageHandler : DelegatingHandler
-    {
-        private readonly HttpResponseMessage _response;
-
-        public TestHttpMessageHandler(HttpResponseMessage response)
-        {
-            _response = response;
-        }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(_response);
         }
     }
 }

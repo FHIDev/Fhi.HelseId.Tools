@@ -27,7 +27,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         {
             try
             {
-                _logger.LogInformation("Update client {@ClientId} ", _parameters.ClientId);
+                _logger.LogInformation("Update client {@ClientId}", _parameters.ClientId);
 
                 var newKey = !string.IsNullOrEmpty(_parameters.NewPublicJwk) ? _parameters.NewPublicJwk :
                 !string.IsNullOrEmpty(_parameters.NewPublicJwkPath) ? _fileHandler.ReadAllText(_parameters.NewPublicJwkPath) : string.Empty;
@@ -38,9 +38,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 //TODO: handled by the options? Set required parameters?
                 if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))
                 {
-                    _logger.LogInformation("NewKey: {newKey}", newKey);
-                    _logger.LogInformation("OldKey: {oldKey}", oldKey);
-                    await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
+                    var result = await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(_parameters.ClientId, oldKey), newKey);
+                    _logger.LogInformation(result.HttpStatus.ToString());
+                    _logger.LogInformation(result.Message);
                 }
                 else
                 {

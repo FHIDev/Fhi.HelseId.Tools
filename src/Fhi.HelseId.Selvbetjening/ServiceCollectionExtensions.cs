@@ -1,3 +1,4 @@
+using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +18,7 @@ namespace Fhi.HelseIdSelvbetjening
         {
             services.AddTransient<IHelseIdSelvbetjeningService, HelseIdSelvbetjeningService>();
             services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<ISelvbetjeningApi, SelvbetjeningApi>();
             services.AddHttpClient();
 
             return services;

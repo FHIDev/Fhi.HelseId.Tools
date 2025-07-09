@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.Testing" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
@@ -25,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Fhi.HelseIdSelvbetjening.CLI\Fhi.HelseIdSelvbetjening.CLI.csproj" />
+    <ProjectReference Include="..\Fhi.HelseIdSelvbetjening.UnitTests\Fhi.HelseIdSelvbetjening.UnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

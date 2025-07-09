@@ -1,11 +1,10 @@
 using System.Net;
 using Duende.IdentityModel.Client;
-using Fhi.HelseIdSelvbetjening.Http;
 using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Fhi.HelseIdSelvbetjening.Services
+namespace Fhi.HelseIdSelvbetjening.Infrastructure
 {
     internal record TokenResponse(string? AccessToken, bool IsError, string? Error, HttpStatusCode HttpStatusCode);
     internal interface ITokenService
@@ -24,8 +23,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
     internal class TokenService(
         ILogger<TokenService> Logger,
         IOptions<SelvbetjeningConfiguration> Options,
-        IHttpClientFactory HttpClientFactory)
-        : ITokenService
+        IHttpClientFactory HttpClientFactory) : ITokenService
     {
         public async Task<TokenResponse> CreateDPoPToken(
            string clientId,

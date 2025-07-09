@@ -20,6 +20,6 @@ namespace Fhi.HelseIdSelvbetjening.Services
         /// </summary>
         /// <param name="clientConfiguration">The client configuration</param>
         /// <returns>Response containing expiration information</returns>
-        public Task<ClientSecretExpirationResponse> ReadClientSecretExpiration(ClientConfiguration clientConfiguration);
+        public Task<IResult<ClientSecretExpirationResponse, ErrorResult>> ReadClientSecretExpiration(ClientConfiguration clientConfiguration);
     }
 }

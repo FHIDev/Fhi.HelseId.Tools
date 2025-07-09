@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -31,5 +30,7 @@
   <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
-
+	<ItemGroup>
+		<InternalsVisibleTo Include="Fhi.HelseIdSelvbetjening.CLI.Tests" />
+	</ItemGroup>
 </Project>
