@@ -140,7 +140,6 @@ namespace Fhi.HelseIdSelvbetjening.Services
                 var arrayResponse = ParseArrayResponse(jsonContent);
                 if (arrayResponse?.Any() == true)
                 {
-                    return FindExpirationDateInSecrets(arrayResponse, clientJwk);
                 }
             }
             else
