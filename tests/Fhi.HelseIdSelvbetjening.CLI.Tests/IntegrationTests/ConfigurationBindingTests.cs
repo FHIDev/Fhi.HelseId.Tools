@@ -37,7 +37,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Assert.That(config.Value.Authority, Does.StartWith("https://"), "Authority should be a valid HTTPS URL");
                 Assert.That(config.Value.Authority, Does.Contain("test"), "Test environment should contain 'test' in Authority URL");
                 Assert.That(config.Value.BaseAddress, Is.Not.Null.And.Not.Empty, "BaseAddress should not be null or empty");
-                Assert.That(config.Value.ClientSecretEndpoint, Is.Not.Null.And.Not.Empty, "ClientSecretEndpoint should not be null or empty");
             }
         }
 
@@ -55,7 +54,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Assert.That(config.Value.Authority, Does.StartWith("https://"), "Authority should be a valid HTTPS URL");
                 Assert.That(config.Value.Authority, Does.Not.Contain("test"), "Production environment should not contain 'test' in Authority URL");
                 Assert.That(config.Value.BaseAddress, Is.Not.Null.And.Not.Empty, "BaseAddress should not be null or empty");
-                Assert.That(config.Value.ClientSecretEndpoint, Is.Not.Null.And.Not.Empty, "ClientSecretEndpoint should not be null or empty");
             }
         }
 

@@ -1,9 +1,8 @@
 using System.CommandLine;
+using System.CommandLine.NamingConventionBinder;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
-using Fhi.HelseIdSelvbetjening.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 {
@@ -13,6 +12,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
         {
             services.AddTransient<IFileHandler, FileHandler>();
             services.AddSelvbetjeningServices();
+            services.AddTransient<ReadClientSecretExpirationCommandHandler>();
         };
 
         public Command Build(IHost host)
@@ -46,39 +46,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 "Existing private key value");
             readExpirationCommand.AddOption(existingPrivateJwkOption);
 
-            readExpirationCommand.SetHandler(async (
-                string clientId,
-                string? existingPrivateJwkPath,
-                string? existingPrivateJwk) =>
+            readExpirationCommand.Handler = CommandHandler.Create(async (string clientId, string? existingPrivateJwkPath, string? existingPrivateJwk) =>
             {
-                var logger = host.Services.GetRequiredService<ILogger<ClientSecretExpirationReaderService>>();
-
-                try
-                {
-                    var environment = host.Services.GetRequiredService<IHostEnvironment>().EnvironmentName;
-
-                    var parameters = new ReadClientSecretExpirationParameters
-                    {
-                        ClientId = clientId,
-                        ExistingPrivateJwkPath = existingPrivateJwkPath,
-                        ExistingPrivateJwk = existingPrivateJwk
-                    };
-
-                    var fileHandler = host.Services.GetRequiredService<IFileHandler>();
-                    var helseIdService = host.Services.GetRequiredService<IHelseIdSelvbetjeningService>();
-
-                    var service = new ClientSecretExpirationReaderService(parameters, helseIdService, fileHandler, logger);
-
-                    var exitCode = await service.ExecuteAsync();
-                    Environment.ExitCode = exitCode;
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Error in ReadClientSecretExpiration command. Exception type: {ExceptionType}", ex.GetType().Name);
-                    Environment.ExitCode = 1;
-                }
-            },
-            clientIdOption, existingPrivateJwkPathOption, existingPrivateJwkOption);
+                var handler = host.Services.GetRequiredService<ReadClientSecretExpirationCommandHandler>();
+                return await handler.ExecuteAsync(clientId, existingPrivateJwkPath, existingPrivateJwk);
+            });
 
             return readExpirationCommand;
         }

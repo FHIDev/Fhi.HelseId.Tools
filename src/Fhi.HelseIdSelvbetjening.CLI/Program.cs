@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.CommandLine.Parsing;
 using Fhi.HelseIdSelvbetjening.CLI;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Serilog;
@@ -7,7 +8,7 @@ using Serilog;
 /// Executable Program for HelseId Selvbetjening CLI
 /// </summary>
 public partial class Program
-{   
+{
     /// <summary>
     /// Main program
     /// </summary>
