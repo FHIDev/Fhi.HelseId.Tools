@@ -44,7 +44,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             {
                 var successResult = GetSuccessResult(response);
                 Assert.That(successResult.SelectedSecret!.ExpirationDate, Is.EqualTo(null));
-                Assert.That(successResult.AllSecrets.Count, Is.EqualTo(3));
+                Assert.That(successResult.AllSecrets, Has.Count.EqualTo(3));
             }
         }
 
@@ -58,11 +58,11 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             var builder = new HelseIdSelvbetjeningServiceBuilder()
                 .WithDefaultConfiguration()
                 .WithDPopTokenResponse(new TokenResponse("valid -token", false, null, HttpStatusCode.OK))
-                .WithGetClientSecretResponse(new List<ClientSecretDto>
-                {
+                .WithGetClientSecretResponse(
+                [
                     new() { Expiration = null, Kid = "-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4", JwkThumbprint = "-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4", Origin = "Gui", PublicJwk = null},
                     new() { Expiration = null, Kid = "ISinWp6jrRwTF_yhD1FBJ2amBT-uPwumswyRhmdjbWk", JwkThumbprint = "-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4", Origin = "Gui", PublicJwk = null},
-                });
+                ]);
 
             var service = builder.Build();
             var response = await service.ReadClientSecretExpiration(new ClientConfiguration(
@@ -82,7 +82,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             {
                 var successResult = GetSuccessResult(response);
                 Assert.That(successResult.SelectedSecret!.ExpirationDate, Is.EqualTo(null));
-                Assert.That(successResult.AllSecrets.Count, Is.EqualTo(2));
+                Assert.That(successResult.AllSecrets, Has.Count.EqualTo(2));
             }
         }
 
@@ -209,7 +209,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             {
                 var successResult = GetSuccessResult(response);
                 Assert.That(successResult.SelectedSecret, Is.EqualTo(null));
-                Assert.That(successResult.AllSecrets.Count, Is.EqualTo(3));
+                Assert.That(successResult.AllSecrets, Has.Count.EqualTo(3));
             }
         }
 

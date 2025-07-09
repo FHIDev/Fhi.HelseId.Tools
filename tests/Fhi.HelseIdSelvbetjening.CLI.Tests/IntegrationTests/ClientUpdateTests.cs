@@ -46,8 +46,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(0));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!.Contains($"Update client {clientId}"));
-                Assert.That(logs!.Contains("OK"));
+                Assert.That(logs!, Does.Contain($"Update client {clientId}"));
+                Assert.That(logs!, Does.Contain("OK"));
             }
         }
 
@@ -84,9 +84,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(0));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!.Contains($"Update client {clientId}"));
+                Assert.That(logs!, Does.Contain($"Update client {clientId}"));
                 //TODO: improve response
-                Assert.That(logs!.Contains("OK"));
+                Assert.That(logs!, Does.Contain("OK"));
             }
         }
 
@@ -112,11 +112,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                                .WithDefaultConfiguration()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
                                .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
-                .WithLoggerFactory(LoggerFactory.Create(loggerBuilder =>
-                {
-                    loggerBuilder.AddProvider(fakeLogProvider);
-                    loggerBuilder.SetMinimumLevel(LogLevel.Trace);
-                }))
+                .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithFileHandler(new FileHandlerBuilder()
                     .Build())
                 .WithArgs(
@@ -145,11 +141,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         {
             var fakeLogProvider = new FakeLoggerProvider();
             var rootCommandBuilder = new RootCommandBuilder()
-                .WithLoggerFactory(LoggerFactory.Create(loggerBuilder =>
-                {
-                    loggerBuilder.AddProvider(fakeLogProvider);
-                    loggerBuilder.SetMinimumLevel(LogLevel.Trace);
-                }))
+                .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
                                .WithDefaultConfiguration()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
@@ -168,7 +160,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(exitCode, Is.Not.EqualTo(0));
-                //Assert.That(output, Does.Contain("Missing required parameter Client ID").IgnoreCase);
+                Assert.That(fakeLogProvider.Collector.LatestRecord.Message, Does.Contain("Missing required parameter Client ID").IgnoreCase);
             }
         }
     }

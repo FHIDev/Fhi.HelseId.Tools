@@ -40,7 +40,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Assert.That(exitCode, Is.EqualTo(0));
                 Assert.That(fakeLogProvider.Collector?.LatestRecord.Message, Does.Contain(((DateTimeOffset)clientSecrets.FirstOrDefault()!.Expiration!).ToUnixTimeSeconds().ToString()));
                 var logs = fakeLogProvider.Collector?.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!.Contains("Kid: test-kid"));
+                Assert.That(logs!, Does.Contain("Kid: test-kid"));
             }
         }
 
@@ -64,11 +64,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     new FileHandlerBuilder()
                     .WithExistingPrivateJwk(filePath, @"{""kid"":""file-jwk-kid"",""kty"":""RSA""}")
                     .Build())
-                .WithLoggerFactory(LoggerFactory.Create(builder =>
-                {
-                    builder.AddProvider(fakeLogProvider);
-                    builder.SetMinimumLevel(LogLevel.Trace);
-                }))
+                .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithArgs([
                     ReadClientSecretExpirationParameterNames.CommandName,
                     $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", "test-client-id",
@@ -84,8 +80,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
                 Assert.That(exitCode, Is.EqualTo(0), "Command should complete successfully");
-                Assert.That(logs!.Contains(((DateTimeOffset)expiration).ToUnixTimeSeconds().ToString()));
-                Assert.That(logs!.Contains("Kid: direct-jwk-kid"));
+                Assert.That(logs!, Does.Contain(((DateTimeOffset)expiration).ToUnixTimeSeconds().ToString()));
+                Assert.That(logs!, Does.Contain("Kid: direct-jwk-kid"));
             }
         }
 
@@ -95,11 +91,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var fakeLogProvider = new FakeLoggerProvider();
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithSelvbetjeningService(CreateSelvbetjeningService([]))
-                .WithLoggerFactory(LoggerFactory.Create(loggerBuilder =>
-                {
-                    loggerBuilder.AddProvider(fakeLogProvider);
-                    loggerBuilder.SetMinimumLevel(LogLevel.Trace);
-                }))
+                .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithArgs([
                     ReadClientSecretExpirationParameterNames.CommandName,
                     $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", "test-client-id",
@@ -113,7 +105,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(1), "Command invocation should complete");
                 var logs = fakeLogProvider.Collector?.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!.Contains("No secret found with matching Kid."));
+                Assert.That(logs!, Does.Contain("No secret found with matching Kid."));
             }
         }
 
@@ -122,7 +114,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         {
             var fakeLogProvider = new FakeLoggerProvider();
             var rootCommandBuilder = new RootCommandBuilder()
-                .WithSelvbetjeningService(CreateSelvbetjeningService(new List<ClientSecret>()))
+                .WithSelvbetjeningService(CreateSelvbetjeningService([]))
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithArgs([
                     ReadClientSecretExpirationParameterNames.CommandName,
@@ -136,7 +128,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(1));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!.Contains("No private key provided. Either ExistingPrivateJwk or ExistingPrivateJwkPath must be specified."));
+                Assert.That(logs!, Does.Contain("No private key provided. Either ExistingPrivateJwk or ExistingPrivateJwkPath must be specified."));
             }
         }
 
@@ -146,8 +138,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var fakeLogProvider = new FakeLoggerProvider();
             var clientsecretResponse = new List<ClientSecret>()
             {
-                new ClientSecret() { Expiration = DateTime.Now.AddDays(60), Kid = "kid-one" },
-                new ClientSecret() { Expiration = DateTime.Now.AddDays(30), Kid = "kid-two" }
+                new() { Expiration = DateTime.Now.AddDays(60), Kid = "kid-one" },
+                new() { Expiration = DateTime.Now.AddDays(30), Kid = "kid-two" }
             };
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithSelvbetjeningService(CreateSelvbetjeningService(clientsecretResponse))
@@ -173,7 +165,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(0));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!.Contains("Kid: kid-two"));
+                Assert.That(logs!, Does.Contain("Kid: kid-two"));
             }
         }
 
@@ -183,8 +175,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var fakeLogProvider = new FakeLoggerProvider();
             var clientsecretResponse = new List<ClientSecret>()
             {
-                new ClientSecret() { Expiration = DateTime.Now.AddDays(60), Kid = "kid-one" },
-                new ClientSecret() { Expiration = DateTime.Now.AddDays(30), Kid = "kid-two" }
+                new() { Expiration = DateTime.Now.AddDays(60), Kid = "kid-one" },
+                new() { Expiration = DateTime.Now.AddDays(30), Kid = "kid-two" }
             };
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithSelvbetjeningService(CreateSelvbetjeningService(clientsecretResponse))
@@ -209,7 +201,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(1));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!.Contains("No secret found with matching Kid."));
+                Assert.That(logs!, Does.Contain("No secret found with matching Kid."));
             }
         }
 
@@ -220,7 +212,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         {
             var fakeLogProvider = new FakeLoggerProvider();
             var rootCommandBuilder = new RootCommandBuilder()
-                .WithSelvbetjeningService(CreateSelvbetjeningService(new List<ClientSecret>() { new ClientSecret() { Expiration = DateTime.Now, Kid = "kid" } }))
+                .WithSelvbetjeningService(CreateSelvbetjeningService([new ClientSecret() { Expiration = DateTime.Now, Kid = "kid" }]))
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithArgs([
                     ReadClientSecretExpirationParameterNames.CommandName,
@@ -235,7 +227,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(1));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!.Contains("No private key provided. Either ExistingPrivateJwk or ExistingPrivateJwkPath must be specified."));
+                Assert.That(logs!, Does.Contain("No private key provided. Either ExistingPrivateJwk or ExistingPrivateJwkPath must be specified."));
             }
         }
 

@@ -30,23 +30,23 @@ namespace Fhi.HelseIdSelvbetjening.Services
         public async Task<ClientSecretUpdateResponse> UpdateClientSecret(ClientConfiguration clientToUpdate, string newPublicJwk)
         {
             _logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
-            string dPoPKey = CreateDPoPKey();
+            var dPoPKey = CreateDPoPKey();
             var response = await _tokenService.CreateDPoPToken(clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
             if (!response.IsError && response.AccessToken != null)
             {
-                var result = await _selvbetjeningApi.UpdateClientSecretsAsync(
+                var (ClientSecretUpdate, ProblemDetail) = await _selvbetjeningApi.UpdateClientSecretsAsync(
                     _selvbetjeningConfig.BaseAddress,
                     dPoPKey,
                     response.AccessToken,
                     newPublicJwk);
 
-                if (result.ProblemDetail != null)
+                if (ProblemDetail != null)
                 {
-                    _logger.LogError("Failed to update client {@ClientId}. Error: {@ProblemDetail}", clientToUpdate.ClientId, result.ProblemDetail.Detail);
-                    return new ClientSecretUpdateResponse(HttpStatusCode.BadRequest, result.ProblemDetail.Detail);
+                    _logger.LogError("Failed to update client {@ClientId}. Error: {@ProblemDetail}", clientToUpdate.ClientId, ProblemDetail.Detail);
+                    return new ClientSecretUpdateResponse(HttpStatusCode.BadRequest, ProblemDetail.Detail);
                 }
                 //TODO: improve response with IResult. Should not serialize output
-                return new ClientSecretUpdateResponse(HttpStatusCode.OK, result.ClientSecretUpdate?.Serialize());
+                return new ClientSecretUpdateResponse(HttpStatusCode.OK, ClientSecretUpdate?.Serialize());
             }
 
             _logger.LogError("Could not update client {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientToUpdate.ClientId, response.HttpStatusCode, response.Error);
@@ -72,20 +72,20 @@ namespace Fhi.HelseIdSelvbetjening.Services
                 return new Error<ClientSecretExpirationResponse, ErrorResult>(errorResult);
             }
 
-            var result = await _selvbetjeningApi.GetClientSecretsAsync(_selvbetjeningConfig.BaseAddress, dPoPKey, response.AccessToken);
-            if (result.ProblemDetail != null)
+            var (ClientSecrets, ProblemDetail) = await _selvbetjeningApi.GetClientSecretsAsync(_selvbetjeningConfig.BaseAddress, dPoPKey, response.AccessToken);
+            if (ProblemDetail != null)
             {
-                errorResult.AddError($"Failed to read client secret expiration: {result.ProblemDetail.Detail}");
+                errorResult.AddError($"Failed to read client secret expiration: {ProblemDetail.Detail}");
                 return new Error<ClientSecretExpirationResponse, ErrorResult>(errorResult);
             }
 
             var securityKey = new JsonWebKey(clientConfiguration.Jwk);
-            var selected = result.ClientSecrets?.FirstOrDefault(s => s.Kid == securityKey.Kid);
+            var selected = ClientSecrets?.FirstOrDefault(s => s.Kid == securityKey.Kid);
             return new Success<ClientSecretExpirationResponse, ErrorResult>(
                 new ClientSecretExpirationResponse()
                 {
                     SelectedSecret = selected != null ? new ClientSecret(selected.Expiration, selected.Kid, selected.Origin) : null,
-                    AllSecrets = result.ClientSecrets?.Select(s => new ClientSecret(s.Expiration, s.Kid, s.Origin)).ToList() ?? new List<ClientSecret>()
+                    AllSecrets = ClientSecrets?.Select(s => new ClientSecret(s.Expiration, s.Kid, s.Origin)).ToList() ?? []
                 });
         }
         /// <summary>
@@ -116,7 +116,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
             return validationResult;
         }
 
-        private string CreateDPoPKey()
+        private static string CreateDPoPKey()
         {
             var key = JwkGenerator.GenerateRsaJwk();
             return key.PrivateKey;

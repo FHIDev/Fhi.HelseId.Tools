@@ -4,7 +4,8 @@ using Fhi.HelseIdSelvbetjening.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.CommandLine;
-namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
+
+namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup
 {
     internal class RootCommandBuilder
     {
@@ -23,17 +24,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         public RootCommandBuilder WithFileHandler(IFileHandler fileHandlerMock)
         {
             _registrations.Add(services => services.AddSingleton(fileHandlerMock));
-            return this;
-        }
-
-        public RootCommandBuilder WithLoggerFactory(ILoggerFactory factory)
-        {
-            _registrations.Add(services =>
-            {
-                services.AddLogging();
-                services.AddSingleton(factory);
-                services.AddSingleton(factory.CreateLogger("general logs"));
-            });
             return this;
         }
 

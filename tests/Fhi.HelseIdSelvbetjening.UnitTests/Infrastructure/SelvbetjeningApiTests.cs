@@ -9,7 +9,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Infrastructure
     public class SelvbetjeningApiTests
     {
         [Test]
-        public async Task ReadClientSecret()
+        public async Task ReadClientSecret_MultipleKeysAndValidResponse_Ok()
         {
             var handler = new TestHttpMessageHandler(new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -25,16 +25,16 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Infrastructure
             factory.CreateClient(Arg.Any<string>()).Returns(httpClient);
 
             var selvbetjeningApi = new SelvbetjeningApi(factory);
-            var response = await selvbetjeningApi.GetClientSecretsAsync(
+            var (ClientSecrets, ProblemDetail) = await selvbetjeningApi.GetClientSecretsAsync(
                 "https://nhn.selvbetjening",
                 JwkGenerator.GenerateRsaJwk().PrivateKey,
                 "accessToken");
 
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(response.ClientSecrets, Is.Not.Null);
-                Assert.That(response.ClientSecrets!.Count(), Is.EqualTo(3));
-                Assert.That(response.ClientSecrets!.FirstOrDefault()!.Kid, Is.EqualTo("-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4"));
+                Assert.That(ClientSecrets, Is.Not.Null);
+                Assert.That(ClientSecrets!.Count(), Is.EqualTo(3));
+                Assert.That(ClientSecrets!.FirstOrDefault()!.Kid, Is.EqualTo("-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4"));
             }
         }
     }
