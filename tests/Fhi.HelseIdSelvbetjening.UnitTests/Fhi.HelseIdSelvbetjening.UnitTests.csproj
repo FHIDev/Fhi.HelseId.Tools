@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -27,9 +26,10 @@
     <ProjectReference Include="..\..\src\Fhi.HelseId.Selvbetjening\Fhi.HelseIdSelvbetjening.csproj" />
     <ProjectReference Include="..\..\src\Fhi.HelseIdSelvbetjening.CLI\Fhi.HelseIdSelvbetjening.CLI.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
-
+  <ItemGroup>
+	<InternalsVisibleTo Include="Fhi.HelseIdSelvbetjening.CLI.Tests" />
+  </ItemGroup>
 </Project>

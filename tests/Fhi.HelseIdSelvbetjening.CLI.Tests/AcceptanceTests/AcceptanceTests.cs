@@ -104,8 +104,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
 
             var output = stringWriter.ToString();
 
-            Assert.That(exitCode, Is.EqualTo(0), "Reading client secret expiration succeeded");
-            Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0), "Reading client secret expiration succeeded");
+                Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");
+            }
         }
 
         /// <summary>
@@ -158,15 +161,18 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
 
             var output = stringWriter.ToString();
 
-            Assert.That(exitCode, Is.EqualTo(0), "Reading client secret expiration succeeded");
-            Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0), "Reading client secret expiration succeeded");
+                Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");
+            }
         }
 
         private static string GetTestProjectDirectory()
         {
             // Start from the current directory (bin/Debug/net9.0) and navigate back to the test project root
             var currentDirectory = new DirectoryInfo(Environment.CurrentDirectory);
-            
+
             // Navigate up until we find the .csproj file or reach a reasonable limit
             while (currentDirectory != null && currentDirectory.Parent != null)
             {
@@ -177,7 +183,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
                 }
                 currentDirectory = currentDirectory.Parent;
             }
-            
+
             // Fallback: assume we're in bin/Debug/net9.0 and go up 3 levels
             var fallbackPath = Path.Combine(Environment.CurrentDirectory, "..", "..", "..");
             return Path.GetFullPath(fallbackPath);

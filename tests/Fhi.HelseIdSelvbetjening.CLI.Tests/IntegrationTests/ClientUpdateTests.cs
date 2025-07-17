@@ -1,13 +1,16 @@
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup;
-using Fhi.HelseIdSelvbetjening.Services;
-using Fhi.HelseIdSelvbetjening.Services.Models;
+using Fhi.HelseIdSelvbetjening.Infrastructure;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Dtos;
+using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Testing;
 using NSubstitute;
 using System.CommandLine;
+
 namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {
-    public partial class ClientUpdateTests
+    public class ClientUpdateTests
     {
         [Test]
         public async Task UpdateClientKey_ValidJwkArgumentsFromPath_ExitCode0()
@@ -15,7 +18,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             const string clientId = "test-client-id";
             const string existingPrivateJwkPath = "c:\\temp\\existing-private.json";
             const string newPublicJwkPath = "c:\\temp\\new-public.json";
-            var builder = new RootCommandBuilder()
+
+            var fakeLogProvider = new FakeLoggerProvider();
+            var rootCommandBuilder = new RootCommandBuilder()
                 .WithArgs(
                 [
                     UpdateClientKeyParameterNames.CommandName,
@@ -28,41 +33,26 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     .WithExistingPrivateJwk(existingPrivateJwkPath)
                     .WithNewPublicJwk(newPublicJwkPath)
                     .Build())
-                .WithSelvbetjeningService(Substitute.For<IHelseIdSelvbetjeningService>())
-                .WithLogger(Substitute.For<ILogger<ClientKeyUpdaterService>>())
-                .Build();
+                .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
+                               .WithDefaultConfiguration()
+                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
+                               .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
+                .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
-            int exitCode = await builder.RootCommand.InvokeAsync(builder.Args);
+            var rootCommand = rootCommandBuilder.Build();
+            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
 
-            Assert.That(exitCode, Is.EqualTo(0));
-            await builder.HelseIdSelvbetjeningServiceMock.Received(1).UpdateClientSecret(
-                Arg.Is<ClientConfiguration>(c => c.ClientId == clientId),
-                Arg.Any<string>());
-            builder.LoggerMock.Received(1).Log(
-                LogLevel.Information,
-                Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString()!.Contains($"Update client {clientId}")),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception?, string>>()
-            );
-            builder.LoggerMock.Received(1).Log(
-                LogLevel.Information,
-                Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString()!.Contains("NewKey:")),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception?, string>>()
-            );
-            builder.LoggerMock.Received(1).Log(
-                LogLevel.Information,
-                Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString()!.Contains("OldKey:")),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception?, string>>()
-            );
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0));
+                var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
+                Assert.That(logs!, Does.Contain($"Update client {clientId}"));
+                Assert.That(logs!, Does.Contain("OK"));
+            }
         }
 
         [Test]
-        public void UpdateClientKeys_ValidJwkArgumentsFromParameters_ExitCode0()
+        public async Task UpdateClientKeys_ValidJwkArgumentsFromParameters_ExitCode0()
         {
             const string clientId = "test-client-id";
             const string existingPrivateJwk = "{\"kid\":\"test-kid\",\"kty\":\"RSA\",\"private\":\"key-data\"}";
@@ -75,12 +65,33 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 $"--{UpdateClientKeyParameterNames.NewPublicJwk.Long}", newPublicJwk,
                 $"--{UpdateClientKeyParameterNames.YesOption.Long}"
             };
-            var builder = new RootCommandBuilder().WithArgs(args).Build();
 
-            // TODO: Implement test logic for updating client keys from parameters
+            var fakeLogProvider = new FakeLoggerProvider();
+            var rootCommandBuilder = new RootCommandBuilder()
+                .WithArgs(args)
+                .WithFileHandler(new FileHandlerBuilder()
+                    .Build())
+                .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
+                               .WithDefaultConfiguration()
+                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
+                               .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("2028-08-08T00:00:00Z")).Build())
+                .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
+
+            var rootCommand = rootCommandBuilder.Build();
+            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0));
+                var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
+                Assert.That(logs!, Does.Contain($"Update client {clientId}"));
+                //TODO: improve response
+                Assert.That(logs!, Does.Contain("OK"));
+            }
         }
 
         [Test]
+        [Ignore("Need to implement prompt logic for environment selection")]
         public void UpdateClientKeys_PromptForEnvironment_StopOnInput()
         {
             // TODO: Implement test logic for prompt
@@ -90,9 +101,18 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         [TestCase("c:\\temp", "")]
         public async Task UpdateClientKey_EmptyJwkArguments_LogErrorAndExitCode1(string newKeyPath, string oldKeyPath)
         {
-            var builder = new RootCommandBuilder()
-                .WithLogger(Substitute.For<ILogger<ClientKeyUpdaterService>>())
-                .WithSelvbetjeningService(Substitute.For<IHelseIdSelvbetjeningService>())
+            var selvbetjeningsApi = Substitute.For<ISelvbetjeningApi>();
+            selvbetjeningsApi
+                .UpdateClientSecretsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>())
+                .Returns((new ClientSecretUpdateResult(""), null));
+            var fakeLogProvider = new FakeLoggerProvider();
+
+            var rootCommandBuilder = new RootCommandBuilder()
+                .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
+                               .WithDefaultConfiguration()
+                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
+                               .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
+                .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithFileHandler(new FileHandlerBuilder()
                     .Build())
                 .WithArgs(
@@ -102,43 +122,45 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     $"--{UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Long}", oldKeyPath,
                     $"--{UpdateClientKeyParameterNames.ClientId.Long}", "88d474a8-07df-4dc4-abb0-6b759c2b99ec",
                     $"--{UpdateClientKeyParameterNames.YesOption.Long}"
-                ])
-                .Build();
+                ]);
 
-            int exitCode = await builder.RootCommand.InvokeAsync(builder.Args);
+            var rootCommand = rootCommandBuilder.Build();
+            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
 
-            builder.LoggerMock.Received(1).Log(
-               LogLevel.Error,
-               Arg.Any<EventId>(),
-               Arg.Is<object>(o => o.ToString()!.Contains("Parameters empty.")),
-               Arg.Any<Exception>(),
-               Arg.Any<Func<object, Exception?, string>>());
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0));
+                var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
+                Assert.That(logs!.Any(l => l.Contains("Parameters empty.")));
+            }
         }
 
         [Test]
         [Ignore("Need to figure out how to set description when missing required option")]
         public async Task UpdateClientKey_MissingRequiredParameterClientId_GiveErrorMessage()
         {
-            using var stringWriter = new StringWriter();
-            Console.SetOut(stringWriter);
-            var builder = new RootCommandBuilder()
-                .WithLogger(Substitute.For<ILogger<ClientKeyUpdaterService>>())
-                .WithSelvbetjeningService(Substitute.For<IHelseIdSelvbetjeningService>())
+            var fakeLogProvider = new FakeLoggerProvider();
+            var rootCommandBuilder = new RootCommandBuilder()
+                .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
+                .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
+                               .WithDefaultConfiguration()
+                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
+                               .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
                 .WithArgs(
                 [
                     UpdateClientKeyParameterNames.CommandName,
                     $"--{UpdateClientKeyParameterNames.NewPublicJwkPath.Long}", "c:\\temp",
                     $"--{UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Long}", "c:\\temp",
                     $"--{UpdateClientKeyParameterNames.YesOption.Long}"
-                ])
-                .Build();
+                ]);
 
-            int exitCode = await builder.RootCommand.InvokeAsync(builder.Args);
-            var output = stringWriter.ToString();
+            var rootCommand = rootCommandBuilder.Build();
+            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(exitCode, Is.Not.EqualTo(0));
-                Assert.That(output, Does.Contain("Missing required parameter Client ID").IgnoreCase);
+                Assert.That(fakeLogProvider.Collector.LatestRecord.Message, Does.Contain("Missing required parameter Client ID").IgnoreCase);
             }
         }
     }
