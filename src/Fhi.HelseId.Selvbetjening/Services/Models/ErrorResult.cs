@@ -5,8 +5,8 @@ namespace Fhi.HelseIdSelvbetjening.Services.Models
     /// </summary>
     public class ErrorResult
     {
-        public readonly List<string> Errors = new();
-
+        public IEnumerable<string> Errors => _errors;
+        private readonly List<string> _errors = new List<string>();
         /// <summary>
         /// Gets whether the validation was successful (no errors)
         /// </summary>
@@ -20,7 +20,7 @@ namespace Fhi.HelseIdSelvbetjening.Services.Models
         {
             if (!string.IsNullOrWhiteSpace(error))
             {
-                Errors.Add(error);
+                _errors.Add(error);
             }
         }
 
@@ -32,7 +32,7 @@ namespace Fhi.HelseIdSelvbetjening.Services.Models
         {
             foreach (var error in errors.Where(e => !string.IsNullOrWhiteSpace(e)))
             {
-                Errors.Add(error);
+                _errors.Add(error);
             }
         }
     }

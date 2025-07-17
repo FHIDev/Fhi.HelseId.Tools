@@ -8,6 +8,7 @@ namespace Fhi.HelseIdSelvbetjening.Infrastructure
         Task<(ClientSecretUpdateResult? ClientSecretUpdate, ProblemDetail? ProblemDetail)> UpdateClientSecretsAsync(string baseAddress, string dPoPKey, string accessToken, string newPublicJwk);
         Task<(IEnumerable<ClientSecret>? ClientSecrets, ProblemDetail? ProblemDetail)> GetClientSecretsAsync(string baseAddress, string dPoPKey, string accessToken);
     }
+
     internal class SelvbetjeningApi : ISelvbetjeningApi
     {
         private readonly IHttpClientFactory _httpClientFactory;

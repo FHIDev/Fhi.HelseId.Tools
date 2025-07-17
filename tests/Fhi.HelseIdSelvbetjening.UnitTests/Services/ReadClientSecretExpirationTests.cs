@@ -289,13 +289,13 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
 
         private static ClientSecretExpirationResponse GetSuccessResult(IResult<ClientSecretExpirationResponse, ErrorResult> response)
         {
-            return response.Match(
+            return response.HandleResponse(
                               onSuccess: (clientsecret) => clientsecret,
                               onError: (error) => throw new InvalidOperationException("Expected success"));
         }
         private static ErrorResult GetErrorResult(IResult<ClientSecretExpirationResponse, ErrorResult> response)
         {
-            return response.Match(
+            return response.HandleResponse(
                           onSuccess: (clientsecret) => throw new InvalidOperationException("Expected validation error for null ClientConfiguration, but got success response."),
                           onError: (error) => error!);
         }

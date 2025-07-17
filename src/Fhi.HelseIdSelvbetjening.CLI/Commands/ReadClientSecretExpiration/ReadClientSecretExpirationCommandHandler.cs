@@ -33,7 +33,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                     {
                         var result = await _helseIdService.ReadClientSecretExpiration(new ClientConfiguration(clientId, privateKey));
 
-                        return result.Match(
+                        return result.HandleResponse(
                             onSuccess: value =>
                             {
                                 //TODO: fix log message and handling of response
@@ -69,5 +69,4 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
             }
         }
     }
-
 }
