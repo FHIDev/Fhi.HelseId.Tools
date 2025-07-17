@@ -161,8 +161,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
 
             var output = stringWriter.ToString();
 
-            Assert.That(exitCode, Is.EqualTo(0), "Reading client secret expiration succeeded");
-            Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(exitCode, Is.EqualTo(0), "Reading client secret expiration succeeded");
+                Assert.That(output, Does.Contain("Reading client secret expiration for client"), "Output contains expected message");
+            }
         }
 
         private static string GetTestProjectDirectory()

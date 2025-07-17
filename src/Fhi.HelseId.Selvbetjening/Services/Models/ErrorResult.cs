@@ -6,7 +6,7 @@ namespace Fhi.HelseIdSelvbetjening.Services.Models
     public class ErrorResult
     {
         public IEnumerable<string> Errors => _errors;
-        private readonly List<string> _errors = new List<string>();
+        private readonly List<string> _errors = [];
         /// <summary>
         /// Gets whether the validation was successful (no errors)
         /// </summary>
