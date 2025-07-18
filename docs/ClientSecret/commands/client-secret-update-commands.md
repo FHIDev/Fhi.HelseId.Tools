@@ -1,5 +1,6 @@
 # Update client with new keys Commands
 
+## Flow
 
 1. **User Request:** A user initiates a request to upgrade/rotate the client secret for an application through the tools console interface.
 2. **Authentication:** The Client Secret Tool authenticates with Helse ID using the old secret and client ID to verify its identity to get an access token.
@@ -27,3 +28,7 @@
 ```
  updateclientkey --ClientId <CLIENT_ID> --NewPublicJwkPath <PATH> --ExistingPrivateJwkPath <PATH>
 ```
+
+## Code sample
+
+See code lab [Update client secret](../code-lab/updateclientsecret.ipynb) 

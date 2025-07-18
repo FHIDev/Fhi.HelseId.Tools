@@ -36,7 +36,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                         return result.HandleResponse(
                             onSuccess: value =>
                             {
-                                //TODO: fix log message and handling of response
                                 if (value.SelectedSecret != null && value.SelectedSecret.ExpirationDate.HasValue)
                                 {
                                     var epochTime = ((DateTimeOffset)value.SelectedSecret.ExpirationDate.Value).ToUnixTimeSeconds();

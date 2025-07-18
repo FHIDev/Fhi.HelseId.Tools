@@ -32,7 +32,7 @@ namespace Fhi.HelseIdSelvbetjening.Infrastructure
            string dPopJwk)
         {
             var client = HttpClientFactory.CreateClient();
-            Logger.LogInformation("/*** Get metadata from discovery endpoint from Authority {@Authority} ***/", Options.Value.Authority);
+            Logger.LogInformation("Get metadata from discovery endpoint from Authority {@Authority}", Options.Value.Authority);
             var discovery = await client.GetDiscoveryDocumentAsync(Options.Value.Authority);
             if (discovery.IsError || discovery.Issuer is null || discovery.TokenEndpoint is null) throw new Exception(discovery.Error);
 

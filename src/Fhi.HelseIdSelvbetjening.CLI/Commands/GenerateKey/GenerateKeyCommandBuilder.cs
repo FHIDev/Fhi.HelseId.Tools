@@ -7,13 +7,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
 {
     public class GenerateKeyCommandBuilder : ICommandBuilder
     {
-        public Action<IServiceCollection>? Services => services =>
-        {
-            services.AddTransient<IFileHandler, FileHandler>();
-        };
 
-
-        public Command? Build(IHost host)
+        public Command Build(IHost host)
         {
             var generateKeyCommand = new Command(GenerateKeyParameterNames.CommandName, "Generate a new RSA key pair");
 

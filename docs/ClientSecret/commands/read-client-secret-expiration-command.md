@@ -3,15 +3,6 @@
 
 The `readclientsecretexpiration` command allows you to query the expiration date of a client secret from HelseID. This is useful for automated monitoring and scheduling of client secret renewals in systems like Octopus Deploy.
 
-## Purpose
-
-This command enables automation of client secret management by providing programmatic access to secret expiration dates. It can be used to:
-
-- Monitor client secret expiration dates
-- Schedule automated secret renewals in CI/CD pipelines
-- Set up alerts when secrets are approaching expiration
-- Audit client secret status across multiple clients
-
 ## Authentication
 
 The command uses the client's existing private JWK (JSON Web Key) to authenticate with HelseID, similar to the update commands.

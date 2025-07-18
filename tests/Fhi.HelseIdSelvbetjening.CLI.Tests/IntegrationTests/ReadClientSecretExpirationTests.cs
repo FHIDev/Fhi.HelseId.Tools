@@ -205,7 +205,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             }
         }
 
-
         [TestCase("")]
         [TestCase("   \n\t  \r\n  ")]
         public async Task ReadClientSecretExpiration_EmptyJwkArgument_LogErrorAndSetExitCode1(string jwk)

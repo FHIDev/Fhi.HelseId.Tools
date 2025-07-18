@@ -1,5 +1,4 @@
-
-# Tool for update HelseId Client secrets (Jwk)
+# About HelseId Client secrets (Jwk)
 
 Client Secret Tool is a console application that facilitates the secure rotation of client secrets for applications integrated with Helse ID. A user initiates a request to upgrade/rotate the client secret for an application through the tools console interface. The tool provides commands for:
 

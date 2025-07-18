@@ -1,5 +1,14 @@
 site_name: FHI HelseID Tools
 theme:
-  name: material
-  palette:
-    primary: white
+  name: readthedocs
+  logo: logo_small.webp
+  features:
+  custom_dir: docs/overrides
+
+plugins:
+    - mkdocs-jupyter
+    - search
+    - mermaid2
+extra_css:
+   - overrides/readthedocs.css
+   - overrides/cards.css
