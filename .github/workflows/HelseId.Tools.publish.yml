@@ -1,39 +1,11 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
 name: HelseId.Tools.Publish
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
   release:
     types: [created]  
 
 jobs:
-  build-and-publish-executable:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-  
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
-
-    - name: Build Project
-      run: dotnet build ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj --configuration Release
-
-    - name: Publish Executable
-      run: dotnet publish  ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj --configuration Release --output publish_output --self-contained true -p:PublishSingleFile=true --runtime win-x64
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: published-app
-        path: publish_output/
-        retention-days: 2  # Optional: Set retention period
 
   publish-nuget:
     runs-on: ubuntu-latest
@@ -69,21 +41,4 @@ jobs:
         path: nuget-packages/*.nupkg
         retention-days: 7
 
-  build-and-publish-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - name: Install dependencies
-        run: |
-          pip install mkdocs-material
-      - name: Build MkDocs site
-        run: mkdocs build
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
+  
