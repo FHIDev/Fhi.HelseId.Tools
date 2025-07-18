@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../../img/favicon.ico" />
+    <title>Read client secret expiration command - FHI HelseID Tools</title>
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="../../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../../../overrides/readthedocs.css" rel="stylesheet" />
+        <link href="../../../overrides/cards.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Read client secret expiration command";
+        var mkdocs_page_input_path = "ClientSecret/commands/read-client-secret-expiration-command.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../../..">
+          <img src="../../../logo_small.webp" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">ClientSecret</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../../command-overview/">About HelseId Client secrets (Jwk)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Code lab</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../code-lab/about-codelab/">Getting started with codelab</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../code-lab/generatenewkeys/">Generate new keys command</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../code-lab/readclientsecret/">Readclientsecret</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../../code-lab/updateclientsecret/">Update client secret command</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >Commands</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../client-secret-update-commands/">Update client with new keys Commands</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generatekey-command/">Generate new keys Commands</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Read client secret expiration command</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#authentication">Authentication</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#commands">Commands</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#read-expiration-using-private-key-file">Read expiration using private key file</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#read-expiration-using-private-key-string">Read expiration using private key string</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#using-short-parameter-names">Using short parameter names</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#example-1-read-expiration-from-file">Example 1: Read expiration from file</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#example-2-read-expiration-with-inline-key">Example 2: Read expiration with inline key</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#working-with-escaped-json-from-helseid-api">Working with Escaped JSON from HelseID API</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#using-helseid-api-responses-with-powershell">Using HelseID API responses with PowerShell</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#important-avoid-direct-command-line-usage-with-escaped-json">Important: Avoid Direct Command Line Usage with Escaped JSON</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#output">Output</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#successful-response">Successful response</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#error-response">Error response</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#no-expiration-date-available">No expiration date available</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#exit-codes">Exit Codes</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#integration-with-automation-systems">Integration with Automation Systems</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#octopus-deploy-integration">Octopus Deploy Integration</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#bash-script-example">Bash Script Example</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#powershell-real-world-example-with-api-response">PowerShell Real-World Example with API Response</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#notes">Notes</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../..">FHI HelseID Tools</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">ClientSecret</li>
+          <li class="breadcrumb-item">Commands</li>
+      <li class="breadcrumb-item active">Read client secret expiration command</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <!-- filepath: c:\git\Fhi.HelseId.Tools\docs\ClientSecret\read-client-secret-expiration-command.md -->
+<h1 id="read-client-secret-expiration-command">Read Client Secret Expiration Command</h1>
+<p>The <code>readclientsecretexpiration</code> command allows you to query the expiration date of a client secret from HelseID. This is useful for automated monitoring and scheduling of client secret renewals in systems like Octopus Deploy.</p>
+<h2 id="authentication">Authentication</h2>
+<p>The command uses the client's existing private JWK (JSON Web Key) to authenticate with HelseID, similar to the update commands.</p>
+<h2 id="parameters">Parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter name</th>
+<th>Description</th>
+<th>Required</th>
+<th>Sample</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ClientId</td>
+<td>The Client's unique identifier found in Klient konfigurasjon in HelseId Selvbetjening</td>
+<td>Yes</td>
+<td><code>37a08838-db82-4de0-bfe1-bed876e7086e</code></td>
+</tr>
+<tr>
+<td>ExistingPrivateJwkPath</td>
+<td>Path to the existing private key file</td>
+<td>No*</td>
+<td><code>C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json</code></td>
+</tr>
+<tr>
+<td>ExistingPrivateJwk</td>
+<td>Private key string</td>
+<td>No*</td>
+<td><code>{"alg":"PS512","d":"xxx .....}</code></td>
+</tr>
+</tbody>
+</table>
+<p>*Either ExistingPrivateJwkPath or ExistingPrivateJwk must be provided.</p>
+<h2 id="commands">Commands</h2>
+<h3 id="read-expiration-using-private-key-file">Read expiration using private key file</h3>
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration --ClientId &lt;CLIENT_ID&gt; --ExistingPrivateJwkPath &lt;PATH_TO_PRIVATE_KEY&gt;
+</code></pre>
+<h3 id="read-expiration-using-private-key-string">Read expiration using private key string</h3>
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration --ClientId &lt;CLIENT_ID&gt; --ExistingPrivateJwk &lt;PRIVATE_KEY_JSON&gt;
+</code></pre>
+<h3 id="using-short-parameter-names">Using short parameter names</h3>
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration -c &lt;CLIENT_ID&gt; -ep &lt;PATH_TO_PRIVATE_KEY&gt;
+</code></pre>
+<h2 id="examples">Examples</h2>
+<h3 id="example-1-read-expiration-from-file">Example 1: Read expiration from file</h3>
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration \
+  --ClientId &quot;37a08838-db82-4de0-bfe1-bed876e7086e&quot; \
+  --ExistingPrivateJwkPath &quot;C:\keys\client_private.json&quot;
+</code></pre>
+<h3 id="example-2-read-expiration-with-inline-key">Example 2: Read expiration with inline key</h3>
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration \
+  --ClientId &quot;37a08838-db82-4de0-bfe1-bed876e7086e&quot; \
+  --ExistingPrivateJwk '{&quot;alg&quot;:&quot;PS512&quot;,&quot;d&quot;:&quot;...private key data...&quot;}'
+</code></pre>
+<h2 id="working-with-escaped-json-from-helseid-api">Working with Escaped JSON from HelseID API</h2>
+<h3 id="using-helseid-api-responses-with-powershell">Using HelseID API responses with PowerShell</h3>
+<p>When HelseID APIs return JWK data, it often comes with escaped quotes like: <code>{\"kty\":\"RSA\",\"kid\":\"...\"}</code></p>
+<h4 id="best-practice-powershell-variable-preserves-api-response-exactly">Best practice: PowerShell variable (preserves API response exactly)</h4>
+<pre><code class="language-powershell"># Get JWK from API response - use as-is without modification
+$apiJwkResponse = '{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key-2024\&quot;,\&quot;d\&quot;:\&quot;MIIEowIBAAKCAQEA...\&quot;,\&quot;n\&quot;:\&quot;xGHNF7qI...\&quot;,\&quot;e\&quot;:\&quot;AQAB\&quot;}'
+
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $apiJwkResponse
+</code></pre>
+<h4 id="alternative-powershell-here-string">Alternative: PowerShell here-string</h4>
+<pre><code class="language-powershell"># Wrap API response in here-string without modification
+$json = @&quot;
+{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key-2024\&quot;,\&quot;d\&quot;:\&quot;MIIEowIBAAKCAQEA...\&quot;,\&quot;n\&quot;:\&quot;xGHNF7qI...\&quot;,\&quot;e\&quot;:\&quot;AQAB\&quot;}
+&quot;@
+
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $json
+</code></pre>
+<h3 id="important-avoid-direct-command-line-usage-with-escaped-json">Important: Avoid Direct Command Line Usage with Escaped JSON</h3>
+<pre><code class="language-powershell"># This will fail due to shell parsing issues:
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk &quot;{\&quot;kty\&quot;:\&quot;RSA\&quot;}&quot;
+</code></pre>
+<h2 id="output">Output</h2>
+<p>The command outputs the expiration date in a human-readable format:</p>
+<h3 id="successful-response">Successful response</h3>
+<pre><code class="language-text">Environment: Production
+Client secret expiration date: 2025-06-27 14:30:00
+</code></pre>
+<h3 id="error-response">Error response</h3>
+<pre><code class="language-text">Environment: Production
+Failed to read client secret expiration: Unauthorized
+</code></pre>
+<h3 id="no-expiration-date-available">No expiration date available</h3>
+<pre><code class="language-text">Environment: Production
+Client secret expiration date not available in response
+</code></pre>
+<h2 id="exit-codes">Exit Codes</h2>
+<ul>
+<li><code>0</code>: Success - expiration date retrieved successfully</li>
+<li>Non-zero: Error occurred (authentication failure, network error, etc.)</li>
+</ul>
+<h2 id="integration-with-automation-systems">Integration with Automation Systems</h2>
+<h3 id="octopus-deploy-integration">Octopus Deploy Integration</h3>
+<p>This command can be integrated into Octopus Deploy runbooks to monitor client secret expiration:</p>
+<pre><code class="language-powershell"># PowerShell script step in Octopus Deploy
+$clientId = &quot;#{ClientId}&quot;
+$privateKeyPath = &quot;#{PrivateKeyPath}&quot;
+
+$result = &amp; helseid-cli readclientsecretexpiration -c $clientId -ep $privateKeyPath
+
+if ($LASTEXITCODE -eq 0) {
+    Write-Host &quot;Successfully retrieved expiration date: $result&quot;
+
+    # Extract date and calculate days until expiry
+    if ($result -match &quot;(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})&quot;) {
+        $expirationDate = [DateTime]::Parse($matches[1])
+        $daysUntilExpiry = ($expirationDate - (Get-Date)).Days
+
+        Write-Host &quot;Days until expiry: $daysUntilExpiry&quot;
+
+        if ($daysUntilExpiry -lt 30) {
+            Write-Warning &quot;Secret expires soon - scheduling renewal&quot;
+            # Add renewal logic here
+        }
+    }
+} else {
+    Write-Error &quot;Failed to retrieve expiration date: $result&quot;
+    Exit 1
+}
+</code></pre>
+<h3 id="bash-script-example">Bash Script Example</h3>
+<pre><code class="language-bash">#!/bin/bash
+# Capture exit code and output
+output=$(helseid-cli readclientsecretexpiration --ClientId &quot;$CLIENT_ID&quot; --ExistingPrivateJwkPath &quot;$KEY_PATH&quot; 2&gt;&amp;1)
+exit_code=$?
+
+if [ $exit_code -eq 0 ]; then
+    echo &quot;Output: $output&quot;
+    # Extract date from output (assuming format: &quot;Client secret expiration date: 2025-06-27 14:30:00&quot;)
+    expiration_date=$(echo &quot;$output&quot; | grep -o &quot;[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\} [0-9]\{2\}:[0-9]\{2\}:[0-9]\{2\}&quot;)
+
+    if [ ! -z &quot;$expiration_date&quot; ]; then
+        echo &quot;Secret expires at: $expiration_date&quot;
+        # Calculate days until expiration (requires date command)
+        expiry_seconds=$(date -d &quot;$expiration_date&quot; +%s)
+        current_seconds=$(date +%s)
+        days_until_expiry=$(( ($expiry_seconds - $current_seconds) / 86400 ))
+        echo &quot;Days until expiry: $days_until_expiry&quot;
+
+        if [ $days_until_expiry -lt 30 ]; then
+            echo &quot;WARNING: Secret expires soon - schedule renewal!&quot;
+        fi
+    fi
+else
+    echo &quot;Failed to read expiration: $output&quot;
+    exit 1
+fi
+</code></pre>
+<h3 id="powershell-real-world-example-with-api-response">PowerShell Real-World Example with API Response</h3>
+<pre><code class="language-powershell"># Real-world example: Get JWK from HelseID API and check expiration
+$clientId = &quot;my-client-id&quot;
+
+# API response comes with escaped quotes - use as-is
+$jwkFromApi = '{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key-2024\&quot;,\&quot;d\&quot;:\&quot;MIIEowIBAAKCAQEA...\&quot;}'
+
+# Pass API response directly without modification
+$result = &amp; helseid-cli readclientsecretexpiration --ClientId $clientId --ExistingPrivateJwk $jwkFromApi
+
+if ($LASTEXITCODE -eq 0) {
+    Write-Host &quot;Secret expiration retrieved: $result&quot;
+
+    # Extract date and calculate days until expiry
+    if ($result -match &quot;(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})&quot;) {
+        $expirationDate = [DateTime]::Parse($matches[1])
+        $daysUntilExpiry = ($expirationDate - (Get-Date)).Days
+
+        Write-Host &quot;Expires: $expirationDate ($daysUntilExpiry days)&quot;
+
+        if ($daysUntilExpiry -lt 30) {
+            Write-Warning &quot;Secret expires soon - schedule renewal!&quot;
+            # Add renewal logic or notification here
+        }
+    }
+} else {
+    Write-Error &quot;Failed: $result&quot;
+}
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>The command uses the same authentication mechanism as other HelseID commands</li>
+<li>Requires appropriate permissions (<code>nhn:selvbetjening/client</code> scope)</li>
+<li>Returns exit code 0 on success, non-zero on error for automation purposes</li>
+<li>Output format is designed to be easily parsed by automation scripts</li>
+<li>Expiration date enables precise date calculations and automation logic</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../generatekey-command/" class="btn btn-neutral float-left" title="Generate new keys Commands"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../generatekey-command/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../../..";</script>
+    <script src="../../../js/theme_extra.js"></script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
