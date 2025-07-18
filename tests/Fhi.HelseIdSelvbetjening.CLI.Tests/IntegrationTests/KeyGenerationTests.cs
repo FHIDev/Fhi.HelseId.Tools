@@ -13,11 +13,13 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         {
             var fileHandlerMock = new FileHandlerMock();
             var fakeLogProvider = new FakeLoggerProvider();
+            var prefixName = "integration_test";
+            var directoryPath = "c:\\temp";
             var args = new[]
             {
                 GenerateKeyParameterNames.CommandName,
-                $"--{filePrefix}", "integration_test",
-                $"--{directory}", "c:\\temp"
+                $"--{filePrefix}", prefixName,
+                $"--{directory}", directoryPath
             };
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithArgs(args)
@@ -31,8 +33,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Assert.That(exitCode, Is.EqualTo(0));
 
                 var logs = fakeLogProvider.Collector?.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!, Does.Contain(@"Private key saved: c:\temp\integration_test_private.json"));
-                Assert.That(logs!, Does.Contain(@"Public key saved: c:\temp\integration_test_public.json"));
+                Assert.That(logs!, Does.Contain($"Private key saved: {Path.Combine(directoryPath, prefixName)}_private.json"));
+                Assert.That(logs!, Does.Contain($"Public key saved: {Path.Combine(directoryPath, prefixName)}_public.json"));
             }
         }
 
