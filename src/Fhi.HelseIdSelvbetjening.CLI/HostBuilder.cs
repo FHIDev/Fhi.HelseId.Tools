@@ -1,3 +1,9 @@
+using Fhi.HelseIdSelvbetjening.CLI.Commands;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
+using Fhi.HelseIdSelvbetjening.CLI.Services;
+using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -6,31 +12,55 @@ using Serilog;
 
 namespace Fhi.HelseIdSelvbetjening.CLI
 {
-    internal static class HostBuilder
+    internal class CliHostBuilder
     {
-        internal static IHost CreateHost(string[] args, Action<IServiceCollection> configureServices)
+        protected readonly string[] _args;
+
+        public CliHostBuilder(string[] args)
         {
-            return Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostContext, config) =>
+            _args = args;
+        }
+
+        public virtual IHost BuildHost()
+        {
+            return Host.CreateDefaultBuilder(_args)
+                .ConfigureAppConfiguration((ctx, config) =>
                 {
-                    config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true);
-                    config.AddCommandLine(args);
+                    config.AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true);
+                    config.AddCommandLine(_args);
                 })
-                .ConfigureLogging((context, config) =>
+                .ConfigureLogging((context, builder) =>
                 {
-                    config.ClearProviders();
-                    config.AddSerilog(Log.Logger, dispose: true);
+                    builder.ClearProviders();
+                    builder.AddSerilog(Log.Logger, dispose: true);
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    // Configure SelvbetjeningConfiguration from the properly loaded configuration
-                    services.Configure<Fhi.HelseIdSelvbetjening.Services.Models.SelvbetjeningConfiguration>(
-                        context.Configuration.GetSection("SelvbetjeningConfiguration"));
+                    services.Configure<SelvbetjeningConfiguration>(context.Configuration.GetSection(nameof(SelvbetjeningConfiguration)));
+                    services.AddTransient<IFileHandler, FileHandler>();
+                    services.AddSelvbetjeningServices();
 
-                    configureServices(services);
+                    services.AddTransient<ICommandBuilder, UpdateClientKeyCommandBuilder>();
+                    services.AddTransient<ClientKeyUpdaterCommandHandler>();
+
+                    services.AddTransient<ICommandBuilder, GenerateKeyCommandBuilder>();
+
+                    services.AddTransient<ICommandBuilder, ReadClientSecretExpirationCommandBuilder>();
+                    services.AddTransient<ReadClientSecretExpirationCommandHandler>();
+
+                    services.AddTransient<ICommandBuilder, InvalidCommandBuilder>();
+
+                    services.AddSingleton<CommandBuilderRegister>();
+
+                    ConfigureServices(context, services);
                 })
                 .Build();
         }
+
+        protected virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+        {
+        }
     }
+
 
 }

@@ -7,6 +7,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
     /// <summary>
     /// Manual acceptance tests for the CLI. These tests should be run against test environment.
     /// </summary>
+    [TestFixture, Explicit]
     public class AcceptanceTests
     {
         /// <summary>
@@ -18,8 +19,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
         /// Note: In order to update secret the nhn:selvbetjening/client scope must be set on the client
         /// </summary>
         /// <returns></returns>
-        [Test]
-        [Explicit("This test generates keys and update client with new keys should be run manually.")]
+        [Test, Explicit("This test generates keys and update client with new keys should be run manually.")]
         public async Task GenerateKeys_And_UpdateClientKeysFromPath()
         {
             using var stringWriter = new StringWriter();
@@ -56,6 +56,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
 
             output = stringWriter.ToString();
             Assert.That(exitCodeUpdateClient, Is.EqualTo(0), "Update of client keys succeeded");
+            Assert.Fail();
         }
 
         /// <summary>
@@ -76,8 +77,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
         /// - Failure: Non-zero exit code with error message
         /// </summary>
         /// <returns></returns>        
-        [Test]
-        [Explicit("This test reads client secret expiration and should be run manually against test environment.")]
+        [Test, Explicit("This test reads client secret expiration and should be run manually against test environment.")]
         public async Task ReadClientSecretExpiration_FromPath()
         {
             using var stringWriter = new StringWriter();
@@ -138,8 +138,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
         /// - Failure: Non-zero exit code with error message
         /// </summary>
         /// <returns></returns>
-        [Test]
-        [Explicit("This test reads client secret expiration using direct key value and should be run manually against test environment.")]
+        [Test, Explicit("This test reads client secret expiration using direct key value and should be run manually against test environment.")]
         public async Task ReadClientSecretExpiration_FromDirectKey()
         {
             using var stringWriter = new StringWriter();

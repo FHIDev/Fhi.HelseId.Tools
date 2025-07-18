@@ -1,22 +1,17 @@
 using System.CommandLine;
-using Fhi.HelseIdSelvbetjening.CLI.Services;
-using Fhi.HelseIdSelvbetjening.Services;
-using Fhi.HelseIdSelvbetjening.Services.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using System.CommandLine.NamingConventionBinder;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
 {
-    public class UpdateClientKeyCommandBuilder : ICommandBuilder
+    internal class UpdateClientKeyCommandBuilder : ICommandBuilder
     {
-        public Action<IServiceCollection>? Services => services =>
-        {
-            services.AddTransient<IFileHandler, FileHandler>();
-            services.AddSelvbetjeningServices();
-        };
+        private readonly ClientKeyUpdaterCommandHandler _commandHandler;
 
+        public UpdateClientKeyCommandBuilder(ClientKeyUpdaterCommandHandler commandHandler)
+        {
+            _commandHandler = commandHandler;
+        }
         public Command Build(IHost host)
         {
             //TODO: should have description on options
@@ -65,54 +60,25 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 "Automatically confirm update without prompting");
             updateClientKeyCommand.AddOption(yesOption);
 
-            updateClientKeyCommand.SetHandler(async (
+            updateClientKeyCommand.Handler = CommandHandler.Create(async (
                 string clientId,
-                string? newPublicJwkPath,
-                string? existingPrivateJwkPath,
-                string? newPublicJwk,
-                string? existingPrivateJwk,
+                string newPublicJwkPath,
+                string existingPrivateJwkPath,
+                string existingPrivateJwk,
+                string newPublicJwk,
                 bool yes) =>
             {
-                try
+                var parameters = new UpdateClientKeyParameters
                 {
-                    //TODO: write to log and not console?
-                    var environment = host.Services.GetRequiredService<IHostEnvironment>().EnvironmentName;
-                    Console.WriteLine($"Environment: {environment}");
-                    if (!yes)
-                    {
-                        Console.WriteLine($"Update client in environment {environment}? y/n");
-                        var input = Console.ReadLine();
-                        if (input?.Trim().ToLower() != "y")
-                        {
-                            Console.WriteLine("Operation cancelled.");
-                            return;
-                        }
-                    }
-
-                    var parameters = new UpdateClientKeyParameters
-                    {
-                        ClientId = clientId,
-                        NewPublicJwkPath = newPublicJwkPath,
-                        ExistingPrivateJwkPath = existingPrivateJwkPath,
-                        ExistingPrivateJwk = existingPrivateJwk,
-                        NewPublicJwk = newPublicJwk
-                    };
-
-                    var logger = host.Services.GetRequiredService<ILogger<ClientKeyUpdaterService>>();
-                    var fileHandler = host.Services.GetRequiredService<IFileHandler>();
-                    var helseIdService = host.Services.GetRequiredService<IHelseIdSelvbetjeningService>();
-
-                    //TODO: Do we need ClientUpdateService? potentially move logic to that service. Now logic is in two places
-                    var service = new ClientKeyUpdaterService(parameters, helseIdService, fileHandler, logger);
-
-                    await service.ExecuteAsync();
-                }
-                catch (Exception ex)
-                {
-                    await Console.Error.WriteLineAsync($"Error updating client key: {ex.Message}");
-                }
-            },
-            clientIdOption, newPublicJwkPathOption, existingPrivateJwkPathOption, newPublicJwkOption, existingPrivateJwkOption, yesOption);
+                    ClientId = clientId,
+                    NewPublicJwkPath = newPublicJwkPath,
+                    ExistingPrivateJwkPath = existingPrivateJwkPath,
+                    ExistingPrivateJwk = existingPrivateJwk,
+                    NewPublicJwk = newPublicJwk,
+                    Yes = yes
+                };
+                return await _commandHandler.ExecuteAsync(parameters);
+            });
 
             return updateClientKeyCommand;
         }

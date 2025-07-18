@@ -2,6 +2,7 @@ using System.CommandLine;
 using System.CommandLine.Parsing;
 using Fhi.HelseIdSelvbetjening.CLI;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 /// <summary>
@@ -9,10 +10,6 @@ using Serilog;
 /// </summary>
 public partial class Program
 {
-    /// <summary>
-    /// Main program
-    /// </summary>
-    /// <param name="args"></param>
     public static async Task<int> Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
@@ -20,38 +17,25 @@ public partial class Program
             .WriteTo.Console()
             .CreateLogger();
 
-        var rootCommand = BuildRootCommand(new CommandInput() { Args = args });
-        return await rootCommand.InvokeAsync(args);
+        var command = BuildRootCommand(new CliHostBuilder(args));
+        return await command.InvokeAsync(args);
     }
 
-    internal static RootCommand BuildRootCommand(CommandInput input)
+    internal static RootCommand BuildRootCommand(CliHostBuilder hostBuilder)
     {
-        //TODO: CommandbilderFactory should probably return a collaction of commands instead that will be added to rootcommand. Use Composite pattern?
-        var commandBuilder = CommandBuilderFactory.Create(input);
-        var host = HostBuilder.CreateHost(input.Args, services =>
-        {
-            commandBuilder?.Services?.Invoke(services);
-            input.OverrideServices?.Invoke(services);
-        });
+        var host = hostBuilder.BuildHost();
+
+        var compositor = host.Services.GetRequiredService<CommandBuilderRegister>();
+        var commandBuilders = compositor.Create();
 
         var rootCommand = new RootCommand("HelseID self-service commands");
-        var command = commandBuilder?.Build(host);
-        rootCommand.AddCommand(command ?? CreateInvalidCommand());
-        return rootCommand;
-    }
 
-    /// <summary>
-    /// TODO: can also be a ICommandBuilder and added to the factory
-    /// </summary>
-    /// <returns></returns>
-    private static Command CreateInvalidCommand()
-    {
-        var invalidCommand = new Command("invalid", "Invalid command.");
-        invalidCommand.SetHandler(() =>
+        foreach (var builder in commandBuilders)
         {
-            Console.Error.WriteLine("Invalid command.");
-        });
+            var command = builder.Build(host);
+            rootCommand.AddCommand(command);
+        }
 
-        return invalidCommand;
+        return rootCommand;
     }
 }

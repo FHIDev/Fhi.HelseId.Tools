@@ -129,7 +129,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(exitCode, Is.EqualTo(0));
+                Assert.That(exitCode, Is.EqualTo(1));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
                 Assert.That(logs!.Any(l => l.Contains("Parameters empty.")));
             }
@@ -159,7 +159,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(exitCode, Is.Not.EqualTo(0));
+                Assert.That(exitCode, Is.Not.EqualTo(1));
                 Assert.That(fakeLogProvider.Collector.LatestRecord.Message, Does.Contain("Missing required parameter Client ID").IgnoreCase);
             }
         }

@@ -1,20 +1,17 @@
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
-using Fhi.HelseIdSelvbetjening.CLI.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 {
-    public class ReadClientSecretExpirationCommandBuilder : ICommandBuilder
+    internal class ReadClientSecretExpirationCommandBuilder : ICommandBuilder
     {
-        public Action<IServiceCollection>? Services => services =>
-        {
-            services.AddTransient<IFileHandler, FileHandler>();
-            services.AddSelvbetjeningServices();
-            services.AddTransient<ReadClientSecretExpirationCommandHandler>();
-        };
+        private readonly ReadClientSecretExpirationCommandHandler _commandHandler;
 
+        public ReadClientSecretExpirationCommandBuilder(ReadClientSecretExpirationCommandHandler commandHandler)
+        {
+            _commandHandler = commandHandler;
+        }
         public Command Build(IHost host)
         {
             var readExpirationCommand = new Command(ReadClientSecretExpirationParameterNames.CommandName, "Read client secret expiration date from HelseID");
@@ -48,8 +45,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 
             readExpirationCommand.Handler = CommandHandler.Create(async (string clientId, string? existingPrivateJwkPath, string? existingPrivateJwk) =>
             {
-                var handler = host.Services.GetRequiredService<ReadClientSecretExpirationCommandHandler>();
-                return await handler.ExecuteAsync(clientId, existingPrivateJwkPath, existingPrivateJwk);
+                return await _commandHandler.ExecuteAsync(clientId, existingPrivateJwkPath, existingPrivateJwk);
             });
 
             return readExpirationCommand;

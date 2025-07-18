@@ -39,5 +39,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         /// The Clients new Jwk
         /// </summary>
         public string? NewPublicJwk { get; set; }
+
+        public bool Yes { get; set; }
     };
 }

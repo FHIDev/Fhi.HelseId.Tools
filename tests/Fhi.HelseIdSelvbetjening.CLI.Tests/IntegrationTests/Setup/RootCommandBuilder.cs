@@ -1,4 +1,3 @@
-using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Fhi.HelseIdSelvbetjening.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,17 +51,15 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup
 
         public RootCommand Build()
         {
-            return Program.BuildRootCommand(new CommandInput()
+            var testHost = new TestHostBuilder(_args, services =>
             {
-                Args = _args,
-                OverrideServices = services =>
+                foreach (var registration in _registrations)
                 {
-                    foreach (var registration in _registrations)
-                    {
-                        registration(services);
-                    }
+                    registration(services);
                 }
             });
+
+            return Program.BuildRootCommand(testHost);
         }
     }
 }
