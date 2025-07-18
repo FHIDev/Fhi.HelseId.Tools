@@ -20,14 +20,15 @@ jobs:
         dotnet-version: 9.0.x
 
     - name: Get version from tag
-      id: get_version
-      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+       run:|
+        RAW_REF="${GITHUB_REF##*/}"
+        echo "VERSION=$RAW_REF" >> $GITHUB_ENV
 
     - name: Pack NuGet package
       run: |
         dotnet pack ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj \
         --configuration Release \
-        -p:PackageVersion=${{ steps.get_version.outputs.VERSION }} \
+        -p:PackageVersion=${{ env.VERSION }} \
         --output nuget-packages
 
     - name: Publish NuGet package
