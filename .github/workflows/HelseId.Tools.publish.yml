@@ -6,33 +6,11 @@ on:
     types: [created]  
 
 jobs:
-  build-and-publish-executable:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-  
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
-
-    - name: Build Project
-      run: dotnet build ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj --configuration Release
-
-    - name: Publish Executable
-      run: dotnet publish  ./src/Fhi.HelseIdSelvbetjening.CLI/Fhi.HelseIdSelvbetjening.CLI.csproj --configuration Release --output publish_output --self-contained true -p:PublishSingleFile=true --runtime win-x64
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: published-app
-        path: publish_output/
-        retention-days: 2  # Optional: Set retention period
 
   publish-nuget:
     runs-on: ubuntu-latest
     # Only run when a release is created
-    # if: github.event_name == 'release'
+    if: github.event_name == 'release'
     steps:
     - uses: actions/checkout@v4
   
