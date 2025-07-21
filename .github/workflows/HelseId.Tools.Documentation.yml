@@ -1,4 +1,7 @@
-name: Fhi.HelseID.Tools.Documentation
+name: Documentation
+description: |
+  This workflow builds the documentation using MkDocs and deploys it to GitHub Pages.
+
 on:
   push:
       branches:

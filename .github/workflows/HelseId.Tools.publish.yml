@@ -1,4 +1,7 @@
-name: HelseId.Tools.Publish
+name: Publish NuGet Package
+description: |
+  This workflow packs and publishes the NuGet package for the HelseId.Tools project
+  when a new release is created.
 
 on:
   workflow_dispatch:
