@@ -1,7 +1,10 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: HelseId.Tools.CI
+name: CI
+description: |
+  This workflow runs the Continuous Integration (CI) checks
+  including linting, testing, and build verification.
 
 on:
   pull_request:
