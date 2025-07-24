@@ -22,10 +22,9 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-    - name: Get version from tag
+    - name: Extract version from tag
       run: |
-        RAW_REF="${GITHUB_REF##*/}"
-        echo "VERSION=$RAW_REF" >> $GITHUB_ENV
+        echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
     - name: Pack NuGet package
       run: |
