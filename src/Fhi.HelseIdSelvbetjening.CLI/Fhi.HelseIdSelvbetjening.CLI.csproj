@@ -18,7 +18,7 @@
     <PackageTags>helseid;cli;configuration;key management</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/FHIDev/Fhi.HelseId.Tools</RepositoryUrl>
-    <PackageReadmeFile>../../README.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
