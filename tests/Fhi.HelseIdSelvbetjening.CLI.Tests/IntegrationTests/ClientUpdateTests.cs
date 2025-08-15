@@ -1,7 +1,8 @@
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup;
 using Fhi.HelseIdSelvbetjening.Infrastructure;
-using Fhi.HelseIdSelvbetjening.Infrastructure.Dtos;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
@@ -35,7 +36,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     .Build())
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
                                .WithDefaultConfiguration()
-                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
+                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null))
                                .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
@@ -73,7 +74,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     .Build())
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
                                .WithDefaultConfiguration()
-                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
+                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null))
                                .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("2028-08-08T00:00:00Z")).Build())
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
@@ -110,7 +111,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
                                .WithDefaultConfiguration()
-                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
+                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null))
                                .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithFileHandler(new FileHandlerBuilder()
@@ -144,7 +145,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
                                .WithDefaultConfiguration()
-                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
+                               .WithDPopTokenResponse(new TokenResponse("access_token", false, null))
                                .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
                 .WithArgs(
                 [

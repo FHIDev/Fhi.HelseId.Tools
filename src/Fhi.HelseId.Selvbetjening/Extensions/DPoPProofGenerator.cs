@@ -1,10 +1,10 @@
-using Duende.IdentityModel;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Text;
+using Duende.IdentityModel;
+using Microsoft.IdentityModel.Tokens;
 
-namespace Fhi.HelseIdSelvbetjening.Infrastructure.Tokens
+namespace Fhi.HelseIdSelvbetjening.Extensions
 {
     // TODO: Need to go through this. Copied from HelseId samples and Duende. Should we handle multiple algorithms?
     // need to figure out what algs, size etc. to support

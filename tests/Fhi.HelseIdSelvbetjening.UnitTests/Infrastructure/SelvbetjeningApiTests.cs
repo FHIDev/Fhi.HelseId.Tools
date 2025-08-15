@@ -1,5 +1,5 @@
 ﻿using Fhi.Authentication.Tokens;
-using Fhi.HelseIdSelvbetjening.Infrastructure;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
 using NSubstitute;
 using System.Net;
@@ -25,7 +25,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Infrastructure
             factory.CreateClient(Arg.Any<string>()).Returns(httpClient);
 
             var selvbetjeningApi = new SelvbetjeningApi(factory);
-            var (ClientSecrets, ProblemDetail) = await selvbetjeningApi.GetClientSecretsAsync(
+            var (ClientSecrets, _) = await selvbetjeningApi.GetClientSecretsAsync(
                 "https://nhn.selvbetjening",
                 JwkGenerator.GenerateRsaJwk().PrivateKey,
                 "accessToken");

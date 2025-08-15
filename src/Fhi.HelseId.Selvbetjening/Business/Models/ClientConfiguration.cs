@@ -1,4 +1,4 @@
-namespace Fhi.HelseIdSelvbetjening.Services.Models
+namespace Fhi.HelseIdSelvbetjening.Business.Models
 {
     /// <summary>
     /// HelseId client

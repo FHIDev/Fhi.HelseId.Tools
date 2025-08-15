@@ -24,12 +24,9 @@ public partial class Program
     internal static RootCommand BuildRootCommand(CliHostBuilder hostBuilder)
     {
         var host = hostBuilder.BuildHost();
-
-        var compositor = host.Services.GetRequiredService<CommandBuilderRegister>();
-        var commandBuilders = compositor.Create();
+        var commandBuilders = host.Services.GetServices<ICommandBuilder>();
 
         var rootCommand = new RootCommand("HelseID self-service commands");
-
         foreach (var builder in commandBuilders)
         {
             var command = builder.Build(host);

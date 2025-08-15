@@ -1,4 +1,4 @@
-namespace Fhi.HelseIdSelvbetjening.Infrastructure.Dtos
+namespace Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos
 {
     internal record ProblemDetail(
     string Type,

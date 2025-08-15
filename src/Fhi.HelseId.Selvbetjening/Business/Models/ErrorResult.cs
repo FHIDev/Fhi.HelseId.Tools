@@ -1,4 +1,4 @@
-namespace Fhi.HelseIdSelvbetjening.Services.Models
+namespace Fhi.HelseIdSelvbetjening.Business.Models
 {
     /// <summary>
     /// TODO: improve error result design. e.g. use error messages, types (warning,error, info etc.) error codes, etc.

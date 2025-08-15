@@ -1,5 +1,5 @@
+using Fhi.HelseIdSelvbetjening.Business;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
-using Fhi.HelseIdSelvbetjening.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.CommandLine;
