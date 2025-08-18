@@ -12,12 +12,9 @@
     <ToolCommandName>helseid-cli</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <Version>1.0.0-beta1</Version>
-    <Authors>FHI</Authors>
-    <Company>Folkehelseinstituttet</Company>
     <Description>Command line tool for HelseID client configuration and key management</Description>
-    <PackageTags>helseid;cli;configuration;key management</PackageTags>
+    <PackageTags>helseid;cli;configuration;keyManagement</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/FHIDev/Fhi.HelseId.Tools</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
