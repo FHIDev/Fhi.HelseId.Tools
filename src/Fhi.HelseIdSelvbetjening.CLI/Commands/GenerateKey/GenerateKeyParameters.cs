@@ -4,9 +4,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
     internal static class GenerateKeyParameterNames
     {
         public const string CommandName = "generatekey";
-        public const string KeyFileNamePrefixLong = "keyFileNamePrefix";
+        public const string KeyFileNamePrefixLong = "KeyFileNamePrefix";
         public const string KeyFileNamePrefixShort = "n";
-        public const string KeyDirectoryLong = "keyDirectory";
+        public const string KeyDirectoryLong = "KeyDirectory";
         public const string KeyDirectoryShort = "d";
 
         public static readonly CliOptionNames KeyFileNamePrefix = new(KeyFileNamePrefixLong, KeyFileNamePrefixShort);
