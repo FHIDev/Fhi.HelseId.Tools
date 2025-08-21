@@ -26,6 +26,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI
             return Host.CreateDefaultBuilder(_args)
                 .ConfigureAppConfiguration((ctx, config) =>
                 {
+                    var basePath = AppContext.BaseDirectory;
+                    config.SetBasePath(basePath);
                     config.AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true);
                     config.AddCommandLine(_args);
                 })

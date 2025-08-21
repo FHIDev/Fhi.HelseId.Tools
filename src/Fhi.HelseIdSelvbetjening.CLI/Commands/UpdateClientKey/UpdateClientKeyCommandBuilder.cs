@@ -56,7 +56,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
             updateClientKeyCommand.AddOption(existingPrivateJwkOption);
 
             var yesOption = new Option<bool>(
-                [$"--{UpdateClientKeyParameterNames.YesOption.Long}", $"--{UpdateClientKeyParameterNames.YesOption.Short}"],
+                [$"--{UpdateClientKeyParameterNames.YesOption.Long}", $"-{UpdateClientKeyParameterNames.YesOption.Short}"],
                 "Automatically confirm update without prompting");
             updateClientKeyCommand.AddOption(yesOption);
 

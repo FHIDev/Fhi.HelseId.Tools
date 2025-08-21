@@ -14,7 +14,7 @@
 |ClientId		| The Client to updates unique Identifier found in Klient konfigurasjon in HelseId Selvbetjening| `37a08838-db82-4de0-bfe1-bed876e7086e` |
 |NewPublicJwkPath|Path to the new public key.                                                                   | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_public.json`|
 |NewPublicJwk	|public key string                                                                              | `{\"alg\":\"PS512\",\"d\":\"xxx .....}`|
-|ExistingPrivateJwkPath	|Path to the new private key|`C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json`|
+|ExistingPrivateJwkPath	|Path to the existing private key|`C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json`|
 |ExistingPrivateJwk	|private key string|`{\"alg\":\"PS512\",\"d\":\"xxx .....}`|
 
 
