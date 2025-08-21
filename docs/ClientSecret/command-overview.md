@@ -11,6 +11,6 @@ The image below illustrates the steps for updating a client keys (secrets)
 ![Client Secret Management](./ClientSecretManagement.jpg)
 
 1. **Update Klientkonfiguration scope:** In order for an application to use the tool the Client must have registered _nhn:selvbetjening/client_ scope. The scope _nhn:selvbetjening/client_ to klientsystem must be added to the client system and klientkonfigurasjon
-1. **Generate new keys:** The tool generate two new json web keys (jwk), private and public, with the command `generatekey`. The public key is used by HelseID to validate the client assertion. The private key is used by the application to generate a client assertion token.
-1. **Update client with publik key:** After new keys are generated HelseId should be updated with the new public key with the command `updateclientkey`.
-1. **Update application with private key**: The application configuration must be updated with the new private key.
+1. **Generate new keys:** The tool generates two new json web keys (jwk), private and public, with the command `generatekey`. The public key is used by HelseID to validate the client assertion. The private key is used by the application to generate a client assertion token.
+1. **Update client with public key:** The HelseId client should be updated with the newly generated keys. This is done with the command `updateclientkey`.
+1. **Update application with private key**: The application configuration must be updated with the new private key for seamless integration with the updated client.

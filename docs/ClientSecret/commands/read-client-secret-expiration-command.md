@@ -11,11 +11,11 @@ The command uses the client's existing private JWK (JSON Web Key) to authenticat
 
 | Parameter name | Description | Required | Sample |
 |----------------|-------------|----------|--------|
-| ClientId | The Client's unique identifier found in Klient konfigurasjon in HelseId Selvbetjening | Yes | `37a08838-db82-4de0-bfe1-bed876e7086e` |
-| ExistingPrivateJwkPath | Path to the existing private key file | No* | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json` |
-| ExistingPrivateJwk | Private key string | No* | `{"alg":"PS512","d":"xxx .....}` |
+| ClientId | The target Client's unique identifier. <br> Found in HelseId Selvbetjening Klient konfigurasjon. | <b>Yes</b> | `37a08838-db82-4de0-bfe1-bed876e7086e` |
+| ExistingPrivateJwkPath | Path to the private key file. | <b>No*</b> | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json` |
+| ExistingPrivateJwk | Private key string. | <b>No*</b> | `{"alg":"PS512","d":"xxx .....}` |
 
-*Either ExistingPrivateJwkPath or ExistingPrivateJwk must be provided.
+<i>*Either ExistingPrivateJwkPath or ExistingPrivateJwk must be provided.</i>
 
 ## Commands
 
