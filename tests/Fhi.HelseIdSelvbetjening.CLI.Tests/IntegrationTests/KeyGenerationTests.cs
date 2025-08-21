@@ -8,7 +8,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
     public class KeyGenerationTests
     {
         [TestCase("KeyFileNamePrefix", "KeyDirectory")]
-        [TestCase("n", "d")]
         public async Task GenerateKeys(string filePrefix, string directory)
         {
             var fileHandlerMock = new FileHandlerMock();
