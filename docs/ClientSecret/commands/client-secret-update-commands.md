@@ -16,7 +16,7 @@
 |NewPublicJwk	|The new public key string.                                                                             | <b>No*</b> | `{\"alg\":\"PS512\",\"d\":\"xxx .....}`|
 |ExistingPrivateJwkPath	|Path to the existing private key.                                                      | <b>No*</b> |`C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json`|
 |ExistingPrivateJwk	|The old private key string.                                                                        | <b>No*</b> |`{\"alg\":\"PS512\",\"d\":\"xxx .....}`|
-|yes|Automatic confirmation of update without user input.                                                                        | No |--Yes|
+|Yes|Automatic confirmation of update without user input.                                                                        | No |--Yes|
 
 <i>*Either path or string parameter must be provided.</i>
 
