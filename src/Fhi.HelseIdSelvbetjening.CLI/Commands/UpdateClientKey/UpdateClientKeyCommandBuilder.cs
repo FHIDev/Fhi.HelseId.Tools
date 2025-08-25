@@ -30,7 +30,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
             {
                 if (result.GetValueOrDefault<string>() == null)
                 {
-                    result.ErrorMessage = "Missing required parameter Client ID: --clientId/-c";
+                    result.ErrorMessage = "Missing required parameter Client ID: --ClientId/-c";
                 }
             });
             updateClientKeyCommand.AddOption(clientIdOption);
