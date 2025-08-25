@@ -15,7 +15,7 @@ The command uses the client's existing private JWK (JSON Web Key) to authenticat
 | ExistingPrivateJwkPath | Path to the private key file. | <b>No*</b> | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json` |
 | ExistingPrivateJwk | Private key string. | <b>No*</b> | `{"alg":"PS512","d":"xxx .....}` |
 
-<i>*Either ExistingPrivateJwkPath or ExistingPrivateJwk must be provided.</i>
+<i>*Either ExistingPrivateJwkPath or ExistingPrivateJwk value must be provided.</i>
 
 ## Commands
 

@@ -18,7 +18,7 @@
 |ExistingPrivateJwk	|The old private key string.                                                                        | <b>No*</b> |`{\"alg\":\"PS512\",\"d\":\"xxx .....}`|
 |Yes|Automatic confirmation of update without user input.                                                                        | No |--Yes|
 
-<i>*Either path or string parameter must be provided.</i>
+<i>*Either path or string parameter value for the new and old keys must be provided.</i>
 
 ## Commands
 
