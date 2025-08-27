@@ -558,17 +558,19 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-PowerShell"><pre><span></span><span class="nv">$exePath</span> <span class="p">=</span> <span class="s2">"..\..\src\Fhi.HelseIdSelvbetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvbetjening.CLI.exe"</span>
+<div class="highlight-ipynb hl-PowerShell"><pre><span></span><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">install</span> <span class="p">-</span><span class="n">-global</span> <span class="n">Fhi</span><span class="p">.</span><span class="n">HelseIdSelvbetjening</span><span class="p">.</span><span class="nb">CLI </span><span class="p">-</span><span class="n">-prerelease</span>
 
-<span class="nv">$env:DOTNET_ENVIRONMENT</span> <span class="p">=</span> <span class="s2">"Test"</span>
-<span class="p">&amp;</span> <span class="nv">$exePath</span> <span class="n">generatekey</span> <span class="p">-</span><span class="n">-KeyFileNamePrefix</span> <span class="s2">"prefixname"</span> <span class="p">-</span><span class="n">-KeyDirectory</span> <span class="s2">"C:\\temp"</span>
-<span class="nb">Write-Host</span> <span class="nv">$output</span>
+<span class="nv">$keyFileName</span> <span class="p">=</span> <span class="s2">""</span>
+<span class="nv">$keyDirectory</span> <span class="p">=</span> <span class="s2">""</span>
+
+<span class="n">helseid-cli</span> <span class="n">generatekey</span> <span class="p">-</span><span class="n">-KeyFileNamePrefix</span> <span class="nv">$keyFileName</span> <span class="p">-</span><span class="n">-KeyDirectory</span> <span class="nv">$keyDirectory</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1">$exePath = "..\..\src\Fhi.HelseIdSelvbetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvbetjening.CLI.exe"
+<div class="clipboard-copy-txt" id="cell-1">dotnet tool install --global Fhi.HelseIdSelvbetjening.CLI --prerelease
 
-$env:DOTNET_ENVIRONMENT = "Test"
-&amp; $exePath generatekey --KeyFileNamePrefix "prefixname" --KeyDirectory "C:\\temp"
-Write-Host $output</div>
+$keyFileName = ""
+$keyDirectory = ""
+
+helseid-cli generatekey --KeyFileNamePrefix $keyFileName --KeyDirectory $keyDirectory</div>
 </div>
 </div>
 </div>

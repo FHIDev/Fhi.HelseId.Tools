@@ -172,25 +172,25 @@
 <tbody>
 <tr>
 <td>ClientId</td>
-<td>The Client's unique identifier found in Klient konfigurasjon in HelseId Selvbetjening</td>
-<td>Yes</td>
+<td>The target Client's unique identifier. <br> Found in HelseId Selvbetjening Klient konfigurasjon.</td>
+<td><b>Yes</b></td>
 <td><code>37a08838-db82-4de0-bfe1-bed876e7086e</code></td>
 </tr>
 <tr>
 <td>ExistingPrivateJwkPath</td>
-<td>Path to the existing private key file</td>
-<td>No*</td>
+<td>Path to the private key file.</td>
+<td><b>No*</b></td>
 <td><code>C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json</code></td>
 </tr>
 <tr>
 <td>ExistingPrivateJwk</td>
-<td>Private key string</td>
-<td>No*</td>
+<td>Private key string.</td>
+<td><b>No*</b></td>
 <td><code>{"alg":"PS512","d":"xxx .....}</code></td>
 </tr>
 </tbody>
 </table>
-<p>*Either ExistingPrivateJwkPath or ExistingPrivateJwk must be provided.</p>
+<p><i>*Either ExistingPrivateJwkPath or ExistingPrivateJwk value must be provided.</i></p>
 <h2 id="commands">Commands</h2>
 <h3 id="read-expiration-using-private-key-file">Read expiration using private key file</h3>
 <pre><code class="language-bash">helseid-cli readclientsecretexpiration --ClientId &lt;CLIENT_ID&gt; --ExistingPrivateJwkPath &lt;PATH_TO_PRIVATE_KEY&gt;

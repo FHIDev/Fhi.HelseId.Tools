@@ -573,9 +573,23 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-PowerShell"><pre><span></span><span class="p">//</span><span class="n">TODO</span>
+<div class="highlight-ipynb hl-PowerShell"><pre><span></span><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">install</span> <span class="p">-</span><span class="n">-global</span> <span class="n">Fhi</span><span class="p">.</span><span class="n">HelseIdSelvbetjening</span><span class="p">.</span><span class="nb">CLI </span><span class="p">-</span><span class="n">-prerelease</span>
+
+<span class="nv">$clientId</span> <span class="p">=</span> <span class="s2">""</span>
+<span class="nv">$privateJwkPath</span> <span class="p">=</span> <span class="s2">""</span>
+
+<span class="nv">$env:DOTNET_ENVIRONMENT</span> <span class="p">=</span> <span class="s2">"Test"</span> <span class="c"># Decides which configuration appsettings file to use</span>
+
+<span class="n">helseid-cli</span> <span class="n">readclientsecretexpiration</span> <span class="p">-</span><span class="n">-ClientId</span> <span class="nv">$clientId</span> <span class="p">-</span><span class="n">-ExistingPrivateJwkPath</span> <span class="nv">$privateJwkPath</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2">//TODO</div>
+<div class="clipboard-copy-txt" id="cell-2">dotnet tool install --global Fhi.HelseIdSelvbetjening.CLI --prerelease
+
+$clientId = ""
+$privateJwkPath = ""
+
+$env:DOTNET_ENVIRONMENT = "Test" # Decides which configuration appsettings file to use
+
+helseid-cli readclientsecretexpiration --ClientId $clientId --ExistingPrivateJwkPath $privateJwkPath</div>
 </div>
 </div>
 </div>

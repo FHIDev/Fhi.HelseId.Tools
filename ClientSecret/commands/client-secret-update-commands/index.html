@@ -71,6 +71,14 @@
     <li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#commands">Commands</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#updateclientkey-using-key-string">updateclientkey using key string</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#updateclientkey-using-key-path">updateclientkey using key path</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#updateclientkey-with-automatic-confirmation">updateclientkey with automatic confirmation</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#code-sample">Code sample</a>
     </li>
@@ -111,9 +119,9 @@
                 <h1 id="update-client-with-new-keys-commands">Update client with new keys Commands</h1>
 <h2 id="flow">Flow</h2>
 <ol>
-<li><strong>User Request:</strong> A user initiates a request to upgrade/rotate the client secret for an application through the tools console interface.</li>
+<li><strong>User Request:</strong> A user initiates a request to upgrade/ rotate the client secret for an application through the tools console interface.</li>
 <li><strong>Authentication:</strong> The Client Secret Tool authenticates with Helse ID using the old secret and client ID to verify its identity to get an access token.</li>
-<li><strong>Secret Update Process:</strong> The tool updates the client configuration throuhg the Helse ID Selvbetjening API passing the access token. The updated secret is then stored in the Client Configuration inside Helse ID.</li>
+<li><strong>Secret Update Process:</strong> The tool updates the client configuration through the Helse ID Selvbetjening API passing the access token. The updated secret is then stored in the Client Configuration inside Helse ID.</li>
 </ol>
 <h2 id="parameters">Parameters</h2>
 <table>
@@ -121,41 +129,59 @@
 <tr>
 <th>Parameter name</th>
 <th>Descrition</th>
+<th>Required</th>
 <th>Sample</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>ClientId</td>
-<td>The Client to updates unique Identifier found in Klient konfigurasjon in HelseId Selvbetjening</td>
+<td>The target client for the secret update. <br> Found in HelseId Selvbetjening Klient konfigurasjon.</td>
+<td><b>Yes</b></td>
 <td><code>37a08838-db82-4de0-bfe1-bed876e7086e</code></td>
 </tr>
 <tr>
 <td>NewPublicJwkPath</td>
 <td>Path to the new public key.</td>
+<td><b>No*</b></td>
 <td><code>C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_public.json</code></td>
 </tr>
 <tr>
 <td>NewPublicJwk</td>
-<td>public key string</td>
+<td>The new public key string.</td>
+<td><b>No*</b></td>
 <td><code>{\"alg\":\"PS512\",\"d\":\"xxx .....}</code></td>
 </tr>
 <tr>
 <td>ExistingPrivateJwkPath</td>
-<td>Path to the new private key</td>
+<td>Path to the existing private key.</td>
+<td><b>No*</b></td>
 <td><code>C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json</code></td>
 </tr>
 <tr>
 <td>ExistingPrivateJwk</td>
-<td>private key string</td>
+<td>The old private key string.</td>
+<td><b>No*</b></td>
 <td><code>{\"alg\":\"PS512\",\"d\":\"xxx .....}</code></td>
+</tr>
+<tr>
+<td>Yes</td>
+<td>Automatic confirmation of update without user input.</td>
+<td>No</td>
+<td>--Yes</td>
 </tr>
 </tbody>
 </table>
+<p><i>*Either path or string parameter value for the new and old keys must be provided.</i></p>
 <h2 id="commands">Commands</h2>
+<h3 id="updateclientkey-using-key-string">updateclientkey using key string</h3>
 <pre><code> updateclientkey --ClientId &lt;CLIENT_ID&gt; --NewPublicJwk &lt;NEW_KEY&gt;  --ExistingPrivateJwk &lt;OLD_KEY&gt;
 </code></pre>
+<h3 id="updateclientkey-using-key-path">updateclientkey using key path</h3>
 <pre><code> updateclientkey --ClientId &lt;CLIENT_ID&gt; --NewPublicJwkPath &lt;PATH&gt; --ExistingPrivateJwkPath &lt;PATH&gt;
+</code></pre>
+<h3 id="updateclientkey-with-automatic-confirmation">updateclientkey with automatic confirmation</h3>
+<pre><code> updateclientkey --ClientId &lt;CLIENT_ID&gt; --NewPublicJwk &lt;NEW_KEY&gt;  --ExistingPrivateJwk &lt;OLD_KEY&gt; --Yes
 </code></pre>
 <h2 id="code-sample">Code sample</h2>
 <p>See code lab <a href="../../code-lab/updateclientsecret/">Update client secret</a> </p>
