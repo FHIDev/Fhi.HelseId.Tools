@@ -30,7 +30,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
             {
                 if (result.GetValueOrDefault<string>() == null)
                 {
-                    result.ErrorMessage = "Missing required parameter Client ID: --clientId/-c";
+                    result.ErrorMessage = "Missing required parameter Client ID: --ClientId/-c";
                 }
             });
             updateClientKeyCommand.AddOption(clientIdOption);
@@ -56,7 +56,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
             updateClientKeyCommand.AddOption(existingPrivateJwkOption);
 
             var yesOption = new Option<bool>(
-                [$"--{UpdateClientKeyParameterNames.YesOption.Long}", $"--{UpdateClientKeyParameterNames.YesOption.Short}"],
+                [$"--{UpdateClientKeyParameterNames.YesOption.Long}", $"-{UpdateClientKeyParameterNames.YesOption.Short}"],
                 "Automatically confirm update without prompting");
             updateClientKeyCommand.AddOption(yesOption);
 

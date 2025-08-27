@@ -1,7 +1,4 @@
-$exePath = "..\src\Fhi.HelseIdSelvbetjening.CLI\bin\Debug\net9.0\Fhi.HelseIdSelvbetjening.CLI.exe"
+dotnet tool install --global Fhi.HelseIdSelvbetjening.CLI --version 1.0.0-beta1
 
-
-$env:DOTNET_ENVIRONMENT = "Development"
-& $exePath generatekey --KeyFileNamePrefix "name_ps" --KeyDirectory "C:\\temp"
-Write-Host $output
+helseid-cli generatekey --KeyFileNamePrefix "prefixname" --KeyDirectory "C:\\temp"
    

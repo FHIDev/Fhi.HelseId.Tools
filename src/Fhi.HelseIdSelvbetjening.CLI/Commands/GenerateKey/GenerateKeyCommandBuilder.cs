@@ -12,10 +12,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
         {
             var generateKeyCommand = new Command(GenerateKeyParameterNames.CommandName, "Generate a new RSA key pair");
 
-            var keyNameOption = new Option<string>([$"--{GenerateKeyParameterNames.KeyFileNamePrefix.Long}", $"--{GenerateKeyParameterNames.KeyFileNamePrefix.Short}"], "Prefix for the key file names");
+            var keyNameOption = new Option<string>([$"--{GenerateKeyParameterNames.KeyFileNamePrefix.Long}", $"-{GenerateKeyParameterNames.KeyFileNamePrefix.Short}"], "Prefix for the key file names");
             generateKeyCommand.AddOption(keyNameOption);
 
-            var keyDirOption = new Option<string>([$"--{GenerateKeyParameterNames.KeyDirectory.Long}", $"--{GenerateKeyParameterNames.KeyDirectory.Short}"], "Directory to store the generated keys");
+            var keyDirOption = new Option<string>([$"--{GenerateKeyParameterNames.KeyDirectory.Long}", $"-{GenerateKeyParameterNames.KeyDirectory.Short}"], "Directory to store the generated keys");
             generateKeyCommand.AddOption(keyDirOption);
             generateKeyCommand.TreatUnmatchedTokensAsErrors = true;
             generateKeyCommand.SetHandler(async (string? keyFileNamePrefix, string? keyDirectory) =>
