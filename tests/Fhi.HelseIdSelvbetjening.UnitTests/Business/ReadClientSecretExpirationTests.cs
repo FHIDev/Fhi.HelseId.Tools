@@ -1,8 +1,7 @@
+using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.Infrastructure;
-using Fhi.HelseIdSelvbetjening.Services.Models;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
-using System.Net;
-using ClientSecretDto = Fhi.HelseIdSelvbetjening.Infrastructure.Dtos.ClientSecret;
+using ClientSecretDto = Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos.ClientSecret;
 
 namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
 {
@@ -18,7 +17,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         {
             var builder = new HelseIdSelvbetjeningServiceBuilder()
                 .WithDefaultConfiguration()
-                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
+                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null))
                 .WithGetClientSecretResponse(
                 [
                     new() { Expiration = null, Kid = "-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4", JwkThumbprint = "-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4", Origin = "Gui", PublicJwk = null},
@@ -57,7 +56,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         {
             var builder = new HelseIdSelvbetjeningServiceBuilder()
                 .WithDefaultConfiguration()
-                .WithDPopTokenResponse(new TokenResponse("valid -token", false, null, HttpStatusCode.OK))
+                .WithDPopTokenResponse(new TokenResponse("valid -token", false, null))
                 .WithGetClientSecretResponse(
                 [
                     new() { Expiration = null, Kid = "-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4", JwkThumbprint = "-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4", Origin = "Gui", PublicJwk = null},
@@ -98,7 +97,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             var validDate = DateTime.UtcNow.AddDays(60);
             var builder = new HelseIdSelvbetjeningServiceBuilder()
                 .WithDefaultConfiguration()
-                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
+                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null))
                 .WithGetClientSecretResponse(
                 [
                     new ClientSecretDto() { Expiration = expiredDate, Kid = "expired-key-id", JwkThumbprint = "-JYdQcqGy0Qmbpv6pX_2EdJkGciRu7BaDJk3Hz4WdZ4", Origin = "Api", PublicJwk = null},
@@ -140,7 +139,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
 
             var builder = new HelseIdSelvbetjeningServiceBuilder()
                 .WithDefaultConfiguration()
-                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
+                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null))
                 .WithGetClientSecretResponse(
                 [
                     new() { Expiration = firstKeyDate, Kid = "first-key-id", Origin = "Api", PublicJwk = null},
@@ -186,7 +185,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             var middleKeyDate = DateTime.UtcNow.AddDays(45);
             var builder = new HelseIdSelvbetjeningServiceBuilder()
                 .WithDefaultConfiguration()
-                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
+                .WithDPopTokenResponse(new TokenResponse("valid-token", false, null))
                 .WithGetClientSecretResponse(
                 [
                     new() { Expiration = firstKeyDate, Kid = "first-key-id", Origin = "Api", PublicJwk = null},
@@ -218,7 +217,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         {
             var builder = new HelseIdSelvbetjeningServiceBuilder()
                 .WithDefaultConfiguration()
-                .WithDPopTokenResponse(new TokenResponse(null, true, "invalid_token", HttpStatusCode.BadRequest));
+                .WithDPopTokenResponse(new TokenResponse(null, true, "invalid_token"));
             var service = builder.Build();
 
             var response = await service.ReadClientSecretExpiration(new ClientConfiguration("invalid-client", "private-jwk"));

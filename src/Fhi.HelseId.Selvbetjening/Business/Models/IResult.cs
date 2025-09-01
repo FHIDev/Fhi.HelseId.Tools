@@ -1,4 +1,4 @@
-namespace Fhi.HelseIdSelvbetjening.Services.Models
+namespace Fhi.HelseIdSelvbetjening.Business.Models
 {
     public interface IResult<T, TError>
     {

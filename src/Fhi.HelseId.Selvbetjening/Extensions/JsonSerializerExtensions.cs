@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Fhi.HelseIdSelvbetjening
+namespace Fhi.HelseIdSelvbetjening.Extensions
 {
     internal static class JsonSerializerExtensions
     {

@@ -1,4 +1,4 @@
-using Fhi.HelseIdSelvbetjening.Services.Models;
+using Fhi.HelseIdSelvbetjening.Business.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

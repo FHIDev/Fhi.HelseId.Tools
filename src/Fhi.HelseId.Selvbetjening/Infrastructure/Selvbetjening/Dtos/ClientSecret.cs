@@ -1,4 +1,4 @@
-namespace Fhi.HelseIdSelvbetjening.Infrastructure.Dtos
+namespace Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos
 {
     /// <summary>
     /// Represents a client secret from the HelseID API

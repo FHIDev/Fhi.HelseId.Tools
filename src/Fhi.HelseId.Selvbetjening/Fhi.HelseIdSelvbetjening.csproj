@@ -17,6 +17,6 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Fhi.HelseIdSelvbetjening.CLI.Tests" />
     <InternalsVisibleTo Include="Fhi.HelseIdSelvbetjening.UnitTests" />
-    <InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 </Project>

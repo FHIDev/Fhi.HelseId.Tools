@@ -1,7 +1,6 @@
 using Duende.IdentityModel.Client;
-using Fhi.HelseIdSelvbetjening.Infrastructure.Tokens;
 
-namespace Fhi.HelseIdSelvbetjening.Infrastructure
+namespace Fhi.HelseIdSelvbetjening.Extensions
 {
     internal static class HttpRequestMessageExtensions
     {

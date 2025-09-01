@@ -1,9 +1,9 @@
+using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
-using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,7 +21,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI
             _args = args;
         }
 
-        public virtual IHost BuildHost()
+        public IHost BuildHost()
         {
             return Host.CreateDefaultBuilder(_args)
                 .ConfigureAppConfiguration((ctx, config) =>
@@ -44,15 +44,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI
 
                     services.AddTransient<ICommandBuilder, UpdateClientKeyCommandBuilder>();
                     services.AddTransient<ClientKeyUpdaterCommandHandler>();
-
                     services.AddTransient<ICommandBuilder, GenerateKeyCommandBuilder>();
-
                     services.AddTransient<ICommandBuilder, ReadClientSecretExpirationCommandBuilder>();
                     services.AddTransient<ReadClientSecretExpirationCommandHandler>();
-
                     services.AddTransient<ICommandBuilder, InvalidCommandBuilder>();
-
-                    services.AddSingleton<CommandBuilderRegister>();
 
                     ConfigureServices(context, services);
                 })
