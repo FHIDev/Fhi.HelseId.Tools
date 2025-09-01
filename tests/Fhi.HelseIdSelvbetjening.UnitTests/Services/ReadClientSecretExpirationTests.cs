@@ -17,7 +17,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         public async Task ReadClientSecretExpiration_MultipleKeysWithExpiration_ReturnExpirationDate()
         {
             var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration()
                 .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
                 .WithGetClientSecretResponse(
                 [
@@ -38,7 +37,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
                     "e": "AQAB"
                 }
                 
-                """));
+                """), "https://authority", "https://nhn.selvbetjening");
 
             using (Assert.EnterMultipleScope())
             {
@@ -56,7 +55,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         public async Task ReadClientSecretExpiration_MultipleKeysWithEmptyExpiration_ShouldReturnSelectedWithEmptyExpiration()
         {
             var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration()
                 .WithDPopTokenResponse(new TokenResponse("valid -token", false, null, HttpStatusCode.OK))
                 .WithGetClientSecretResponse(
                 [
@@ -76,7 +74,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
                     "e": "AQAB"
                 }
                 
-                """));
+                """), "https://authority", "https://nhn.selvbetjening");
 
             using (Assert.EnterMultipleScope())
             {
@@ -97,7 +95,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             var expiredDate = DateTime.UtcNow.AddDays(-30);
             var validDate = DateTime.UtcNow.AddDays(60);
             var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration()
                 .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
                 .WithGetClientSecretResponse(
                 [
@@ -115,7 +112,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
                 "e": "AQAB"
             }
             """;
-            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", clientJwkWithKid));
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", clientJwkWithKid), "https://authority", "https://nhn.selvbetjening");
 
             using (Assert.EnterMultipleScope())
             {
@@ -139,7 +136,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             var thirdKeyDate = DateTime.UtcNow.AddDays(45);
 
             var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration()
                 .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
                 .WithGetClientSecretResponse(
                 [
@@ -159,7 +155,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             }
             """;
 
-            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", clientJwkWithTargetKid));
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", clientJwkWithTargetKid), "https://authority", "https://nhn.selvbetjening");
 
             using (Assert.EnterMultipleScope())
             {
@@ -185,7 +181,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             var latestKeyDate = DateTime.UtcNow.AddDays(75);
             var middleKeyDate = DateTime.UtcNow.AddDays(45);
             var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration()
                 .WithDPopTokenResponse(new TokenResponse("valid-token", false, null, HttpStatusCode.OK))
                 .WithGetClientSecretResponse(
                 [
@@ -203,7 +198,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
                 "e": "AQAB"
             }
             """;
-            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", clientJwkWithoutKid));
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("test-client", clientJwkWithoutKid), "https://authority", "https://nhn.selvbetjening");
 
             using (Assert.EnterMultipleScope())
             {
@@ -217,11 +212,10 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         public async Task ReadClientSecretExpiration_InvalidClient_ReturnError()
         {
             var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration()
                 .WithDPopTokenResponse(new TokenResponse(null, true, "invalid_token", HttpStatusCode.BadRequest));
             var service = builder.Build();
 
-            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("invalid-client", "private-jwk"));
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("invalid-client", "private-jwk"), "https://authority", "https://nhn.selvbetjening");
 
             using (Assert.EnterMultipleScope())
             {
@@ -236,11 +230,10 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         [TestCase("   ")]
         public async Task ReadClientSecretExpiration_NullClientId_ReturnValidationError(string clientId)
         {
-            var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration();
+            var builder = new HelseIdSelvbetjeningServiceBuilder();
 
             var service = builder.Build();
-            var response = await service.ReadClientSecretExpiration(new ClientConfiguration(clientId, "valid-jwk"));
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration(clientId, "valid-jwk"), "https://authority", "https://nhn.selvbetjening");
 
             using (Assert.EnterMultipleScope())
             {
@@ -255,11 +248,10 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         [TestCase("   \n\t  ")]
         public async Task ReadClientSecretExpiration_NullOrEmptyJwk_ReturnValidationError(string jwk)
         {
-            var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration();
+            var builder = new HelseIdSelvbetjeningServiceBuilder();
 
             var service = builder.Build();
-            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("valid-client-id", jwk));
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("valid-client-id", jwk), "https://authority", "https://nhn.selvbetjening");
 
             using (Assert.EnterMultipleScope())
             {
@@ -272,11 +264,10 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         [Test]
         public async Task ReadClientSecretExpiration_MultipleValidationErrors_ShouldReturnAllErrors()
         {
-            var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration();
+            var builder = new HelseIdSelvbetjeningServiceBuilder();
 
             var service = builder.Build();
-            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("", ""));
+            var response = await service.ReadClientSecretExpiration(new ClientConfiguration("", ""), "https://authority", "https://nhn.selvbetjening");
 
             using (Assert.EnterMultipleScope())
             {

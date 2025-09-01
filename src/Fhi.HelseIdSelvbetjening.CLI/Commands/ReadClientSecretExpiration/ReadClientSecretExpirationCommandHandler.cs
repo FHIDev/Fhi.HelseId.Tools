@@ -21,7 +21,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
             _fileHandler = fileHandler;
         }
 
-        public async Task<int> ExecuteAsync(string clientId, string? existingPrivateJwkPath, string? existingPrivateJwk)
+        public async Task<int> ExecuteAsync(string clientId, string authority, string baseAddress, string? existingPrivateJwkPath, string? existingPrivateJwk)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                         !string.IsNullOrWhiteSpace(existingPrivateJwkPath) ? _fileHandler.ReadAllText(existingPrivateJwkPath) : string.Empty;
                     if (!string.IsNullOrWhiteSpace(privateKey))
                     {
-                        var result = await _helseIdService.ReadClientSecretExpiration(new ClientConfiguration(clientId, privateKey));
+                        var result = await _helseIdService.ReadClientSecretExpiration(new ClientConfiguration(clientId, privateKey), authority, baseAddress);
 
                         return result.HandleResponse(
                             onSuccess: value =>

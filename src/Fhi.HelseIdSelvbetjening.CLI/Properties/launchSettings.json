@@ -2,7 +2,7 @@
   "profiles": {
     "Generatekey": {
       "commandName": "Project",
-      "commandLineArgs": "generatekey --KeyFileNamePrefix name  --KeyDirectory C:\\temp",
+      "commandLineArgs": "generatekey --KeyFileNamePrefix name --KeyDirectory C:\\temp",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

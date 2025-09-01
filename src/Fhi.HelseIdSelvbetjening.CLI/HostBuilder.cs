@@ -26,7 +26,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI
             return Host.CreateDefaultBuilder(_args)
                 .ConfigureAppConfiguration((ctx, config) =>
                 {
-                    config.AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true);
                     config.AddCommandLine(_args);
                 })
                 .ConfigureLogging((context, builder) =>
@@ -36,7 +35,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services.Configure<SelvbetjeningConfiguration>(context.Configuration.GetSection(nameof(SelvbetjeningConfiguration)));
                     services.AddTransient<IFileHandler, FileHandler>();
                     services.AddSelvbetjeningServices();
 

@@ -43,6 +43,12 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                     }
                 }
 
+                if (string.IsNullOrEmpty(parameters.AuthorityUrl) || string.IsNullOrEmpty(parameters.BaseAddress))
+                {
+                    _logger.LogError("Parameters empty. Authority: {parameters.Authority} BaseAddress: {parameters.BaseAddress}", parameters.AuthorityUrl, parameters.BaseAddress);
+                    return 1;
+                }
+
                 _logger.LogInformation("Update client {@ClientId}", parameters.ClientId);
 
                 var newKey = !string.IsNullOrEmpty(parameters.NewPublicJwk) ? parameters.NewPublicJwk :
@@ -54,7 +60,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 //TODO: handled by the options? Set required parameters?
                 if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))
                 {
-                    var result = await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(parameters.ClientId, oldKey), newKey);
+                    var result = await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(parameters.ClientId, oldKey), parameters.AuthorityUrl, parameters.BaseAddress, newKey);
                     _logger.LogInformation(result.HttpStatus.ToString());
                     _logger.LogInformation(result.Message);
                 }

@@ -18,6 +18,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             const string clientId = "test-client-id";
             const string existingPrivateJwkPath = "c:\\temp\\existing-private.json";
             const string newPublicJwkPath = "c:\\temp\\new-public.json";
+            const string authorityUrl = "https://helseid-sts.test.nhn.no";
+            const string baseAddress = "https://api.selvbetjening.test.nhn.no";
 
             var fakeLogProvider = new FakeLoggerProvider();
             var rootCommandBuilder = new RootCommandBuilder()
@@ -27,6 +29,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     $"--{UpdateClientKeyParameterNames.ClientId.Long}", clientId,
                     $"--{UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Long}", existingPrivateJwkPath,
                     $"--{UpdateClientKeyParameterNames.NewPublicJwkPath.Long}", newPublicJwkPath,
+                    $"--{UpdateClientKeyParameterNames.AuthorityUrl.Long}", authorityUrl,
+                    $"--{UpdateClientKeyParameterNames.BaseAddress.Long}", baseAddress,
                     $"--{UpdateClientKeyParameterNames.YesOption.Long}"
                 ])
                 .WithFileHandler(new FileHandlerBuilder()
@@ -34,7 +38,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     .WithNewPublicJwk(newPublicJwkPath)
                     .Build())
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
-                               .WithDefaultConfiguration()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
                                .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
@@ -57,12 +60,16 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             const string clientId = "test-client-id";
             const string existingPrivateJwk = "{\"kid\":\"test-kid\",\"kty\":\"RSA\",\"private\":\"key-data\"}";
             const string newPublicJwk = "{\"kid\":\"new-kid\",\"kty\":\"RSA\",\"public\":\"key-data\"}";
+            const string authorityUrl = "https://helseid-sts.test.nhn.no";
+            const string baseAddress = "https://api.selvbetjening.test.nhn.no";
             var args = new[]
             {
                 UpdateClientKeyParameterNames.CommandName,
                 $"--{UpdateClientKeyParameterNames.ClientId.Long}", clientId,
                 $"--{UpdateClientKeyParameterNames.ExistingPrivateJwk.Long}", existingPrivateJwk,
                 $"--{UpdateClientKeyParameterNames.NewPublicJwk.Long}", newPublicJwk,
+                $"--{UpdateClientKeyParameterNames.AuthorityUrl.Long}", authorityUrl,
+                $"--{UpdateClientKeyParameterNames.BaseAddress.Long}", baseAddress,
                 $"--{UpdateClientKeyParameterNames.YesOption.Long}"
             };
 
@@ -72,7 +79,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithFileHandler(new FileHandlerBuilder()
                     .Build())
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
-                               .WithDefaultConfiguration()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
                                .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("2028-08-08T00:00:00Z")).Build())
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
@@ -109,7 +115,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
-                               .WithDefaultConfiguration()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
                                .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
@@ -143,7 +148,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
-                               .WithDefaultConfiguration()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
                                .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
                 .WithArgs(

@@ -4,7 +4,7 @@ $newKey = ""
 $oldKey =""
 
 
-$env:DOTNET_ENVIRONMENT = "Development"
+$env:DOTNET_ENVIRONMENT = "Test"
 
 & $exePath updateclientkey --ClientId $clientId --NewClientJwk $newKey --OldClientJwk $oldKey
 

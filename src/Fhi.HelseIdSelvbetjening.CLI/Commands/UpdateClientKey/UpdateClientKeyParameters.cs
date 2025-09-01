@@ -6,11 +6,13 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
     {
         public const string CommandName = "updateclientkey";
         public static readonly UpdateClientKeyOptionNames ClientId = new("ClientId", "c");
-        public static readonly UpdateClientKeyOptionNames NewPublicJwkPath = new("NewPublicJwkPath", "np");
         public static readonly UpdateClientKeyOptionNames ExistingPrivateJwkPath = new("ExistingPrivateJwkPath", "ep");
-        public static readonly UpdateClientKeyOptionNames NewPublicJwk = new("NewPublicJwk", "n");
         public static readonly UpdateClientKeyOptionNames ExistingPrivateJwk = new("ExistingPrivateJwk", "e");
-        public static readonly UpdateClientKeyOptionNames YesOption = new("yes", "y");
+        public static readonly UpdateClientKeyOptionNames NewPublicJwkPath = new("NewPublicJwkPath", "np");
+        public static readonly UpdateClientKeyOptionNames NewPublicJwk = new("NewPublicJwk", "n");
+        public static readonly UpdateClientKeyOptionNames YesOption = new("Yes", "y");
+        public static readonly UpdateClientKeyOptionNames AuthorityUrl = new("AuthorityUrl", "a");
+        public static readonly UpdateClientKeyOptionNames BaseAddress = new("BaseAddress", "b");
     }
 
 
@@ -39,6 +41,14 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         /// The Clients new Jwk
         /// </summary>
         public string? NewPublicJwk { get; set; }
+        /// <summary>
+        /// Url of athority
+        /// </summary>
+        public string? AuthorityUrl { get; set; }
+        /// <summary>
+        /// Baseaddress of target API
+        /// </summary>
+        public string? BaseAddress { get; set; }
 
         public bool Yes { get; set; }
     };

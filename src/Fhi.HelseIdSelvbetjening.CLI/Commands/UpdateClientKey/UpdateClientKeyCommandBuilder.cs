@@ -30,7 +30,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
             {
                 if (result.GetValueOrDefault<string>() == null)
                 {
-                    result.ErrorMessage = "Missing required parameter Client ID: --clientId/-c";
+                    result.ErrorMessage = "Missing required parameter Client ID: --ClientId/-c";
                 }
             });
             updateClientKeyCommand.AddOption(clientIdOption);
@@ -55,8 +55,18 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 "Existing private key value");
             updateClientKeyCommand.AddOption(existingPrivateJwkOption);
 
+            var authorityUrl = new Option<string>(
+                [$"--{UpdateClientKeyParameterNames.AuthorityUrl.Long}", $"-{UpdateClientKeyParameterNames.AuthorityUrl.Short}"],
+                "Authority url to update secret on");
+            updateClientKeyCommand.AddOption(authorityUrl);
+
+            var baseAddress = new Option<string>(
+                [$"--{UpdateClientKeyParameterNames.BaseAddress.Long}", $"-{UpdateClientKeyParameterNames.BaseAddress.Short}"],
+                "baseAddress url to update secret on");
+            updateClientKeyCommand.AddOption(baseAddress);
+
             var yesOption = new Option<bool>(
-                [$"--{UpdateClientKeyParameterNames.YesOption.Long}", $"--{UpdateClientKeyParameterNames.YesOption.Short}"],
+                [$"--{UpdateClientKeyParameterNames.YesOption.Long}", $"-{UpdateClientKeyParameterNames.YesOption.Short}"],
                 "Automatically confirm update without prompting");
             updateClientKeyCommand.AddOption(yesOption);
 
@@ -66,6 +76,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 string existingPrivateJwkPath,
                 string existingPrivateJwk,
                 string newPublicJwk,
+                string authorityUrl,
+                string baseAddress,
                 bool yes) =>
             {
                 var parameters = new UpdateClientKeyParameters
@@ -75,6 +87,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                     ExistingPrivateJwkPath = existingPrivateJwkPath,
                     ExistingPrivateJwk = existingPrivateJwk,
                     NewPublicJwk = newPublicJwk,
+                    AuthorityUrl = authorityUrl,
+                    BaseAddress = baseAddress,
                     Yes = yes
                 };
                 return await _commandHandler.ExecuteAsync(parameters);

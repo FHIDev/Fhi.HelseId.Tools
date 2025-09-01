@@ -233,7 +233,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         private static HelseIdSelvbetjening.Services.HelseIdSelvbetjeningService CreateSelvbetjeningService(List<ClientSecret> clientSecrets)
         {
             return new HelseIdSelvbetjeningServiceBuilder()
-                               .WithDefaultConfiguration()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null, System.Net.HttpStatusCode.OK))
                                .WithGetClientSecretResponse(clientSecrets).Build();
         }

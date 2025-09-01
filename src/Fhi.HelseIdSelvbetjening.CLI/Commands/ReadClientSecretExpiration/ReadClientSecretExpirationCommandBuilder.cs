@@ -43,9 +43,19 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 "Existing private key value");
             readExpirationCommand.AddOption(existingPrivateJwkOption);
 
-            readExpirationCommand.Handler = CommandHandler.Create(async (string clientId, string? existingPrivateJwkPath, string? existingPrivateJwk) =>
+            var authorityUrl = new Option<string>(
+                [$"--{ReadClientSecretExpirationParameterNames.AuthorityUrl.Long}", $"-{ReadClientSecretExpirationParameterNames.AuthorityUrl.Short}"],
+                "Authority url to update secret on");
+            readExpirationCommand.AddOption(authorityUrl);
+
+            var baseAddress = new Option<string>(
+                [$"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", $"-{ReadClientSecretExpirationParameterNames.BaseAddress.Short}"],
+                "Base Address url to update secret on");
+            readExpirationCommand.AddOption(baseAddress);
+
+            readExpirationCommand.Handler = CommandHandler.Create(async (string clientId, string? existingPrivateJwkPath, string authorityUrl, string baseAddress, string? existingPrivateJwk) =>
             {
-                return await _commandHandler.ExecuteAsync(clientId, existingPrivateJwkPath, existingPrivateJwk);
+                return await _commandHandler.ExecuteAsync(clientId, authorityUrl, baseAddress, existingPrivateJwkPath, existingPrivateJwk);
             });
 
             return readExpirationCommand;

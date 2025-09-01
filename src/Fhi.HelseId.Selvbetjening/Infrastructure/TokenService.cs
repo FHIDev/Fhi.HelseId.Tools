@@ -13,27 +13,28 @@ namespace Fhi.HelseIdSelvbetjening.Infrastructure
         /// Create DPoP token
         /// </summary>
         /// <param name="clientId">Client Identifier</param>
+        /// <param name="authority">Authority to send request</param>
         /// <param name="jwk">The private json web key for client assertion</param>
         /// <param name="scopes">Separated list of scopes</param>
         /// <param name="dPopJwk">The private json web key for DPoP</param>
         /// <returns></returns>
-        public Task<TokenResponse> CreateDPoPToken(string clientId, string jwk, string scopes, string dPopJwk);
+        public Task<TokenResponse> CreateDPoPToken(string clientId, string authority, string jwk, string scopes, string dPopJwk);
     }
 
     internal class TokenService(
         ILogger<TokenService> Logger,
-        IOptions<SelvbetjeningConfiguration> Options,
         IHttpClientFactory HttpClientFactory) : ITokenService
     {
         public async Task<TokenResponse> CreateDPoPToken(
            string clientId,
+           string authority,
            string jwk,
            string scopes,
            string dPopJwk)
         {
             var client = HttpClientFactory.CreateClient();
-            Logger.LogInformation("Get metadata from discovery endpoint from Authority {@Authority}", Options.Value.Authority);
-            var discovery = await client.GetDiscoveryDocumentAsync(Options.Value.Authority);
+            Logger.LogInformation("Get metadata from discovery endpoint from Authority {@Authority}", authority);
+            var discovery = await client.GetDiscoveryDocumentAsync(authority);
             if (discovery.IsError || discovery.Issuer is null || discovery.TokenEndpoint is null) throw new Exception(discovery.Error);
 
             Logger.LogDebug("DPoP token nonce request");
