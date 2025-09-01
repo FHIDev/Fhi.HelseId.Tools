@@ -23,7 +23,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Setup
                 Arg.Any<string>(),
                 Arg.Any<string>(),
                 Arg.Any<string>(),
-                Arg.Any<string>(),
                 Arg.Any<string>())
                 .Returns(Task.FromResult(tokenResponse));
             return this;
