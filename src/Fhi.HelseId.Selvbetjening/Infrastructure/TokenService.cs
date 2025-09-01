@@ -1,71 +1,96 @@
-using System.Net;
+using Duende.IdentityModel;
 using Duende.IdentityModel.Client;
-using Fhi.HelseIdSelvbetjening.Services.Models;
+using Fhi.Authentication.Tokens;
+using Fhi.HelseIdSelvbetjening.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Fhi.HelseIdSelvbetjening.Infrastructure
 {
-    internal record TokenResponse(string? AccessToken, bool IsError, string? Error, HttpStatusCode HttpStatusCode);
+    internal record TokenResponse(string? AccessToken, bool IsError, string? ErrorDescription);
     internal interface ITokenService
     {
         /// <summary>
         /// Create DPoP token
         /// </summary>
+        /// <param name="authority">The OpenId connectprovider authority Url</param>
         /// <param name="clientId">Client Identifier</param>
-        /// <param name="authority">Authority to send request</param>
         /// <param name="jwk">The private json web key for client assertion</param>
         /// <param name="scopes">Separated list of scopes</param>
         /// <param name="dPopJwk">The private json web key for DPoP</param>
         /// <returns></returns>
-        public Task<TokenResponse> CreateDPoPToken(string clientId, string authority, string jwk, string scopes, string dPopJwk);
+        public Task<TokenResponse> RequestDPoPToken(string authority, string clientId, string jwk, string scopes, string dPopJwk);
     }
 
     internal class TokenService(
         ILogger<TokenService> Logger,
         IHttpClientFactory HttpClientFactory) : ITokenService
     {
-        public async Task<TokenResponse> CreateDPoPToken(
-           string clientId,
-           string authority,
-           string jwk,
-           string scopes,
-           string dPopJwk)
+        public async Task<TokenResponse> RequestDPoPToken(
+            string authority,
+            string clientId,
+            string jwk,
+            string scopes,
+            string dPopJwk)
         {
             var client = HttpClientFactory.CreateClient();
             Logger.LogInformation("Get metadata from discovery endpoint from Authority {@Authority}", authority);
             var discovery = await client.GetDiscoveryDocumentAsync(authority);
-            if (discovery.IsError || discovery.Issuer is null || discovery.TokenEndpoint is null) throw new Exception(discovery.Error);
-
-            Logger.LogDebug("DPoP token nonce request");
-            var nonceRequest = new ClientCredentialRequestBuilder()
-                .Create(discovery.TokenEndpoint, clientId)
-                .WithDPoP(discovery.TokenEndpoint, HttpMethod.Post.ToString(), dPopJwk, "PS256")
-                .WithClientAssertion(discovery.Issuer, jwk)
-                .WithScope(scopes)
-                .Build();
-            var response = await client.RequestClientCredentialsTokenAsync(nonceRequest);
-
-            if (response.Error == "use_dpop_nonce" && response.DPoPNonce is not null)
+            if (discovery is not null && !discovery.IsError && discovery.Issuer is not null && discovery.TokenEndpoint is not null)
             {
-                Logger.LogDebug("DPoP token request with nonce");
-                var tokenRequest = new ClientCredentialRequestBuilder()
-                    .Create(discovery.TokenEndpoint, clientId)
-                    .WithDPoPNonce(discovery.TokenEndpoint, HttpMethod.Post.ToString(), dPopJwk, "PS256", response.DPoPNonce)
-                    .WithClientAssertion(discovery.Issuer, jwk)
-                    .WithScope(scopes)
-                    .Build();
-                response = await client.RequestClientCredentialsTokenAsync(tokenRequest);
-            }
-            else if (response.IsError)
-            {
-                Logger.LogError(response.Error);
-                return new TokenResponse(response.AccessToken, true, response.Error, response.HttpStatusCode);
+                var response = await client.RequestTokenWithDPoP(discovery, clientId, jwk, scopes, dPopJwk);
+
+                if (response.IsError &&
+                    response.Error == "use_dpop_nonce" &&
+                    response.HttpResponse?.Headers.Contains("DPoP-Nonce") == true)
+                {
+                    var nonce = response.HttpResponse.Headers.GetValues("DPoP-Nonce").FirstOrDefault();
+                    if (!string.IsNullOrEmpty(nonce))
+                    {
+                        response = await client.RequestTokenWithDPoP(discovery, clientId, jwk, scopes, dPopJwk, nonce);
+                    }
+                }
+
+                return response.IsError ?
+                    new TokenResponse(null, true, response.ErrorDescription) :
+                    new TokenResponse(response.AccessToken, false, string.Empty);
             }
 
-            Logger.LogInformation("Successfully get DPoP token for client {clientId}", clientId);
+            return new TokenResponse(null, true, discovery is null ? "No discovery document" : discovery.Error);
+        }
+    }
 
-            return new TokenResponse(response.AccessToken, false, string.Empty, response.HttpStatusCode);
+    internal static class HttpClientExtensions
+    {
+        internal static async Task<Duende.IdentityModel.Client.TokenResponse> RequestTokenWithDPoP(
+          this HttpClient client,
+          DiscoveryDocumentResponse discovery,
+          string clientId,
+          string jwk,
+          string scopes,
+          string dPopJwk,
+          string? nonce = null)
+        {
+            var tokenRequest = new ClientCredentialsTokenRequest
+            {
+                ClientId = clientId,
+                Address = discovery.TokenEndpoint,
+                GrantType = OidcConstants.GrantTypes.ClientCredentials,
+                ClientCredentialStyle = ClientCredentialStyle.PostBody,
+                DPoPProofToken = DPoPProofGenerator.CreateDPoPProof(
+                    discovery.TokenEndpoint!,
+                    "POST",
+                    dPopJwk,
+                    "PS256",
+                    dPoPNonce: nonce),
+                ClientAssertion = new ClientAssertion
+                {
+                    Type = OidcConstants.ClientAssertionTypes.JwtBearer,
+                    Value = ClientAssertionTokenHandler.CreateJwtToken(discovery.Issuer!, clientId, jwk)
+                },
+                Scope = scopes
+            };
+
+            return await client.RequestClientCredentialsTokenAsync(tokenRequest);
         }
     }
 }

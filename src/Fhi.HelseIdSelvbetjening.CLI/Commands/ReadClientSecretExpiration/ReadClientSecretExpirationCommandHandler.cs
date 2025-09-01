@@ -1,6 +1,6 @@
+using Fhi.HelseIdSelvbetjening.Business;
+using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
-using Fhi.HelseIdSelvbetjening.Services;
-using Fhi.HelseIdSelvbetjening.Services.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration

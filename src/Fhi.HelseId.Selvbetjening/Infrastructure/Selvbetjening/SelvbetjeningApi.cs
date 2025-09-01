@@ -1,7 +1,8 @@
 using System.Net.Http.Json;
-using Fhi.HelseIdSelvbetjening.Infrastructure.Dtos;
+using Fhi.HelseIdSelvbetjening.Extensions;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos;
 
-namespace Fhi.HelseIdSelvbetjening.Infrastructure
+namespace Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening
 {
     internal interface ISelvbetjeningApi
     {

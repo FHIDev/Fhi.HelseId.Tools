@@ -1,7 +1,8 @@
+using Fhi.HelseIdSelvbetjening.Business;
+using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.Infrastructure;
-using Fhi.HelseIdSelvbetjening.Infrastructure.Dtos;
-using Fhi.HelseIdSelvbetjening.Services;
-using Fhi.HelseIdSelvbetjening.Services.Models;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
@@ -17,7 +18,8 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Setup
 
         public HelseIdSelvbetjeningServiceBuilder WithDPopTokenResponse(TokenResponse tokenResponse)
         {
-            TokenService.CreateDPoPToken(
+            TokenService.RequestDPoPToken(
+                Arg.Any<string>(),
                 Arg.Any<string>(),
                 Arg.Any<string>(),
                 Arg.Any<string>(),
@@ -39,7 +41,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Setup
             return this;
         }
 
-        public HelseIdSelvbetjeningServiceBuilder WithGetClientSecretResponse(IEnumerable<HelseIdSelvbetjening.Infrastructure.Dtos.ClientSecret>? clientSecrets = default!, ProblemDetail? problemDetail = null)
+        public HelseIdSelvbetjeningServiceBuilder WithGetClientSecretResponse(IEnumerable<HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos.ClientSecret>? clientSecrets = default!, ProblemDetail? problemDetail = null)
         {
             SelvbetjeningApi.GetClientSecretsAsync(
                 Arg.Any<string>(),

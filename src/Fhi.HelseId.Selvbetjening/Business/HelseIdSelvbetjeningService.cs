@@ -1,33 +1,28 @@
 using System.Net;
 using Fhi.Authentication.Tokens;
+using Fhi.HelseIdSelvbetjening.Business.Models;
+using Fhi.HelseIdSelvbetjening.Extensions;
 using Fhi.HelseIdSelvbetjening.Infrastructure;
-using Fhi.HelseIdSelvbetjening.Services.Models;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Fhi.HelseIdSelvbetjening.Services
+namespace Fhi.HelseIdSelvbetjening.Business
 {
-    internal class HelseIdSelvbetjeningService : IHelseIdSelvbetjeningService
+    internal class HelseIdSelvbetjeningService(
+        ITokenService tokenService,
+        ISelvbetjeningApi selvbetjeningApi,
+        ILogger<HelseIdSelvbetjeningService> logger) : IHelseIdSelvbetjeningService
     {
-        private readonly ITokenService _tokenService;
-        private readonly ISelvbetjeningApi _selvbetjeningApi;
-        private readonly ILogger<HelseIdSelvbetjeningService> _logger;
-
-        public HelseIdSelvbetjeningService(
-            ITokenService tokenService,
-            ISelvbetjeningApi selvbetjeningApi,
-            ILogger<HelseIdSelvbetjeningService> logger)
-        {
-            _tokenService = tokenService;
-            _selvbetjeningApi = selvbetjeningApi;
-            _logger = logger;
-        }
+        private readonly ITokenService _tokenService = tokenService;
+        private readonly ISelvbetjeningApi _selvbetjeningApi = selvbetjeningApi;
+        private readonly ILogger<HelseIdSelvbetjeningService> _logger = logger;
 
         public async Task<ClientSecretUpdateResponse> UpdateClientSecret(ClientConfiguration clientToUpdate, string authority, string baseAddress, string newPublicJwk)
         {
             _logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
             var dPoPKey = CreateDPoPKey();
-            var response = await _tokenService.CreateDPoPToken(clientToUpdate.ClientId, authority, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
+            var response = await _tokenService.RequestDPoPToken(authority, clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
             if (!response.IsError && response.AccessToken != null)
             {
                 var (ClientSecretUpdate, ProblemDetail) = await _selvbetjeningApi.UpdateClientSecretsAsync(
@@ -45,8 +40,8 @@ namespace Fhi.HelseIdSelvbetjening.Services
                 return new ClientSecretUpdateResponse(HttpStatusCode.OK, ClientSecretUpdate?.Serialize());
             }
 
-            _logger.LogError("Could not update client {@ClientId}. StatusCode: {@StatusCode}  Error: {@Message}", clientToUpdate.ClientId, response.HttpStatusCode, response.Error);
-            return new(response.HttpStatusCode, response.Error);
+            _logger.LogError("Could not update client {@ClientId}.  Error: {@Message}", clientToUpdate.ClientId, response.ErrorDescription);
+            return new(null, response.ErrorDescription);
         }
 
         public async Task<IResult<ClientSecretExpirationResponse, ErrorResult>> ReadClientSecretExpiration(ClientConfiguration clientConfiguration, string authority, string baseAddress)
@@ -56,16 +51,16 @@ namespace Fhi.HelseIdSelvbetjening.Services
                 return new Error<ClientSecretExpirationResponse, ErrorResult>(errorResult);
 
             var dPoPKey = CreateDPoPKey();
-            var response = await _tokenService.CreateDPoPToken(
-                clientConfiguration.ClientId,
+            var response = await _tokenService.RequestDPoPToken(
                 authority,
+                clientConfiguration.ClientId,
                 clientConfiguration.Jwk,
                 "nhn:selvbetjening/client",
                 dPoPKey);
 
             if (response.IsError || response.AccessToken is null)
             {
-                errorResult.AddError($"Token request failed {response.Error}");
+                errorResult.AddError($"Token request failed {response.ErrorDescription}");
                 return new Error<ClientSecretExpirationResponse, ErrorResult>(errorResult);
             }
 
@@ -85,6 +80,7 @@ namespace Fhi.HelseIdSelvbetjening.Services
                     AllSecrets = ClientSecrets?.Select(s => new ClientSecret(s.Expiration, s.Kid, s.Origin)).ToList() ?? []
                 });
         }
+
         /// <summary>
         /// Validates client configuration and collects all validation errors
         /// </summary>

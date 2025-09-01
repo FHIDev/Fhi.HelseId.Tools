@@ -36,6 +36,10 @@
 ```
  updateclientkey --ClientId <CLIENT_ID> --NewPublicJwk <NEW_KEY>  --ExistingPrivateJwk <OLD_KEY> --AuthorityUrl <AUTHORITY_URL> --BaseAddress <BASE_URL> --Yes 
 ```
+### updateclientkey with automatic confirmation
+```
+ updateclientkey --ClientId <CLIENT_ID> --NewPublicJwk <NEW_KEY>  --ExistingPrivateJwk <OLD_KEY> --Yes
+```
 
 ## Code sample
 
