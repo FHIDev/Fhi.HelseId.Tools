@@ -1,4 +1,3 @@
-using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration;
@@ -41,6 +40,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI
                     services.AddTransient<ICommandBuilder, UpdateClientKeyCommandBuilder>();
                     services.AddTransient<ClientKeyUpdaterCommandHandler>();
                     services.AddTransient<ICommandBuilder, GenerateKeyCommandBuilder>();
+                    services.AddTransient<KeyGeneratorHandler>();
                     services.AddTransient<ICommandBuilder, ReadClientSecretExpirationCommandBuilder>();
                     services.AddTransient<ReadClientSecretExpirationCommandHandler>();
                     services.AddTransient<ICommandBuilder, InvalidCommandBuilder>();
@@ -54,6 +54,4 @@ namespace Fhi.HelseIdSelvbetjening.CLI
         {
         }
     }
-
-
 }
