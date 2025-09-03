@@ -97,13 +97,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             }
         }
 
-        [Test]
-        [Ignore("Need to implement prompt logic for environment selection")]
-        public void UpdateClientKeys_PromptForEnvironment_StopOnInput()
-        {
-            // TODO: Implement test logic for prompt
-        }
-
         [TestCase("", "c:\\temp")]
         [TestCase("c:\\temp", "")]
         public async Task UpdateClientKey_EmptyJwkArguments_LogErrorAndExitCode1(string newKeyPath, string oldKeyPath)
