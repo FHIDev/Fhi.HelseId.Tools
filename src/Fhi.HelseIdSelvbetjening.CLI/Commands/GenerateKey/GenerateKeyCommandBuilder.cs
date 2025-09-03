@@ -28,9 +28,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
                         KeyDirectory = keyDirectory
                     };
 
-                    var logger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<KeyGeneratorService>>();
+                    var logger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<KeyGeneratorHandler>>();
                     var fileWriter = host.Services.GetRequiredService<IFileHandler>();
-                    var service = new KeyGeneratorService(parameters, fileWriter, logger);
+                    var service = new KeyGeneratorHandler(parameters, fileWriter, logger);
 
                     await service.ExecuteAsync();
                 }

@@ -4,13 +4,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
 {
-    internal class KeyGeneratorService
+    internal class KeyGeneratorHandler
     {
         private readonly GenerateKeyParameters _parameters;
         private readonly IFileHandler _fileHandler;
-        private readonly ILogger<KeyGeneratorService> _logger;
+        private readonly ILogger<KeyGeneratorHandler> _logger;
 
-        public KeyGeneratorService(GenerateKeyParameters parameters, IFileHandler fileHandler, ILogger<KeyGeneratorService> logger)
+        public KeyGeneratorHandler(GenerateKeyParameters parameters, IFileHandler fileHandler, ILogger<KeyGeneratorHandler> logger)
         {
             _parameters = parameters;
             _fileHandler = fileHandler;
