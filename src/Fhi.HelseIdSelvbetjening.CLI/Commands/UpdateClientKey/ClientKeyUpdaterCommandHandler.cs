@@ -29,16 +29,15 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         {
             try
             {
-                //TODO: write to log and not console?
                 var environment = _hostEnvironment;
-                Console.WriteLine($"Environment: {environment}");
+                _logger.LogInformation($"Environment: {environment}");
                 if (!parameters.Yes)
                 {
-                    Console.WriteLine($"Update client in environment {environment}? y/n");
+                    _logger.LogInformation($"Update client in environment {environment}? y/n");
                     var input = Console.ReadLine();
                     if (input?.Trim().ToLower() != "y")
                     {
-                        Console.WriteLine("Operation cancelled.");
+                        _logger.LogInformation("Operation cancelled.");
                         return 0;
                     }
                 }
