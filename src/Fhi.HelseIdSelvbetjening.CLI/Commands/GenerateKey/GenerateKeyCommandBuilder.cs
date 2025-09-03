@@ -1,44 +1,44 @@
 using System.CommandLine;
-using Fhi.HelseIdSelvbetjening.CLI.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
 {
-    public class GenerateKeyCommandBuilder : ICommandBuilder
+    internal class GenerateKeyCommandBuilder(KeyGeneratorHandler commandHandler) : ICommandBuilder
     {
+        private readonly KeyGeneratorHandler _commandHandler = commandHandler;
 
         public Command Build(IHost host)
         {
-            var generateKeyCommand = new Command(GenerateKeyParameterNames.CommandName, "Generate a new RSA key pair");
-
-            var keyNameOption = new Option<string>([$"--{GenerateKeyParameterNames.KeyFileNamePrefix.Long}", $"-{GenerateKeyParameterNames.KeyFileNamePrefix.Short}"], "Prefix for the key file names");
-            generateKeyCommand.AddOption(keyNameOption);
-
-            var keyDirOption = new Option<string>([$"--{GenerateKeyParameterNames.KeyDirectory.Long}", $"-{GenerateKeyParameterNames.KeyDirectory.Short}"], "Directory to store the generated keys");
-            generateKeyCommand.AddOption(keyDirOption);
-            generateKeyCommand.TreatUnmatchedTokensAsErrors = true;
-            generateKeyCommand.SetHandler(async (string? keyFileNamePrefix, string? keyDirectory) =>
+            var generateKeyCommand = new Command(
+                GenerateKeyParameterNames.CommandName,
+                "Generate a new RSA key pair")
             {
-                try
-                {
-                    var parameters = new GenerateKeyParameters
-                    {
-                        KeyFileNamePrefix = keyFileNamePrefix,
-                        KeyDirectory = keyDirectory
-                    };
+                TreatUnmatchedTokensAsErrors = true
+            };
 
-                    var logger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<KeyGeneratorHandler>>();
-                    var fileWriter = host.Services.GetRequiredService<IFileHandler>();
-                    var service = new KeyGeneratorHandler(parameters, fileWriter, logger);
+            var keyNameOption = generateKeyCommand.CreateStringOption(
+                GenerateKeyParameterNames.KeyFileNamePrefix.Long,
+                GenerateKeyParameterNames.KeyFileNamePrefix.Short,
+                "Prefix for the key file names",
+                isRequired: true);
 
-                    await service.ExecuteAsync();
-                }
-                catch (Exception ex)
+            var keyDirOption = generateKeyCommand.CreateStringOption(
+                GenerateKeyParameterNames.KeyDirectory.Long,
+                GenerateKeyParameterNames.KeyDirectory.Short,
+                "Directory to store the generated keys",
+                isRequired: true);
+
+            generateKeyCommand.SetHandler(async (keyFileNamePrefix, keyDirectory) =>
+            {
+                var parameters = new GenerateKeyParameters
                 {
-                    await Console.Error.WriteLineAsync($"Error generating key: {ex.Message}");
-                }
-            }, keyNameOption, keyDirOption);
+                    KeyFileNamePrefix = keyFileNamePrefix,
+                    KeyDirectory = keyDirectory
+                };
+                await _commandHandler.Execute(parameters);
+            },
+            keyNameOption, keyDirOption);
 
             return generateKeyCommand;
         }
