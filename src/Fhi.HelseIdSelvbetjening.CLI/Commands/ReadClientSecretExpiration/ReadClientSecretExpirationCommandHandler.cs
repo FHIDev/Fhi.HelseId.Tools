@@ -5,21 +5,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 {
-    internal class ReadClientSecretExpirationCommandHandler
+    internal class ReadClientSecretExpirationCommandHandler(
+        ILogger<ReadClientSecretExpirationCommandHandler> logger,
+        IHelseIdSelvbetjeningService helseIdService,
+        IFileHandler fileHandler)
     {
-        private readonly ILogger<ReadClientSecretExpirationCommandHandler> _logger;
-        private readonly IHelseIdSelvbetjeningService _helseIdService;
-        private readonly IFileHandler _fileHandler;
-
-        public ReadClientSecretExpirationCommandHandler(
-            ILogger<ReadClientSecretExpirationCommandHandler> logger,
-            IHelseIdSelvbetjeningService helseIdService,
-            IFileHandler fileHandler)
-        {
-            _logger = logger;
-            _helseIdService = helseIdService;
-            _fileHandler = fileHandler;
-        }
+        private readonly ILogger<ReadClientSecretExpirationCommandHandler> _logger = logger;
+        private readonly IHelseIdSelvbetjeningService _helseIdService = helseIdService;
+        private readonly IFileHandler _fileHandler = fileHandler;
 
         public async Task<int> ExecuteAsync(string clientId, string authority, string baseAddress, string? existingPrivateJwkPath, string? existingPrivateJwk)
         {
