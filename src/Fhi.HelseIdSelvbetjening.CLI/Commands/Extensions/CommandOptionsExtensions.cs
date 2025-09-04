@@ -2,7 +2,7 @@ using System.CommandLine;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
 {
-    public static class CommandOptionsExtensions
+    internal static class CommandOptionsExtensions
     {
         public static Option<string> CreateStringOption(
             this Command command,
@@ -32,6 +32,26 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
                 });
             }
 
+            command.AddOption(option);
+            return option;
+        }
+
+        public static Option<bool> CreateBoolOption(
+            this Command command,
+            string longName,
+            string shortName,
+            string description,
+            bool defaultValue = false)
+        {
+            var option = new Option<bool>(
+                [$"--{longName}", $"-{shortName}"],
+                description)
+            {
+                IsRequired = false,
+                Arity = ArgumentArity.Zero,
+            };
+
+            option.SetDefaultValue(defaultValue);
             command.AddOption(option);
             return option;
         }

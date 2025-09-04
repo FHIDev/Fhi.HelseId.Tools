@@ -3,37 +3,32 @@ using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
 {
-    internal class ClientKeyUpdaterCommandHandler
+    internal class ClientKeyUpdaterCommandHandler(
+        IHostEnvironment hostEnvironment,
+        IHelseIdSelvbetjeningService helseIdSelvbetjeningService,
+        IFileHandler fileHandler,
+        ILogger<ClientKeyUpdaterCommandHandler> logger)
     {
-        private readonly IHostEnvironment _hostEnvironment;
-        private readonly IHelseIdSelvbetjeningService _helseIdSelvbetjeningService;
-        private readonly IFileHandler _fileHandler;
-        private readonly ILogger<ClientKeyUpdaterCommandHandler> _logger;
-
-        public ClientKeyUpdaterCommandHandler(
-            IHostEnvironment hostEnvironment,
-            IHelseIdSelvbetjeningService helseIdSelvbetjeningService,
-            IFileHandler fileHandler,
-            ILogger<ClientKeyUpdaterCommandHandler> logger)
-        {
-            _hostEnvironment = hostEnvironment;
-            _helseIdSelvbetjeningService = helseIdSelvbetjeningService;
-            _fileHandler = fileHandler;
-            _logger = logger;
-        }
+        private readonly IHostEnvironment _hostEnvironment = hostEnvironment;
+        private readonly IHelseIdSelvbetjeningService _helseIdSelvbetjeningService = helseIdSelvbetjeningService;
+        private readonly IFileHandler _fileHandler = fileHandler;
+        private readonly ILogger<ClientKeyUpdaterCommandHandler> _logger = logger;
 
         public async Task<int> ExecuteAsync(UpdateClientKeyParameters parameters)
         {
             try
             {
-                var environment = _hostEnvironment;
-                _logger.LogInformation($"Environment: {environment}");
+                _logger.LogInformation("Update client {@ClientId}", parameters.ClientId);
+
+                var environment = _hostEnvironment.EnvironmentName;
+                _logger.LogInformation("Environment: {environment}", environment);
                 if (!parameters.Yes)
                 {
-                    _logger.LogInformation($"Update client in environment {environment}? y/n");
+                    _logger.LogInformation("Update client in environment {environment}? y/n", environment);
                     var input = Console.ReadLine();
                     if (input?.Trim().ToLower() != "y")
                     {
@@ -42,26 +37,27 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                     }
                 }
 
-                if (string.IsNullOrEmpty(parameters.AuthorityUrl) || string.IsNullOrEmpty(parameters.BaseAddress))
-                {
-                    _logger.LogError("Parameters empty. Authority: {parameters.Authority} BaseAddress: {parameters.BaseAddress}", parameters.AuthorityUrl, parameters.BaseAddress);
-                    return 1;
-                }
+                var newKey = KeyResolutionExtensions.ResolveKey(
+                    parameters.NewPublicJwk,
+                    parameters.NewPublicJwkPath,
+                    "New key",
+                    _logger,
+                    _fileHandler);
 
-                _logger.LogInformation("Update client {@ClientId}", parameters.ClientId);
+                var oldKey = KeyResolutionExtensions.ResolveKey(
+                    parameters.ExistingPrivateJwk,
+                    parameters.ExistingPrivateJwkPath,
+                    "Old key",
+                    _logger,
+                    _fileHandler);
 
-                var newKey = !string.IsNullOrEmpty(parameters.NewPublicJwk) ? parameters.NewPublicJwk :
-                !string.IsNullOrEmpty(parameters.NewPublicJwkPath) ? _fileHandler.ReadAllText(parameters.NewPublicJwkPath) : string.Empty;
-
-                var oldKey = !string.IsNullOrEmpty(parameters.ExistingPrivateJwk) ? parameters.NewPublicJwk :
-                !string.IsNullOrEmpty(parameters.ExistingPrivateJwkPath) ? _fileHandler.ReadAllText(parameters.ExistingPrivateJwkPath) : string.Empty;
-
-                //TODO: handled by the options? Set required parameters?
                 if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))
                 {
-                    var result = await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(parameters.ClientId, oldKey), parameters.AuthorityUrl, parameters.BaseAddress, newKey);
-                    _logger.LogInformation(result.HttpStatus.ToString());
-                    _logger.LogInformation(result.Message);
+                    var result = await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(
+                        parameters.ClientId, oldKey),
+                        parameters.AuthorityUrl, parameters.BaseAddress, newKey);
+                    _logger.LogInformation("Result http status: {resultStatus}", result.HttpStatus.ToString());
+                    _logger.LogInformation("Result http message: {resultMessage}", result.Message);
                 }
                 else
                 {
@@ -73,7 +69,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
             }
             catch (Exception e)
             {
-                _logger.LogError(e.Message);
+                _logger.LogError("Error message: {e.Message}", e.Message);
                 return 1;
             }
         }

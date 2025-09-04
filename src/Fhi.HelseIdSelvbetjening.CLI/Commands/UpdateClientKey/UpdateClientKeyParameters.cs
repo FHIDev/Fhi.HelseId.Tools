@@ -2,7 +2,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
 {
     public record UpdateClientKeyOptionNames(string Long, string Short);
 
-    public static class UpdateClientKeyParameterNames
+    internal static class UpdateClientKeyParameterNames
     {
         public const string CommandName = "updateclientkey";
         public static readonly UpdateClientKeyOptionNames ClientId = new("ClientId", "c");
@@ -44,11 +44,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         /// <summary>
         /// Url of athority
         /// </summary>
-        public string? AuthorityUrl { get; set; }
+        public required string AuthorityUrl { get; set; }
         /// <summary>
         /// Baseaddress of target API
         /// </summary>
-        public string? BaseAddress { get; set; }
+        public required string BaseAddress { get; set; }
 
         public bool Yes { get; set; }
     };
