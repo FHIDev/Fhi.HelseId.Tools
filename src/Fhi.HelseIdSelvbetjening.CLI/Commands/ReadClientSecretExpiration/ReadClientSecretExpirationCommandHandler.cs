@@ -2,6 +2,7 @@ using Fhi.HelseIdSelvbetjening.Business;
 using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Microsoft.Extensions.Logging;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 {
@@ -14,17 +15,24 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
         private readonly IHelseIdSelvbetjeningService _helseIdService = helseIdService;
         private readonly IFileHandler _fileHandler = fileHandler;
 
-        public async Task<int> ExecuteAsync(string clientId, string authority, string baseAddress, string? existingPrivateJwkPath, string? existingPrivateJwk)
+        public async Task<int> ExecuteAsync(ReadClientSecretExpirationParameters parameters)
         {
             try
             {
-                using (_logger.BeginScope("ClientId: {ClientId}", clientId))
+                using (_logger.BeginScope("ClientId: {ClientId}", parameters.ClientId))
                 {
-                    var privateKey = !string.IsNullOrWhiteSpace(existingPrivateJwk) ? existingPrivateJwk :
-                        !string.IsNullOrWhiteSpace(existingPrivateJwkPath) ? _fileHandler.ReadAllText(existingPrivateJwkPath) : string.Empty;
+                    var privateKey = KeyResolutionExtensions.ResolveKey(
+                    parameters.ExistingPrivateJwk,
+                    parameters.ExistingPrivateJwkPath,
+                    "Private Key",
+                    _logger,
+                    _fileHandler);
+
                     if (!string.IsNullOrWhiteSpace(privateKey))
                     {
-                        var result = await _helseIdService.ReadClientSecretExpiration(new ClientConfiguration(clientId, privateKey), authority, baseAddress);
+                        var result = await _helseIdService.ReadClientSecretExpiration(new ClientConfiguration(
+                            parameters.ClientId, privateKey),
+                            parameters.AuthorityUrl, parameters.BaseAddress);
 
                         return result.HandleResponse(
                             onSuccess: value =>
@@ -32,7 +40,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                                 if (value.SelectedSecret != null && value.SelectedSecret.ExpirationDate.HasValue)
                                 {
                                     var epochTime = ((DateTimeOffset)value.SelectedSecret.ExpirationDate.Value).ToUnixTimeSeconds();
-                                    _logger.LogDebug("Kid: {Kid}", value.SelectedSecret?.KeyId);
+                                    _logger.LogDebug("Kid: {Kid}", value.SelectedSecret.KeyId);
                                     _logger.LogInformation("{EpochTime}", epochTime);
                                     return 0;
                                 }

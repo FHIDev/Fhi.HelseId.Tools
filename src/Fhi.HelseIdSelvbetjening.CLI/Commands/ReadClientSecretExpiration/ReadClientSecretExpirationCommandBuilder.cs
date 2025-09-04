@@ -1,62 +1,82 @@
 using System.CommandLine;
-using System.CommandLine.NamingConventionBinder;
 using Microsoft.Extensions.Hosting;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 {
-    internal class ReadClientSecretExpirationCommandBuilder : ICommandBuilder
+    internal class ReadClientSecretExpirationCommandBuilder(ReadClientSecretExpirationCommandHandler commandHandler) : ICommandBuilder
     {
-        private readonly ReadClientSecretExpirationCommandHandler _commandHandler;
+        private readonly ReadClientSecretExpirationCommandHandler _commandHandler = commandHandler;
 
-        public ReadClientSecretExpirationCommandBuilder(ReadClientSecretExpirationCommandHandler commandHandler)
-        {
-            _commandHandler = commandHandler;
-        }
         public Command Build(IHost host)
         {
-            var readExpirationCommand = new Command(ReadClientSecretExpirationParameterNames.CommandName, "Read client secret expiration date from HelseID");
-
-            var clientIdOption = new Option<string>(
-                [$"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", $"-{ReadClientSecretExpirationParameterNames.ClientId.Short}"],
-                description: "Client ID for client to query")
+            var readExpirationCommand = new Command(
+                ReadClientSecretExpirationParameterNames.CommandName,
+                "Read client secret expiration date from HelseID")
             {
-                IsRequired = true,
-                Arity = ArgumentArity.ExactlyOne
+                TreatUnmatchedTokensAsErrors = true
             };
-            clientIdOption.SetDefaultValue(null);
-            clientIdOption.AddValidator(result =>
+
+            var clientIdOption = readExpirationCommand.CreateStringOption(
+                ReadClientSecretExpirationParameterNames.ClientId.Long,
+                ReadClientSecretExpirationParameterNames.ClientId.Short,
+                "Client ID for client to query",
+                isRequired: true
+            );
+
+            var existingPrivateJwkPathOption = readExpirationCommand.CreateStringOption(
+                ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Long,
+                ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Short,
+                "Path to the existing private key file",
+                isRequired: false
+            );
+
+            var existingPrivateJwkOption = readExpirationCommand.CreateStringOption(
+                ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long,
+                ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Short,
+                "Existing private key value",
+                isRequired: false
+            );
+
+            var authorityUrlOption = readExpirationCommand.CreateStringOption(
+                ReadClientSecretExpirationParameterNames.AuthorityUrl.Long,
+                ReadClientSecretExpirationParameterNames.AuthorityUrl.Short,
+                "Authority url to query secret expiration with",
+                isRequired: true
+            );
+
+            var baseAddressOption = readExpirationCommand.CreateStringOption(
+                ReadClientSecretExpirationParameterNames.BaseAddress.Long,
+                ReadClientSecretExpirationParameterNames.BaseAddress.Short,
+                "Base Address url to query secret expiration with",
+                isRequired: true
+            );
+
+            readExpirationCommand.SetHandler(async
+            (
+                clientId,
+                existingPrivateJwkPath,
+                existingPrivateJwk,
+                authorityUrl,
+                baseAddress
+            ) =>
             {
-                if (result.GetValueOrDefault<string>() == null)
+                var parameters = new ReadClientSecretExpirationParameters
                 {
-                    result.ErrorMessage = "Missing required parameter Client ID: --clientId/-c";
-                }
-            });
-            readExpirationCommand.AddOption(clientIdOption);
-
-            var existingPrivateJwkPathOption = new Option<string>(
-                [$"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Long}", $"-{ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Short}"],
-                "Path to the existing private key file");
-            readExpirationCommand.AddOption(existingPrivateJwkPathOption);
-
-            var existingPrivateJwkOption = new Option<string>(
-                [$"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long}", $"-{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Short}"],
-                "Existing private key value");
-            readExpirationCommand.AddOption(existingPrivateJwkOption);
-
-            var authorityUrl = new Option<string>(
-                [$"--{ReadClientSecretExpirationParameterNames.AuthorityUrl.Long}", $"-{ReadClientSecretExpirationParameterNames.AuthorityUrl.Short}"],
-                "Authority url to update secret on");
-            readExpirationCommand.AddOption(authorityUrl);
-
-            var baseAddress = new Option<string>(
-                [$"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", $"-{ReadClientSecretExpirationParameterNames.BaseAddress.Short}"],
-                "Base Address url to update secret on");
-            readExpirationCommand.AddOption(baseAddress);
-
-            readExpirationCommand.Handler = CommandHandler.Create(async (string clientId, string? existingPrivateJwkPath, string authorityUrl, string baseAddress, string? existingPrivateJwk) =>
-            {
-                return await _commandHandler.ExecuteAsync(clientId, authorityUrl, baseAddress, existingPrivateJwkPath, existingPrivateJwk);
-            });
+                    ClientId = clientId,
+                    ExistingPrivateJwkPath = existingPrivateJwkPath,
+                    ExistingPrivateJwk = existingPrivateJwk,
+                    AuthorityUrl = authorityUrl,
+                    BaseAddress = baseAddress
+                };
+                await _commandHandler.ExecuteAsync(parameters);
+            },
+                clientIdOption,
+                existingPrivateJwkPathOption,
+                existingPrivateJwkOption,
+                authorityUrlOption,
+                baseAddressOption
+            );
 
             return readExpirationCommand;
         }
