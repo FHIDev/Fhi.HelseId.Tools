@@ -1,6 +1,7 @@
 using System.CommandLine;
 using Microsoft.Extensions.Hosting;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
+using System.CommandLine.NamingConventionBinder;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 {
@@ -52,13 +53,13 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 isRequired: true
             );
 
-            readExpirationCommand.SetHandler(async
+            readExpirationCommand.Handler = CommandHandler.Create(async
             (
-                clientId,
-                existingPrivateJwkPath,
-                existingPrivateJwk,
-                authorityUrl,
-                baseAddress
+                string clientId,
+                string existingPrivateJwkPath,
+                string existingPrivateJwk,
+                string authorityUrl,
+                string baseAddress
             ) =>
             {
                 var parameters = new ReadClientSecretExpirationParameters
@@ -69,14 +70,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                     AuthorityUrl = authorityUrl,
                     BaseAddress = baseAddress
                 };
-                await _commandHandler.ExecuteAsync(parameters);
-            },
-                clientIdOption,
-                existingPrivateJwkPathOption,
-                existingPrivateJwkOption,
-                authorityUrlOption,
-                baseAddressOption
-            );
+                return await _commandHandler.ExecuteAsync(parameters);
+            });
 
             return readExpirationCommand;
         }
