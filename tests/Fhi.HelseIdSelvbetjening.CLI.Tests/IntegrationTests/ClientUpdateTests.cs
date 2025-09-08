@@ -51,7 +51,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Assert.That(exitCode, Is.EqualTo(0));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
                 Assert.That(logs!, Does.Contain($"Update client {clientId}"));
-                Assert.That(logs!, Does.Contain("OK"));
+                Assert.That(logs!, Does.Contain("Result http status: OK"));
             }
         }
 
@@ -93,13 +93,14 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
                 Assert.That(logs!, Does.Contain($"Update client {clientId}"));
                 //TODO: improve response
-                Assert.That(logs!, Does.Contain("OK"));
+                Assert.That(logs, Does.Contain("Result http status: OK"));
             }
         }
 
+        [TestCase("", "")]
         [TestCase("", "c:\\temp")]
         [TestCase("c:\\temp", "")]
-        public async Task UpdateClientKey_EmptyJwkArguments_LogErrorAndExitCode1(string newKeyPath, string oldKeyPath)
+        public async Task UpdateClientKey_EmptyPathJwkArguments_LogErrorAndExitCode1(string newKeyPath, string oldKeyPath)
         {
             var selvbetjeningsApi = Substitute.For<ISelvbetjeningApi>();
             selvbetjeningsApi
@@ -117,9 +118,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithArgs(
                 [
                     UpdateClientKeyParameterNames.CommandName,
+                    $"--{UpdateClientKeyParameterNames.ClientId.Long}", "88d474a8-07df-4dc4-abb0-6b759c2b99ec",
                     $"--{UpdateClientKeyParameterNames.NewPublicJwkPath.Long}", newKeyPath,
                     $"--{UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Long}", oldKeyPath,
-                    $"--{UpdateClientKeyParameterNames.ClientId.Long}", "88d474a8-07df-4dc4-abb0-6b759c2b99ec",
+                    $"--{UpdateClientKeyParameterNames.AuthorityUrl.Long}", "https://helseid-sts.test.nhn.no",
+                    $"--{UpdateClientKeyParameterNames.BaseAddress.Long}", "https://api.selvbetjening.test.nhn.no",
                     $"--{UpdateClientKeyParameterNames.YesOption.Long}"
                 ]);
 
@@ -130,7 +133,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(1));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!.Any(l => l.Contains("Parameters empty.")));
+                var newKeyExists = string.IsNullOrEmpty(newKeyPath);
+                var oldKeyExists = string.IsNullOrEmpty(oldKeyPath);
+                Assert.That(logs!.Any(l => l.Contains($"One or more parameters empty.")));
             }
         }
 

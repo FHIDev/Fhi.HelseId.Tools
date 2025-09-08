@@ -1,6 +1,7 @@
 using System.CommandLine;
 using Microsoft.Extensions.Hosting;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
+using System.CommandLine.NamingConventionBinder;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
 {
@@ -73,16 +74,15 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 defaultValue: false
             );
 
-            updateClientKeyCommand.SetHandler(async (
-                clientId,
-                newPublicJwkPath,
-                existingPrivateJwkPath,
-                newPublicJwk,
-                existingPrivateJwk,
-                authorityUrl,
-                baseAddress,
-                yesOption
-            ) =>
+            updateClientKeyCommand.Handler = CommandHandler.Create(async (
+                string clientId,
+                string newPublicJwkPath,
+                string existingPrivateJwkPath,
+                string existingPrivateJwk,
+                string newPublicJwk,
+                string authorityUrl,
+                string baseAddress,
+                bool yes) =>
             {
                 var parameters = new UpdateClientKeyParameters
                 {
@@ -93,19 +93,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                     NewPublicJwk = newPublicJwk,
                     AuthorityUrl = authorityUrl,
                     BaseAddress = baseAddress,
-                    Yes = yesOption
+                    Yes = yes
                 };
-                await _commandHandler.ExecuteAsync(parameters);
-            },
-                clientIdOption,
-                newPublicJwkPathOption,
-                existingPrivateJwkPathOption,
-                newPublicJwkOption,
-                existingPrivateJwkOption,
-                authorityUrlOption,
-                baseAddressOption,
-                yesOption
-            );
+                return await _commandHandler.ExecuteAsync(parameters);
+            });
+
 
             return updateClientKeyCommand;
         }

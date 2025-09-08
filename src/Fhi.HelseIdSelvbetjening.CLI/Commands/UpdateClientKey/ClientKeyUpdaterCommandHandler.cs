@@ -51,19 +51,21 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                     _logger,
                     _fileHandler);
 
-                if (!string.IsNullOrEmpty(newKey) && !string.IsNullOrEmpty(oldKey))
+                bool newKeyExists = !string.IsNullOrEmpty(newKey);
+                bool oldKeyExists = !string.IsNullOrEmpty(oldKey);
+
+                if (!newKeyExists || !oldKeyExists)
                 {
-                    var result = await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(
-                        parameters.ClientId, oldKey),
-                        parameters.AuthorityUrl, parameters.BaseAddress, newKey);
-                    _logger.LogInformation("Result http status: {resultStatus}", result.HttpStatus.ToString());
-                    _logger.LogInformation("Result http message: {resultMessage}", result.Message);
-                }
-                else
-                {
-                    _logger.LogError("Parameters empty. New key: {newKey} Old key: {oldKey}", newKey, oldKey);
+                    _logger.LogError("One or more parameters empty.");
+                    _logger.LogInformation("New key found: {newKeyExists} Old key found: {oldKeyExists}", newKeyExists, oldKeyExists);
                     return 1;
                 }
+
+                var result = await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(
+                parameters.ClientId, oldKey),
+                parameters.AuthorityUrl, parameters.BaseAddress, newKey);
+                _logger.LogInformation("Result http status: {resultStatus}", result.HttpStatus.ToString());
+                _logger.LogInformation("Result http message: {resultMessage}", result.Message);
 
                 return 0;
             }
