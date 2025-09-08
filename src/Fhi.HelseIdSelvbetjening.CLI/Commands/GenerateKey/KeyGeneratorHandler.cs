@@ -18,7 +18,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
         /// <returns></returns>
         public Task Execute(GenerateKeyParameters parameters)
         {
-            var keyPath = parameters.KeyDirectory;
+            var keyPath = parameters.KeyDirectory ?? Environment.CurrentDirectory;
             if (!_fileHandler.PathExists(keyPath))
             {
                 _logger.LogInformation("Key path did not exist. Creating folder {@KeyPath}", keyPath);

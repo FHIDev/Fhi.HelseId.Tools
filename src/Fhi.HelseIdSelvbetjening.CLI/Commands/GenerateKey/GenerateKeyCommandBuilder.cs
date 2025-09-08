@@ -27,7 +27,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
                 GenerateKeyParameterNames.KeyDirectory.Long,
                 GenerateKeyParameterNames.KeyDirectory.Short,
                 "Directory to store the generated keys",
-                isRequired: true);
+                isRequired: false);
 
             generateKeyCommand.SetHandler(async (keyFileNamePrefix, keyDirectory) =>
             {
