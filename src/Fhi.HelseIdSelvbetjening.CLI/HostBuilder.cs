@@ -47,6 +47,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI
                     services.AddTransient<ClientKeyUpdaterCommandHandler>();
                     services.AddTransient<ICommandBuilder, GenerateKeyCommandBuilder>();
                     services.AddTransient<ICommandBuilder, GenerateCertificateCommandBuilder>();
+                    services.AddTransient<GenerateCertificateCommandHandler>();
                     services.AddTransient<ICommandBuilder, ReadClientSecretExpirationCommandBuilder>();
                     services.AddTransient<ReadClientSecretExpirationCommandHandler>();
                     services.AddTransient<ICommandBuilder, InvalidCommandBuilder>();

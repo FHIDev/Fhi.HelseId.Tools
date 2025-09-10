@@ -1,12 +1,17 @@
 using System.CommandLine;
-using Fhi.HelseIdSelvbetjening.CLI.Services;
-using Microsoft.Extensions.DependencyInjection;
+using System.CommandLine.NamingConventionBinder;
 using Microsoft.Extensions.Hosting;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
 {
-    public class GenerateCertificateCommandBuilder : ICommandBuilder
+    internal class GenerateCertificateCommandBuilder : ICommandBuilder
     {
+        private readonly GenerateCertificateCommandHandler _commandHandler;
+
+        public GenerateCertificateCommandBuilder(GenerateCertificateCommandHandler commandHandler)
+        {
+            _commandHandler = commandHandler;
+        }
         public Command Build(IHost host)
         {
             var generateCertCommand = new Command(GenerateCertificateParameterNames.CommandName, "Generate keys in PEM certificate format");
@@ -21,33 +26,16 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
             generateCertCommand.AddOption(certDirOption);
 
             generateCertCommand.TreatUnmatchedTokensAsErrors = true;
-            generateCertCommand.SetHandler(
-                async (certFileNamePrefix, certPassword, certDirectory) =>
-                {
-                    try
-                    {
-                        var parameters = new GenerateCertificateParameters
-                        {
-                            CertificateCommonName = certFileNamePrefix,
-                            CertificatePassword = certPassword,
-                            CertificateDirectory = certDirectory
-                        };
-
-                        var logger = host.Services.GetRequiredService<Microsoft.Extensions.Logging.ILogger<CertificateGeneratorService>>();
-                        var fileWriter = host.Services.GetRequiredService<IFileHandler>();
-                        var service = new CertificateGeneratorService(parameters, fileWriter, logger);
-
-                        await service.ExecuteAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        await Console.Error.WriteLineAsync($"Error generating key: {ex.Message}");
-                        throw; // This will cause a non-zero exit code
-                    }
-                },
-                certNameOption, certPasswordOption, certDirOption
-            );
-
+            
+            generateCertCommand.Handler = CommandHandler.Create(async (string certificateCommonName, string certificatePassword, string? certificateDirectory) =>
+            {
+                return await _commandHandler.ExecuteAsync(
+                    certificateCommonName, 
+                    certificatePassword, 
+                    certificateDirectory
+                );
+            });
+            
             return generateCertCommand;
         }
     }
