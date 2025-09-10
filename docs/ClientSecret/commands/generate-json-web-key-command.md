@@ -1,4 +1,4 @@
-# Generate new keys Commands
+# Generate new Json Web keys Commands
 
 ## Parameters
 
@@ -9,5 +9,5 @@
 
 ## Commands
 ```
- generatekey --KeyFileNamePrefix <NAME> --KeyDirectory <PATH>
+ generatejsonwebkey --KeyFileNamePrefix <NAME> --KeyDirectory <PATH>
 ```

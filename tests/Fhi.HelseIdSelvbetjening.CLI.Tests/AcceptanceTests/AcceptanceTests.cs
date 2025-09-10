@@ -1,4 +1,4 @@
-﻿using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
+﻿using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 
@@ -20,7 +20,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
         /// </summary>
         /// <returns></returns>
         [Test, Explicit("This test generates keys and update client with new keys should be run manually.")]
-        public async Task GenerateKeys_And_UpdateClientKeysFromPath()
+        public async Task GenerateJsonWebKeys_And_UpdateClientKeysFromPath()
         {
             using var stringWriter = new StringWriter();
             Console.SetOut(stringWriter);
@@ -30,14 +30,14 @@ namespace Fhi.HelseIdSelvbetjening.CLI.AcceptanceTests
 
             var keyDirectory = Path.Combine(Environment.CurrentDirectory, "TestData");
             var keyPrefix = "manualtest";
-            int exitCodeGenerateKeys = await Program.Main([
-                GenerateKeyParameterNames.CommandName,
-                $"--{GenerateKeyParameterNames.KeyFileNamePrefix.Long}", keyPrefix,
-                $"--{GenerateKeyParameterNames.KeyDirectory.Long}", keyDirectory
+            int exitCodeGenerateJsonWebKeys = await Program.Main([
+                GenerateJsonWebKeyParameterNames.CommandName,
+                $"--{GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long}", keyPrefix,
+                $"--{GenerateJsonWebKeyParameterNames.KeyDirectory.Long}", keyDirectory
             ]);
 
             var output = stringWriter.ToString();
-            Assert.That(exitCodeGenerateKeys, Is.EqualTo(0), "Generation of keys succeeded");
+            Assert.That(exitCodeGenerateJsonWebKeys, Is.EqualTo(0), "Generation of keys succeeded");
 
             /******************************************************************************************
              * Update Client with new keys

@@ -2,12 +2,12 @@ using Fhi.Authentication.Tokens;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
+namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
 {
-    internal class KeyGeneratorHandler(IFileHandler fileHandler, ILogger<KeyGeneratorHandler> logger)
+    internal class JsonWebKeyGeneratorHandler(IFileHandler fileHandler, ILogger<JsonWebKeyGeneratorHandler> logger)
     {
         private readonly IFileHandler _fileHandler = fileHandler;
-        private readonly ILogger<KeyGeneratorHandler> _logger = logger;
+        private readonly ILogger<JsonWebKeyGeneratorHandler> _logger = logger;
 
         /// <summary>
         /// Generates private and public key.
@@ -16,7 +16,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
         /// privateKey will be named FileName_public.json 
         /// </summary>
         /// <returns></returns>
-        public Task Execute(GenerateKeyParameters parameters)
+        public Task Execute(GenerateJsonWebKeyParameters parameters)
         {
             var keyPath = parameters.KeyDirectory ?? Environment.CurrentDirectory;
             if (!_fileHandler.PathExists(keyPath))

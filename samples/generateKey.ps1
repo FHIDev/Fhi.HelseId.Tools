@@ -2,6 +2,6 @@
 
 
 $env:DOTNET_ENVIRONMENT = "Development"
-& $exePath generatekey --FileName "name" --KeyPath "C:\\temp"
+& $exePath generatejsonwebkey --FileName "name" --KeyPath "C:\\temp"
 Write-Host $output
    
