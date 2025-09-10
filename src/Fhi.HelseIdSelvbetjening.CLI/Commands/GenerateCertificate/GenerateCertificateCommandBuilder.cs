@@ -29,11 +29,13 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
             
             generateCertCommand.Handler = CommandHandler.Create(async (string certificateCommonName, string certificatePassword, string? certificateDirectory) =>
             {
-                return await _commandHandler.ExecuteAsync(
-                    certificateCommonName, 
-                    certificatePassword, 
-                    certificateDirectory
-                );
+                var parameters = new GenerateCertificateParameters
+                {
+                    CertificateCommonName = certificateCommonName,
+                    CertificatePassword = certificatePassword,
+                    CertificateDirectory = certificateDirectory
+                };
+                return await _commandHandler.ExecuteAsync(parameters);
             });
             
             return generateCertCommand;

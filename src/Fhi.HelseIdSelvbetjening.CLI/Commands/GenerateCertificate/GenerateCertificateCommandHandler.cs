@@ -26,30 +26,30 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
         /// Certificate thumbprint will be stored to CommonName_thumbprint.txt
         /// </summary>
         /// <returns></returns>
-        public Task<int> ExecuteAsync(string commonName, string password, string? directory)
+        public Task<int> ExecuteAsync(GenerateCertificateParameters parameters)
         {
             try
             {
-                using (_logger.BeginScope("CertificateCommonName: {CertificateCommonName}", commonName))
+                using (_logger.BeginScope("CertificateCommonName: {CertificateCommonName}", parameters.CertificateCommonName))
                 {
-                    var certPath = directory ?? Environment.CurrentDirectory;
+                    var certPath = parameters.CertificateDirectory ?? Environment.CurrentDirectory;
                     if (!_fileHandler.PathExists(certPath))
                     {
                         _logger.LogInformation("Certificate path did not exist. Creating folder {@CertPath}", certPath);
                         _fileHandler.CreateDirectory(certPath);
                     }
 
-                    if (string.IsNullOrWhiteSpace(password))
+                    if (string.IsNullOrWhiteSpace(parameters.CertificatePassword))
                     {
                         _logger.LogError("Required option '--CertificatePassword' is missing.");
                         throw new ArgumentException("Required option '--CertificatePassword' is missing.");
                     }
 
-                    CertificateFiles certificateFiles = GenerateCertificates(commonName, password);
+                    CertificateFiles certificateFiles = GenerateCertificates(parameters.CertificateCommonName, parameters.CertificatePassword);
 
-                    var privateCertPath = Path.Combine(certPath, $"{commonName}_private.pfx");
-                    var publicCertPath = Path.Combine(certPath, $"{commonName}_public.pem");
-                    var thumbprintPath = Path.Combine(certPath, $"{commonName}_thumbprint.txt");
+                    var privateCertPath = Path.Combine(certPath, $"{parameters.CertificateCommonName}_private.pfx");
+                    var publicCertPath = Path.Combine(certPath, $"{parameters.CertificateCommonName}_public.pem");
+                    var thumbprintPath = Path.Combine(certPath, $"{parameters.CertificateCommonName}_thumbprint.txt");
 
                     _fileHandler.WriteAllBytes(privateCertPath, certificateFiles.CertificatePrivateKey);
                     _fileHandler.WriteAllText(publicCertPath, certificateFiles.CertificatePublicKey);
