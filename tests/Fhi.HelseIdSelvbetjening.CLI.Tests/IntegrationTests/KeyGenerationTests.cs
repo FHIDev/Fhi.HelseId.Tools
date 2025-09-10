@@ -7,7 +7,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {
     public class KeyGenerationTests
     {
-        [TestCase("KeyFileNamePrefix", "KeyDirectory")]
+        [TestCase("--KeyFileNamePrefix", "--KeyDirectory")]
+        [TestCase("-n", "-d")]
         public async Task GenerateKeys(string filePrefix, string directory)
         {
             var fileHandlerMock = new FileHandlerMock();
@@ -17,8 +18,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var args = new[]
             {
                 GenerateKeyParameterNames.CommandName,
-                $"--{filePrefix}", prefixName,
-                $"--{directory}", directoryPath
+                $"{filePrefix}", prefixName,
+                $"{directory}", directoryPath
             };
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithArgs(args)

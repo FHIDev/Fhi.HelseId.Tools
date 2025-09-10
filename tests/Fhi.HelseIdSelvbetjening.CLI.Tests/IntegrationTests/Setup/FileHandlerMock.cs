@@ -28,5 +28,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup
         {
             Files.TryAdd(path, content);
         }
+        
+        public void WriteAllBytes(string path, byte[] content)
+        {
+            Files.TryAdd(path, System.Text.Encoding.UTF8.GetString(content));
+        }
     }
 }
