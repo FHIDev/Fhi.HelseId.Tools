@@ -9,7 +9,7 @@
 
 ## Parameters
 
-|Parameter name | Descrition																					| Required | Sample						|
+|Parameter name | Description																					| Required | Sample						|
 |---------------|-----------------------------------------------------------------------------------------------|----------|-------------------------------|
 |ClientId		|The target client for the secret update. <br> Found in HelseId Selvbetjening Klient konfigurasjon. | <b>Yes</b> | `37a08838-db82-4de0-bfe1-bed876e7086e` |
 |NewPublicJwkPath|Path to the new public key.                                                                   | <b>No*</b> | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_public.json`|
