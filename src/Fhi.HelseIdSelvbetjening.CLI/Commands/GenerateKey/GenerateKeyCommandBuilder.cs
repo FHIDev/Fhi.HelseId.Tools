@@ -37,8 +37,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
                 catch (Exception ex)
                 {
                     await Console.Error.WriteLineAsync($"Error generating key: {ex.Message}");
-                    // Add throw to ensure a non-zero exit code
-                    throw;
                 }
             }, keyNameOption, keyDirOption);
 
