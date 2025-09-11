@@ -37,14 +37,14 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                     }
                 }
 
-                var newKey = KeyResolutionExtensions.ResolveKey(
+                var newKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
                     parameters.NewPublicJwk,
                     parameters.NewPublicJwkPath,
                     "New key",
                     _logger,
                     _fileHandler);
 
-                var oldKey = KeyResolutionExtensions.ResolveKey(
+                var oldKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
                     parameters.ExistingPrivateJwk,
                     parameters.ExistingPrivateJwkPath,
                     "Old key",

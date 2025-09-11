@@ -5,7 +5,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
 {
     internal static class KeyResolutionExtensions
     {
-        public static string ResolveKey(
+        public static string ResolveKeyValuePathOrString(
             string? directValue,
             string? filePath,
             string keyLabel,

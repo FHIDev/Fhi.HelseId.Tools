@@ -21,7 +21,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
             {
                 using (_logger.BeginScope("ClientId: {ClientId}", parameters.ClientId))
                 {
-                    var privateKey = KeyResolutionExtensions.ResolveKey(
+                    var privateKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
                     parameters.ExistingPrivateJwk,
                     parameters.ExistingPrivateJwkPath,
                     "Private Key",
