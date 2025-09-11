@@ -4,7 +4,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
 {
     internal static class CommandOptionsExtensions
     {
-        public static Option<string> CreateStringOption(
+        public static void CreateStringOption(
             this Command command,
             string longName,
             string shortName,
@@ -33,10 +33,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
             }
 
             command.AddOption(option);
-            return option;
         }
 
-        public static Option<bool> CreateBoolOption(
+        public static void CreateBoolOption(
             this Command command,
             string longName,
             string shortName,
@@ -53,7 +52,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
 
             option.SetDefaultValue(defaultValue);
             command.AddOption(option);
-            return option;
         }
     }
 }

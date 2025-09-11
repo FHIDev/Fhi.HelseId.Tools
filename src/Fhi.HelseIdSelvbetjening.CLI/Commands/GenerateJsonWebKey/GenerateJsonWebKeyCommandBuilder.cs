@@ -1,6 +1,7 @@
 using System.CommandLine;
 using Microsoft.Extensions.Hosting;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
+using System.CommandLine.NamingConventionBinder;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
 {
@@ -17,19 +18,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
                 TreatUnmatchedTokensAsErrors = true
             };
 
-            var keyNameOption = generateJsonWebKeyCommand.CreateStringOption(
+            generateJsonWebKeyCommand.CreateStringOption(
                 GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long,
                 GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Short,
                 "Prefix for the key file names",
                 isRequired: true);
 
-            var keyDirOption = generateJsonWebKeyCommand.CreateStringOption(
+            generateJsonWebKeyCommand.CreateStringOption(
                 GenerateJsonWebKeyParameterNames.KeyDirectory.Long,
                 GenerateJsonWebKeyParameterNames.KeyDirectory.Short,
                 "Directory to store the generated keys",
                 isRequired: false);
 
-            generateJsonWebKeyCommand.SetHandler(async (keyFileNamePrefix, keyDirectory) =>
+            generateJsonWebKeyCommand.Handler = CommandHandler.Create(async
+            (
+                string keyFileNamePrefix,
+                string keyDirectory
+            ) =>
             {
                 var parameters = new GenerateJsonWebKeyParameters
                 {
@@ -37,8 +42,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
                     KeyDirectory = keyDirectory
                 };
                 await _commandHandler.Execute(parameters);
-            },
-            keyNameOption, keyDirOption);
+            });
 
             return generateJsonWebKeyCommand;
         }
