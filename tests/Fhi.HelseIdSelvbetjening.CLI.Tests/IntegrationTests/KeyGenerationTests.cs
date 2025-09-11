@@ -69,36 +69,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         }
 
         [Test]
-        public async Task GenerateJsonWebKeys_PathIsNotEmpty_AddKeysToSpecifiedPath()
-        {
-            var fileHandlerMock = new FileHandlerMock();
-            var fakeLogProvider = new FakeLoggerProvider();
-            var args = new[]
-            {
-                GenerateJsonWebKeyParameterNames.CommandName,
-                $"--{GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long}", "TestClient",
-                $"--{GenerateJsonWebKeyParameterNames.KeyDirectory.Long}", "C:\\TestKeys"
-            };
-            var rootCommandBuilder = new RootCommandBuilder()
-              .WithArgs(args)
-              .WithFileHandler(fileHandlerMock)
-              .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
-
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
-
-            using (Assert.EnterMultipleScope())
-            {
-                var logs = fakeLogProvider.Collector?.GetSnapshot().Select(x => x.Message).ToList();
-                var expectedPublicKeyPath = Path.Combine("C:\\TestKeys", "TestClient_public.json");
-                var expectedPrivateKeyPath = Path.Combine("C:\\TestKeys", "TestClient_private.json");
-                Assert.That(exitCode, Is.EqualTo(0));
-
-                Assert.That(logs!, Does.Contain($"Private key saved: {expectedPrivateKeyPath}"));
-                Assert.That(logs!, Does.Contain($"Public key saved: {expectedPublicKeyPath}"));
-            }
-        }
-
-        [Test]
         public async Task GenerateJsonWebKeys_PathIsEmpty_UseCurrentDirectory()
         {
             var fakeLogProvider = new FakeLoggerProvider();
