@@ -5,6 +5,16 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
 {
     internal static class KeyResolutionExtensions
     {
+        /// <summary>
+        ///  Check wether or not a key was provided through direct string or through a filepath.
+        ///  Returns either then the value from the string or from reading the file.
+        /// </summary>
+        /// <param name="directValue"></param>
+        /// <param name="filePath"></param>
+        /// <param name="keyLabel"></param>
+        /// <param name="logger"></param>
+        /// <param name="fileHandler"></param>
+        /// <returns></returns>
         public static string ResolveKeyValuePathOrString(
             string? directValue,
             string? filePath,
