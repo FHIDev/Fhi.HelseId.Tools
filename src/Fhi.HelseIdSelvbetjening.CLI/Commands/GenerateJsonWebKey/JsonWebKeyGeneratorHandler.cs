@@ -16,7 +16,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
         /// privateKey will be named FileName_public.json 
         /// </summary>
         /// <returns></returns>
-        public Task Execute(GenerateJsonWebKeyParameters parameters)
+        public void Execute(GenerateJsonWebKeyParameters parameters)
         {
             var keyPath = parameters.KeyDirectory ?? Environment.CurrentDirectory;
             if (!_fileHandler.PathExists(keyPath))
@@ -35,8 +35,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
 
             _logger.LogInformation("Private key saved: {@PrivateKeyPath}", privateKeyPath);
             _logger.LogInformation("Public key saved: {@PublicKeyPath}", publicKeyPath);
-
-            return Task.CompletedTask;
         }
     }
 }
