@@ -9,13 +9,13 @@ The command uses the client's existing private JWK (JSON Web Key) to authenticat
 
 ## Parameters
 
-| Parameter name | Description | Required | Sample |
-|----------------|-------------|----------|--------|
-| ClientId | The target Client's unique identifier. <br> Found in HelseId Selvbetjening Klient konfigurasjon. | <b>Yes</b> | `37a08838-db82-4de0-bfe1-bed876e7086e` |
-| ExistingPrivateJwkPath | Path to the private key file. | <b>No*</b> | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json` |
-| ExistingPrivateJwk | Private key string. | <b>No*</b> | `{"alg":"PS512","d":"xxx .....}` |
-|AuthorityUrl |Authority url to target.                                                                         |<b>Yes</b>|`https://helseid-sts.test.nhn.no`|
-|BaseAddress |Base address url to target.                                                                         |<b>Yes</b>|`https://api.selvbetjening.test.nhn.no`|
+| Parameter name |Short Name| Description | Required | Sample |
+|----------------|----------|---|----------|--------|
+| --ClientId |-c| The target Client's unique identifier. <br> Found in HelseId Selvbetjening Klient konfigurasjon. | <b>Yes</b> | `37a08838-db82-4de0-bfe1-bed876e7086e` |
+| --ExistingPrivateJwkPath |-ep| Path to the private key file. | <b>No*</b> | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json` |
+| --ExistingPrivateJwk |-e| Private key string. | <b>No*</b> | `{"alg":"PS512","d":"xxx .....}` |
+|--AuthorityUrl |-a|Authority url to target.                                                                         |<b>Yes</b>|`https://helseid-sts.test.nhn.no`|
+|--BaseAddress |-b|Base address url to target.                                                                         |<b>Yes</b>|`https://api.selvbetjening.test.nhn.no`|
 
 <i>*Either ExistingPrivateJwkPath or ExistingPrivateJwk value must be provided.</i>
 
