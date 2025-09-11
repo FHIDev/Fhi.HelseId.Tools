@@ -30,7 +30,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
                 "Directory to store the generated keys",
                 isRequired: false);
 
-            generateJsonWebKeyCommand.Handler = CommandHandler.Create(async
+            generateJsonWebKeyCommand.Handler = CommandHandler.Create(
             (
                 string keyFileNamePrefix,
                 string keyDirectory
@@ -41,7 +41,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
                     KeyFileNamePrefix = keyFileNamePrefix,
                     KeyDirectory = keyDirectory
                 };
-                await _commandHandler.Execute(parameters);
+                _commandHandler.Execute(parameters);
             });
 
             return generateJsonWebKeyCommand;
