@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.CommandLine.Parsing;
 using Fhi.HelseIdSelvbetjening.CLI;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Microsoft.Extensions.DependencyInjection;
