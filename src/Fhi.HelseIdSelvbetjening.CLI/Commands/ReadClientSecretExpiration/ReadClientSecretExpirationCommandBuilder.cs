@@ -18,35 +18,35 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 TreatUnmatchedTokensAsErrors = true
             };
 
-            var clientIdOption = readExpirationCommand.CreateStringOption(
+            readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.ClientId.Long,
                 ReadClientSecretExpirationParameterNames.ClientId.Short,
                 "Client ID for client to query",
                 isRequired: true
             );
 
-            var existingPrivateJwkPathOption = readExpirationCommand.CreateStringOption(
+            readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Long,
                 ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Short,
                 "Path to the existing private key file",
                 isRequired: false
             );
 
-            var existingPrivateJwkOption = readExpirationCommand.CreateStringOption(
+            readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long,
                 ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Short,
                 "Existing private key value",
                 isRequired: false
             );
 
-            var authorityUrlOption = readExpirationCommand.CreateStringOption(
+            readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.AuthorityUrl.Long,
                 ReadClientSecretExpirationParameterNames.AuthorityUrl.Short,
                 "Authority url to query secret expiration with",
                 isRequired: true
             );
 
-            var baseAddressOption = readExpirationCommand.CreateStringOption(
+            readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.BaseAddress.Long,
                 ReadClientSecretExpirationParameterNames.BaseAddress.Short,
                 "Base Address url to query secret expiration with",

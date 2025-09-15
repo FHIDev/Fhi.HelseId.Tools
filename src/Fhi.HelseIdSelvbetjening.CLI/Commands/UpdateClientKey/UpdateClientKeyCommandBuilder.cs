@@ -18,56 +18,56 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 TreatUnmatchedTokensAsErrors = true
             };
 
-            var clientIdOption = updateClientKeyCommand.CreateStringOption(
+            updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.ClientId.Long,
                 UpdateClientKeyParameterNames.ClientId.Short,
                 "Client ID for client to update",
                 isRequired: true
             );
 
-            var newPublicJwkPathOption = updateClientKeyCommand.CreateStringOption(
+            updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.NewPublicJwkPath.Long,
                 UpdateClientKeyParameterNames.NewPublicJwkPath.Short,
                 "Path to the new public key file",
                 isRequired: false
             );
 
-            var existingPrivateJwkPathOption = updateClientKeyCommand.CreateStringOption(
+            updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Long,
                 UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Short,
                 "Path to the existing private key file",
                 isRequired: false
             );
 
-            var newPublicJwkOption = updateClientKeyCommand.CreateStringOption(
+            updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.NewPublicJwk.Long,
                 UpdateClientKeyParameterNames.NewPublicJwk.Short,
                 "New public key value",
                 isRequired: false
             );
 
-            var existingPrivateJwkOption = updateClientKeyCommand.CreateStringOption(
+            updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.ExistingPrivateJwk.Long,
                 UpdateClientKeyParameterNames.ExistingPrivateJwk.Short,
                 "Existing private key value",
                 isRequired: false
             );
 
-            var authorityUrlOption = updateClientKeyCommand.CreateStringOption(
+            updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.AuthorityUrl.Long,
                 UpdateClientKeyParameterNames.AuthorityUrl.Short,
                 "Authority url to update secret with",
                 isRequired: true
             );
 
-            var baseAddressOption = updateClientKeyCommand.CreateStringOption(
+            updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.BaseAddress.Long,
                 UpdateClientKeyParameterNames.BaseAddress.Short,
                 "Base Address url to update secret with",
                 isRequired: true
             );
 
-            var yesOption = updateClientKeyCommand.CreateBoolOption(
+            updateClientKeyCommand.CreateBoolOption(
                 UpdateClientKeyParameterNames.YesOption.Long,
                 UpdateClientKeyParameterNames.YesOption.Short,
                 "Automatically confirm update without prompting user",

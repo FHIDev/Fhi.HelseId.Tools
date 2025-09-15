@@ -1,5 +1,5 @@
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
-using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
@@ -39,8 +39,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI
 
                     services.AddTransient<ICommandBuilder, UpdateClientKeyCommandBuilder>();
                     services.AddTransient<ClientKeyUpdaterCommandHandler>();
-                    services.AddTransient<ICommandBuilder, GenerateKeyCommandBuilder>();
-                    services.AddTransient<KeyGeneratorHandler>();
+                    services.AddTransient<ICommandBuilder, GenerateJsonWebKeyCommandBuilder>();
+                    services.AddTransient<JsonWebKeyGeneratorHandler>();
                     services.AddTransient<ICommandBuilder, ReadClientSecretExpirationCommandBuilder>();
                     services.AddTransient<ReadClientSecretExpirationCommandHandler>();
                     services.AddTransient<ICommandBuilder, InvalidCommandBuilder>();

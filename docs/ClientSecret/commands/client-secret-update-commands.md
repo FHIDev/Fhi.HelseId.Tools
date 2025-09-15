@@ -9,16 +9,16 @@
 
 ## Parameters
 
-|Parameter name | Descrition																					| Required | Sample						|
-|---------------|-----------------------------------------------------------------------------------------------|----------|-------------------------------|
-|ClientId		|The target client for the secret update. <br> Found in HelseId Selvbetjening Klient konfigurasjon. | <b>Yes</b> | `37a08838-db82-4de0-bfe1-bed876e7086e` |
-|NewPublicJwkPath|Path to the new public key.                                                                   | <b>No*</b> | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_public.json`|
-|NewPublicJwk	|The new public key string.                                                                             | <b>No*</b> | `{\"alg\":\"PS512\",\"d\":\"xxx .....}`|
-|ExistingPrivateJwkPath	|Path to the existing private key.                                                      | <b>No*</b> |`C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json`|
-|ExistingPrivateJwk	|The old private key string.                                                                        | <b>No*</b> |`{\"alg\":\"PS512\",\"d\":\"xxx .....}`|
-|AuthorityUrl |Authority url to target.                                                                         |<b>Yes</b>|`https://helseid-sts.test.nhn.no`|
-|BaseAddress |Base address url to target.                                                                         |<b>Yes</b>|`https://api.selvbetjening.test.nhn.no`|
-|Yes|Automatic confirmation of update without user input.                                                                        | No |--Yes|
+|Parameter name |Short Name| Descrition																					| Required| Sample						|
+|---------------|-----------|------------------------------------------------------------------------------------|----------|-------------------------------|
+|--ClientId		|-c|The target client for the secret update. <br> Found in HelseId Selvbetjening Klient konfigurasjon. | <b>Yes</b> | `37a08838-db82-4de0-bfe1-bed876e7086e` |
+|--NewPublicJwkPath|-np|Path to the new public key.                                                                   | <b>No*</b> | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_public.json`|
+|--NewPublicJwk	|-n|The new public key string.                                                                             | <b>No*</b> | `{\"alg\":\"PS512\",\"d\":\"xxx .....}`|
+|--ExistingPrivateJwkPath	|-ep|Path to the existing private key.                                                      | <b>No*</b> |`C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json`|
+|--ExistingPrivateJwk	|-e|The old private key string.                                                                        | <b>No*</b> |`{\"alg\":\"PS512\",\"d\":\"xxx .....}`|
+|--AuthorityUrl |-a|Authority url to target.                                                                         |<b>Yes</b>|`https://helseid-sts.test.nhn.no`|
+|--BaseAddress |-b|Base address url to target.                                                                         |<b>Yes</b>|`https://api.selvbetjening.test.nhn.no`|
+|--Yes|-y|Automatic confirmation of update without user input.                                                                        | No |--Yes|
 
 <i>*Either path or string parameter value for the new and old keys must be provided.</i>
 
