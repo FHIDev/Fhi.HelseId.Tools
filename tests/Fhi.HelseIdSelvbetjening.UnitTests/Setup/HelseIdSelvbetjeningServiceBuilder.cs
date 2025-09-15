@@ -12,8 +12,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Setup
     {
         public ILogger<HelseIdSelvbetjeningService> Logger { get; private set; } = Substitute.For<ILogger<HelseIdSelvbetjeningService>>();
 
-        public Microsoft.Extensions.Options.IOptions<SelvbetjeningConfiguration> Options { get; private set; }
-            = Substitute.For<Microsoft.Extensions.Options.IOptions<SelvbetjeningConfiguration>>();
         public ITokenService TokenService { get; private set; } = Substitute.For<ITokenService>();
 
         public ISelvbetjeningApi SelvbetjeningApi { get; private set; } = Substitute.For<ISelvbetjeningApi>();
@@ -27,16 +25,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Setup
                 Arg.Any<string>(),
                 Arg.Any<string>())
                 .Returns(Task.FromResult(tokenResponse));
-            return this;
-        }
-
-        public HelseIdSelvbetjeningServiceBuilder WithDefaultConfiguration()
-        {
-            Options.Value.Returns(new SelvbetjeningConfiguration
-            {
-                Authority = "https://authority",
-                BaseAddress = "https://nhn.selvbetjening"
-            });
             return this;
         }
 
@@ -66,7 +54,6 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Setup
         public HelseIdSelvbetjeningService Build()
         {
             return new HelseIdSelvbetjeningService(
-                Options,
                 TokenService,
                 SelvbetjeningApi,
                 Logger

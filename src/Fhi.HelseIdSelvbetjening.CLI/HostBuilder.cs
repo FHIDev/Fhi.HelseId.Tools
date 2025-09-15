@@ -1,6 +1,5 @@
-using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
-using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
@@ -26,9 +25,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI
             return Host.CreateDefaultBuilder(_args)
                 .ConfigureAppConfiguration((ctx, config) =>
                 {
-                    var basePath = AppContext.BaseDirectory;
-                    config.SetBasePath(basePath);
-                    config.AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", optional: true);
                     config.AddCommandLine(_args);
                 })
                 .ConfigureLogging((context, builder) =>
@@ -38,13 +34,13 @@ namespace Fhi.HelseIdSelvbetjening.CLI
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services.Configure<SelvbetjeningConfiguration>(context.Configuration.GetSection(nameof(SelvbetjeningConfiguration)));
                     services.AddTransient<IFileHandler, FileHandler>();
                     services.AddSelvbetjeningServices();
 
                     services.AddTransient<ICommandBuilder, UpdateClientKeyCommandBuilder>();
                     services.AddTransient<ClientKeyUpdaterCommandHandler>();
-                    services.AddTransient<ICommandBuilder, GenerateKeyCommandBuilder>();
+                    services.AddTransient<ICommandBuilder, GenerateJsonWebKeyCommandBuilder>();
+                    services.AddTransient<JsonWebKeyGeneratorHandler>();
                     services.AddTransient<ICommandBuilder, ReadClientSecretExpirationCommandBuilder>();
                     services.AddTransient<ReadClientSecretExpirationCommandHandler>();
                     services.AddTransient<ICommandBuilder, InvalidCommandBuilder>();
@@ -58,6 +54,4 @@ namespace Fhi.HelseIdSelvbetjening.CLI
         {
         }
     }
-
-
 }
