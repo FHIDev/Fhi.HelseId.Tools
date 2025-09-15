@@ -56,7 +56,7 @@
     <ul>
                 <li class="toctree-l2"><a class="reference internal" href="../code-lab/about-codelab/">Getting started with codelab</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../code-lab/generatenewkeys/">Generate new keys command</a>
+                <li class="toctree-l2"><a class="reference internal" href="../code-lab/generatenewjsonwebkeys/">Generate new Json Web keys command</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../code-lab/readclientsecret/">Readclientsecret</a>
                 </li>
@@ -68,7 +68,7 @@
     <ul>
                 <li class="toctree-l2"><a class="reference internal" href="../commands/client-secret-update-commands/">Update client with new keys Commands</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../commands/generatekey-command/">Generate new keys Commands</a>
+                <li class="toctree-l2"><a class="reference internal" href="../commands/generate-json-web-key-command/">Generate new Json Web keys Commands</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../commands/read-client-secret-expiration-command/">Read client secret expiration command</a>
                 </li>
@@ -102,7 +102,7 @@
                 <h1 id="about-helseid-client-secrets-jwk">About HelseId Client secrets (Jwk)</h1>
 <p>Client Secret Tool is a console application that facilitates the secure rotation of client secrets for applications integrated with Helse ID. A user initiates a request to upgrade/rotate the client secret for an application through the tools console interface. The tool provides commands for:</p>
 <ul>
-<li><strong>Generation of new keys</strong> Command for generating new private and public Json Web Keys (jwk). See <a href="./generatekey-command.md">overview of key generation commands</a></li>
+<li><strong>Generation of new keys</strong> Command for generating new private and public Json Web Keys (jwk). See <a href="./generate-json-web-key-command.md">overview of key generation commands</a></li>
 <li><strong>Update client keys in HelseID client configuration:</strong> Command for updating secrets (public key) on a HelseID client. See <a href="./client-secret-update-commands.md">overview of update client secret commands</a></li>
 <li><strong>Read client secret expiration:</strong> Command for reading the expiration date of client secrets to enable automated monitoring and renewal scheduling. See <a href="./read-client-secret-expiration-command.md">overview of read client secret expiration commands</a></li>
 </ul>
@@ -110,7 +110,7 @@
 <p><img alt="Client Secret Management" src="../ClientSecretManagement.jpg" /></p>
 <ol>
 <li><strong>Update klientkonfiguration scope:</strong> The client must have registered the <em>nhn:selvbetjening/client</em> scope in order for an application to use the tool. The scope <em>nhn:selvbetjening/client</em> to klientsystem must be added to the client system and klientkonfigurasjon.</li>
-<li><strong>Generate new keys:</strong> The tool generates two new json web keys (jwk), private and public, with the command <code>generatekey</code>. The public key is used by HelseID to validate the client assertion. The private key is used by the application to generate a client assertion token.</li>
+<li><strong>Generate new keys:</strong> The tool generates two new json web keys (jwk), private and public, with the command <code>generatejsonwebkey</code>. The public key is used by HelseID to validate the client assertion. The private key is used by the application to generate a client assertion token.</li>
 <li><strong>Update client with public key:</strong> The HelseId client should be updated with the newly generated keys. This is done with the command <code>updateclientkey</code>.</li>
 <li><strong>Update application with private key</strong>: The application configuration must be updated with the new private key for seamless integration with the updated client.</li>
 </ol>

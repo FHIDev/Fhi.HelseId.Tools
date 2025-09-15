@@ -6,7 +6,7 @@
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="../../../img/favicon.ico" rel="shortcut icon"/>
-<title>Generate new keys command - FHI HelseID Tools</title>
+<title>Generate new Json Web keys command - FHI HelseID Tools</title>
 <link href="../../../css/theme.css" rel="stylesheet"/>
 <link href="../../../css/theme_extra.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
@@ -14,8 +14,8 @@
 <link href="../../../overrides/cards.css" rel="stylesheet"/>
 <script>
         // Current page data
-        var mkdocs_page_name = "Generate new keys command";
-        var mkdocs_page_input_path = "ClientSecret/code-lab/generatenewkeys.ipynb";
+        var mkdocs_page_name = "Generate new Json Web keys command";
+        var mkdocs_page_input_path = "ClientSecret/code-lab/generatenewjsonwebkeys.ipynb";
         var mkdocs_page_url = null;
       </script>
 <!--[if lt IE 9]>
@@ -50,7 +50,7 @@
 <ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../about-codelab/">Getting started with codelab</a>
 </li>
-<li class="toctree-l2 current"><a class="reference internal current" href="#">Generate new keys command</a>
+<li class="toctree-l2 current"><a class="reference internal current" href="#">Generate new Json Web keys command</a>
 <ul class="current">
 </ul>
 </li>
@@ -64,7 +64,7 @@
 <ul>
 <li class="toctree-l2"><a class="reference internal" href="../../commands/client-secret-update-commands/">Update client with new keys Commands</a>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../commands/generatekey-command/">Generate new keys Commands</a>
+<li class="toctree-l2"><a class="reference internal" href="../../commands/generate-json-web-key-command/">Generate new Json Web keys Commands</a>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../commands/read-client-secret-expiration-command/">Read client secret expiration command</a>
 </li>
@@ -85,7 +85,7 @@
 <li><a aria-label="Docs" class="icon icon-home" href="../../.."></a></li>
 <li class="breadcrumb-item">ClientSecret</li>
 <li class="breadcrumb-item">Code lab</li>
-<li class="breadcrumb-item active">Generate new keys command</li>
+<li class="breadcrumb-item active">Generate new Json Web keys command</li>
 <li class="wy-breadcrumbs-aside">
 </li>
 </ul>
@@ -535,7 +535,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="generate-new-keys-command">Generate new keys command<a class="anchor-link" href="#generate-new-keys-command">¶</a></h1>
+<h1 id="generate-new-json-web-keys-command">Generate new Json Web keys command<a class="anchor-link" href="#generate-new-json-web-keys-command">¶</a></h1>
 </div>
 </div>
 </div>
@@ -558,19 +558,19 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-PowerShell"><pre><span></span><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">install</span> <span class="p">-</span><span class="n">-global</span> <span class="n">Fhi</span><span class="p">.</span><span class="n">HelseIdSelvbetjening</span><span class="p">.</span><span class="nb">CLI </span><span class="p">-</span><span class="n">-prerelease</span>
+<div class="highlight-ipynb hl-PowerShell"><pre><span></span><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">install</span> <span class="p">-</span><span class="n">-global</span> <span class="n">Fhi</span><span class="p">.</span><span class="n">HelseIdSelvbetjening</span><span class="p">.</span><span class="nb">CLI </span><span class="p">-</span><span class="n">-version</span> <span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span>
 
 <span class="nv">$keyFileName</span> <span class="p">=</span> <span class="s2">""</span>
 <span class="nv">$keyDirectory</span> <span class="p">=</span> <span class="s2">""</span>
 
-<span class="n">helseid-cli</span> <span class="n">generatekey</span> <span class="p">-</span><span class="n">-KeyFileNamePrefix</span> <span class="nv">$keyFileName</span> <span class="p">-</span><span class="n">-KeyDirectory</span> <span class="nv">$keyDirectory</span>
+<span class="n">helseid-cli</span> <span class="n">generatejsonwebkey</span> <span class="p">-</span><span class="n">-KeyFileNamePrefix</span> <span class="nv">$keyFileName</span> <span class="p">-</span><span class="n">-KeyDirectory</span> <span class="nv">$keyDirectory</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1">dotnet tool install --global Fhi.HelseIdSelvbetjening.CLI --prerelease
+<div class="clipboard-copy-txt" id="cell-1">dotnet tool install --global Fhi.HelseIdSelvbetjening.CLI --version 1.0.0
 
 $keyFileName = ""
 $keyDirectory = ""
 
-helseid-cli generatekey --KeyFileNamePrefix $keyFileName --KeyDirectory $keyDirectory</div>
+helseid-cli generatejsonwebkey --KeyFileNamePrefix $keyFileName --KeyDirectory $keyDirectory</div>
 </div>
 </div>
 </div>

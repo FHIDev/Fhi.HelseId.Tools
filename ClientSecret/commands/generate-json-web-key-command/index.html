@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../../img/favicon.ico" />
-    <title>Generate new keys Commands - FHI HelseID Tools</title>
+    <title>Generate new Json Web keys Commands - FHI HelseID Tools</title>
     <link rel="stylesheet" href="../../../css/theme.css" />
     <link rel="stylesheet" href="../../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -14,8 +14,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Generate new keys Commands";
-        var mkdocs_page_input_path = "ClientSecret/commands/generatekey-command.md";
+        var mkdocs_page_name = "Generate new Json Web keys Commands";
+        var mkdocs_page_input_path = "ClientSecret/commands/generate-json-web-key-command.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -54,7 +54,7 @@
     <ul>
                 <li class="toctree-l2"><a class="reference internal" href="../../code-lab/about-codelab/">Getting started with codelab</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../code-lab/generatenewkeys/">Generate new keys command</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../code-lab/generatenewjsonwebkeys/">Generate new Json Web keys command</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../code-lab/readclientsecret/">Readclientsecret</a>
                 </li>
@@ -66,7 +66,7 @@
     <ul class="current">
                 <li class="toctree-l2"><a class="reference internal" href="../client-secret-update-commands/">Update client with new keys Commands</a>
                 </li>
-                <li class="toctree-l2 current"><a class="reference internal current" href="#">Generate new keys Commands</a>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Generate new Json Web keys Commands</a>
     <ul class="current">
     <li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a>
     </li>
@@ -95,7 +95,7 @@
     <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">ClientSecret</li>
           <li class="breadcrumb-item">Commands</li>
-      <li class="breadcrumb-item active">Generate new keys Commands</li>
+      <li class="breadcrumb-item active">Generate new Json Web keys Commands</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -104,12 +104,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="generate-new-keys-commands">Generate new keys Commands</h1>
+                <h1 id="generate-new-json-web-keys-commands">Generate new Json Web keys Commands</h1>
 <h2 id="parameters">Parameters</h2>
 <table>
 <thead>
 <tr>
 <th>Parameter name</th>
+<th>Short Name</th>
 <th>Descrition</th>
 <th>Required</th>
 <th>Sample</th>
@@ -117,13 +118,15 @@
 </thead>
 <tbody>
 <tr>
-<td>KeyFileNamePrefix</td>
+<td>--KeyFileNamePrefix</td>
+<td>-n</td>
 <td>Prefix of name of the public and private key file. <br> The keys will be named <code>&lt;FileName&gt;_private.json</code> and <code>&lt;FileName&gt;_public.json</code>.</td>
 <td><b>Yes</b></td>
 <td><code>"newKey"</code></td>
 </tr>
 <tr>
-<td>KeyDirectory</td>
+<td>--KeyDirectory</td>
+<td>-d</td>
 <td>Path to where private and public key will be stored.</td>
 <td><b>Yes</b></td>
 <td><code>"C:\\temp"</code></td>
@@ -131,7 +134,7 @@
 </tbody>
 </table>
 <h2 id="commands">Commands</h2>
-<pre><code> generatekey --KeyFileNamePrefix &lt;NAME&gt; --KeyDirectory &lt;PATH&gt;
+<pre><code> generatejsonwebkey --KeyFileNamePrefix &lt;NAME&gt; --KeyDirectory &lt;PATH&gt;
 </code></pre>
               
             </div>

@@ -54,7 +54,7 @@
     <ul>
                 <li class="toctree-l2"><a class="reference internal" href="../../code-lab/about-codelab/">Getting started with codelab</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../../code-lab/generatenewkeys/">Generate new keys command</a>
+                <li class="toctree-l2"><a class="reference internal" href="../../code-lab/generatenewjsonwebkeys/">Generate new Json Web keys command</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../../code-lab/readclientsecret/">Readclientsecret</a>
                 </li>
@@ -66,7 +66,7 @@
     <ul class="current">
                 <li class="toctree-l2"><a class="reference internal" href="../client-secret-update-commands/">Update client with new keys Commands</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../generatekey-command/">Generate new keys Commands</a>
+                <li class="toctree-l2"><a class="reference internal" href="../generate-json-web-key-command/">Generate new Json Web keys Commands</a>
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="#">Read client secret expiration command</a>
     <ul class="current">
@@ -164,6 +164,7 @@
 <thead>
 <tr>
 <th>Parameter name</th>
+<th>Short Name</th>
 <th>Description</th>
 <th>Required</th>
 <th>Sample</th>
@@ -171,46 +172,67 @@
 </thead>
 <tbody>
 <tr>
-<td>ClientId</td>
+<td>--ClientId</td>
+<td>-c</td>
 <td>The target Client's unique identifier. <br> Found in HelseId Selvbetjening Klient konfigurasjon.</td>
 <td><b>Yes</b></td>
 <td><code>37a08838-db82-4de0-bfe1-bed876e7086e</code></td>
 </tr>
 <tr>
-<td>ExistingPrivateJwkPath</td>
+<td>--ExistingPrivateJwkPath</td>
+<td>-ep</td>
 <td>Path to the private key file.</td>
 <td><b>No*</b></td>
 <td><code>C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json</code></td>
 </tr>
 <tr>
-<td>ExistingPrivateJwk</td>
+<td>--ExistingPrivateJwk</td>
+<td>-e</td>
 <td>Private key string.</td>
 <td><b>No*</b></td>
 <td><code>{"alg":"PS512","d":"xxx .....}</code></td>
+</tr>
+<tr>
+<td>--AuthorityUrl</td>
+<td>-a</td>
+<td>Authority url to target.</td>
+<td><b>Yes</b></td>
+<td><code>https://helseid-sts.test.nhn.no</code></td>
+</tr>
+<tr>
+<td>--BaseAddress</td>
+<td>-b</td>
+<td>Base address url to target.</td>
+<td><b>Yes</b></td>
+<td><code>https://api.selvbetjening.test.nhn.no</code></td>
 </tr>
 </tbody>
 </table>
 <p><i>*Either ExistingPrivateJwkPath or ExistingPrivateJwk value must be provided.</i></p>
 <h2 id="commands">Commands</h2>
 <h3 id="read-expiration-using-private-key-file">Read expiration using private key file</h3>
-<pre><code class="language-bash">helseid-cli readclientsecretexpiration --ClientId &lt;CLIENT_ID&gt; --ExistingPrivateJwkPath &lt;PATH_TO_PRIVATE_KEY&gt;
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration --ClientId &lt;CLIENT_ID&gt; --ExistingPrivateJwkPath &lt;PATH_TO_PRIVATE_KEY&gt; --AuthorityUrl &lt;AUTHORITY_URL&gt; --BaseAddress &lt;BASE_URL&gt;
 </code></pre>
 <h3 id="read-expiration-using-private-key-string">Read expiration using private key string</h3>
-<pre><code class="language-bash">helseid-cli readclientsecretexpiration --ClientId &lt;CLIENT_ID&gt; --ExistingPrivateJwk &lt;PRIVATE_KEY_JSON&gt;
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration --ClientId &lt;CLIENT_ID&gt; --ExistingPrivateJwk &lt;PRIVATE_KEY_JSON&gt; --AuthorityUrl &lt;AUTHORITY_URL&gt; --BaseAddress &lt;BASE_URL&gt;
 </code></pre>
 <h3 id="using-short-parameter-names">Using short parameter names</h3>
-<pre><code class="language-bash">helseid-cli readclientsecretexpiration -c &lt;CLIENT_ID&gt; -ep &lt;PATH_TO_PRIVATE_KEY&gt;
+<pre><code class="language-bash">helseid-cli readclientsecretexpiration -c &lt;CLIENT_ID&gt; -ep &lt;PATH_TO_PRIVATE_KEY&gt; --a &lt;AUTHORITY_URL&gt; --b &lt;BASE_URL&gt;
 </code></pre>
 <h2 id="examples">Examples</h2>
 <h3 id="example-1-read-expiration-from-file">Example 1: Read expiration from file</h3>
 <pre><code class="language-bash">helseid-cli readclientsecretexpiration \
   --ClientId &quot;37a08838-db82-4de0-bfe1-bed876e7086e&quot; \
-  --ExistingPrivateJwkPath &quot;C:\keys\client_private.json&quot;
+  --ExistingPrivateJwkPath &quot;C:\keys\client_private.json&quot; \
+  --AuthorityUrl &quot;https://helseid-sts.test.nhn.no&quot; \
+  --BaseAddress &quot;https://api.selvbetjening.test.nhn.no&quot;
 </code></pre>
 <h3 id="example-2-read-expiration-with-inline-key">Example 2: Read expiration with inline key</h3>
 <pre><code class="language-bash">helseid-cli readclientsecretexpiration \
   --ClientId &quot;37a08838-db82-4de0-bfe1-bed876e7086e&quot; \
   --ExistingPrivateJwk '{&quot;alg&quot;:&quot;PS512&quot;,&quot;d&quot;:&quot;...private key data...&quot;}'
+  --AuthorityUrl &quot;https://helseid-sts.test.nhn.no&quot; \
+  --BaseAddress &quot;https://api.selvbetjening.test.nhn.no&quot;
 </code></pre>
 <h2 id="working-with-escaped-json-from-helseid-api">Working with Escaped JSON from HelseID API</h2>
 <h3 id="using-helseid-api-responses-with-powershell">Using HelseID API responses with PowerShell</h3>
@@ -219,7 +241,7 @@
 <pre><code class="language-powershell"># Get JWK from API response - use as-is without modification
 $apiJwkResponse = '{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key-2024\&quot;,\&quot;d\&quot;:\&quot;MIIEowIBAAKCAQEA...\&quot;,\&quot;n\&quot;:\&quot;xGHNF7qI...\&quot;,\&quot;e\&quot;:\&quot;AQAB\&quot;}'
 
-dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $apiJwkResponse
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $apiJwkResponse --AuthorityUrl &quot;https://helseid-sts.test.nhn.no&quot; --BaseAddress &quot;https://api.selvbetjening.test.nhn.no&quot;
 </code></pre>
 <h4 id="alternative-powershell-here-string">Alternative: PowerShell here-string</h4>
 <pre><code class="language-powershell"># Wrap API response in here-string without modification
@@ -227,11 +249,11 @@ $json = @&quot;
 {\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key-2024\&quot;,\&quot;d\&quot;:\&quot;MIIEowIBAAKCAQEA...\&quot;,\&quot;n\&quot;:\&quot;xGHNF7qI...\&quot;,\&quot;e\&quot;:\&quot;AQAB\&quot;}
 &quot;@
 
-dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $json
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk $json --AuthorityUrl &quot;https://helseid-sts.test.nhn.no&quot; --BaseAddress &quot;https://api.selvbetjening.test.nhn.no&quot;
 </code></pre>
 <h3 id="important-avoid-direct-command-line-usage-with-escaped-json">Important: Avoid Direct Command Line Usage with Escaped JSON</h3>
 <pre><code class="language-powershell"># This will fail due to shell parsing issues:
-dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk &quot;{\&quot;kty\&quot;:\&quot;RSA\&quot;}&quot;
+dotnet run -- readclientsecretexpiration --ClientId &quot;my-client-id&quot; --ExistingPrivateJwk &quot;{\&quot;kty\&quot;:\&quot;RSA\&quot;}&quot; --AuthorityUrl &quot;https://helseid-sts.test.nhn.no&quot; --BaseAddress &quot;https://api.selvbetjening.test.nhn.no&quot;
 </code></pre>
 <h2 id="output">Output</h2>
 <p>The command outputs the expiration date in a human-readable format:</p>
@@ -258,8 +280,10 @@ Client secret expiration date not available in response
 <pre><code class="language-powershell"># PowerShell script step in Octopus Deploy
 $clientId = &quot;#{ClientId}&quot;
 $privateKeyPath = &quot;#{PrivateKeyPath}&quot;
+$authority = &quot;#{AuthorityUrl}&quot;
+$baseAddress = &quot;#{BaseAddress}&quot;
 
-$result = &amp; helseid-cli readclientsecretexpiration -c $clientId -ep $privateKeyPath
+$result = &amp; helseid-cli readclientsecretexpiration -c $clientId -ep $privateKeyPath -a $authority -b $baseAddress
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host &quot;Successfully retrieved expiration date: $result&quot;
@@ -284,7 +308,7 @@ if ($LASTEXITCODE -eq 0) {
 <h3 id="bash-script-example">Bash Script Example</h3>
 <pre><code class="language-bash">#!/bin/bash
 # Capture exit code and output
-output=$(helseid-cli readclientsecretexpiration --ClientId &quot;$CLIENT_ID&quot; --ExistingPrivateJwkPath &quot;$KEY_PATH&quot; 2&gt;&amp;1)
+output=$(helseid-cli readclientsecretexpiration --ClientId &quot;$CLIENT_ID&quot; --ExistingPrivateJwkPath &quot;$KEY_PATH&quot; 2&gt;&amp;1 --AuthorityUrl &quot;$AUTHORITY_URL&quot; -BaseAddress &quot;$BASE_ADDRESS&quot;)
 exit_code=$?
 
 if [ $exit_code -eq 0 ]; then
@@ -316,8 +340,11 @@ $clientId = &quot;my-client-id&quot;
 # API response comes with escaped quotes - use as-is
 $jwkFromApi = '{\&quot;kty\&quot;:\&quot;RSA\&quot;,\&quot;kid\&quot;:\&quot;my-key-2024\&quot;,\&quot;d\&quot;:\&quot;MIIEowIBAAKCAQEA...\&quot;}'
 
+$authority = &quot;https://helseid-sts.test.nhn.no&quot;,
+$baseAddress = &quot;https://api.selvbetjening.test.nhn.no&quot;
+
 # Pass API response directly without modification
-$result = &amp; helseid-cli readclientsecretexpiration --ClientId $clientId --ExistingPrivateJwk $jwkFromApi
+$result = &amp; helseid-cli readclientsecretexpiration --ClientId $clientId --ExistingPrivateJwk $jwkFromApi --AuthorityUrl $authority -BaseAddress $baseAddress
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host &quot;Secret expiration retrieved: $result&quot;
@@ -350,7 +377,7 @@ if ($LASTEXITCODE -eq 0) {
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../generatekey-command/" class="btn btn-neutral float-left" title="Generate new keys Commands"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../generate-json-web-key-command/" class="btn btn-neutral float-left" title="Generate new Json Web keys Commands"><span class="icon icon-circle-arrow-left"></span> Previous</a>
     </div>
 
   <hr/>
@@ -373,7 +400,7 @@ if ($LASTEXITCODE -eq 0) {
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../generatekey-command/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../generate-json-web-key-command/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
   </span>
