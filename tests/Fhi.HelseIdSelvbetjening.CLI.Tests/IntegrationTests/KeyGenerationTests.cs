@@ -1,4 +1,4 @@
-using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey;
 using Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
@@ -7,9 +7,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {
     public class KeyGenerationTests
     {
-        [TestCase(GenerateKeyParameterNames.KeyFileNamePrefixLong, GenerateKeyParameterNames.KeyDirectoryLong)]
-        [TestCase(GenerateKeyParameterNames.KeyFileNamePrefixShort, GenerateKeyParameterNames.KeyDirectoryShort)]
-        public async Task GenerateKeys(string filePrefix, string directory)
+        [TestCase("--KeyFileNamePrefix", "--KeyDirectory")]
+        [TestCase("-n", "-d")]
+        public async Task GenerateJsonWebKeys(string filePrefix, string directory)
         {
             var fileHandlerMock = new FileHandlerMock();
             var fakeLogProvider = new FakeLoggerProvider();
@@ -17,9 +17,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var directoryPath = "c:\\temp";
             var args = new[]
             {
-                GenerateKeyParameterNames.CommandName,
-                $"--{filePrefix}", prefixName,
-                $"--{directory}", directoryPath
+                GenerateJsonWebKeyParameterNames.CommandName,
+                $"{filePrefix}", prefixName,
+                $"{directory}", directoryPath
             };
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithArgs(args)
@@ -40,13 +40,13 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
         [Test]
         [Ignore("todo")]
-        public async Task GenerateKeys_InvalidParameterAsync()
+        public async Task GenerateJsonWebKeys_InvalidParameterAsync()
         {
             var fileHandlerMock = new FileHandlerMock();
             var fakeLogProvider = new FakeLoggerProvider();
             var args = new[]
             {
-                GenerateKeyParameterNames.CommandName,
+                GenerateJsonWebKeyParameterNames.CommandName,
                 "--invalidparameter", "integration_test"
             };
             var rootCommandBuilder = new RootCommandBuilder()
@@ -70,44 +70,14 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         }
 
         [Test]
-        public async Task GenerateKeys_PathIsNotEmpty_AddKeysToSpecifiedPath()
-        {
-            var fileHandlerMock = new FileHandlerMock();
-            var fakeLogProvider = new FakeLoggerProvider();
-            var args = new[]
-            {
-                GenerateKeyParameterNames.CommandName,
-                $"--{GenerateKeyParameterNames.KeyFileNamePrefixLong}", "TestClient",
-                $"--{GenerateKeyParameterNames.KeyDirectoryLong}", "C:\\TestKeys"
-            };
-            var rootCommandBuilder = new RootCommandBuilder()
-              .WithArgs(args)
-              .WithFileHandler(fileHandlerMock)
-              .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
-
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
-
-            using (Assert.EnterMultipleScope())
-            {
-                var logs = fakeLogProvider.Collector?.GetSnapshot().Select(x => x.Message).ToList();
-                var expectedPublicKeyPath = Path.Combine("C:\\TestKeys", "TestClient_public.json");
-                var expectedPrivateKeyPath = Path.Combine("C:\\TestKeys", "TestClient_private.json");
-                Assert.That(exitCode, Is.EqualTo(0));
-
-                Assert.That(logs!, Does.Contain($"Private key saved: {expectedPrivateKeyPath}"));
-                Assert.That(logs!, Does.Contain($"Public key saved: {expectedPublicKeyPath}"));
-            }
-        }
-
-        [Test]
-        public async Task GenerateKeys_PathIsEmpty_UseCurrentDirectory()
+        public async Task GenerateJsonWebKeys_PathIsEmpty_UseCurrentDirectory()
         {
             var fakeLogProvider = new FakeLoggerProvider();
             var fileHandlerMock = new FileHandlerMock();
             var args = new[]
             {
-                GenerateKeyParameterNames.CommandName,
-                $"--{GenerateKeyParameterNames.KeyFileNamePrefixLong}", "TestClient"
+                GenerateJsonWebKeyParameterNames.CommandName,
+                $"--{GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long}", "TestClient"
             };
             var rootCommandBuilder = new RootCommandBuilder()
               .WithArgs(args)

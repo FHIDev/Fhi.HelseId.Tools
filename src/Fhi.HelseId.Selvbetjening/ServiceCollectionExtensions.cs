@@ -1,5 +1,6 @@
+using Fhi.HelseIdSelvbetjening.Business;
 using Fhi.HelseIdSelvbetjening.Infrastructure;
-using Fhi.HelseIdSelvbetjening.Services;
+using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fhi.HelseIdSelvbetjening

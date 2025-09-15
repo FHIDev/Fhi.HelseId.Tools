@@ -9,32 +9,34 @@ The command uses the client's existing private JWK (JSON Web Key) to authenticat
 
 ## Parameters
 
-| Parameter name | Description | Required | Sample |
-|----------------|-------------|----------|--------|
-| ClientId | The Client's unique identifier found in Klient konfigurasjon in HelseId Selvbetjening | Yes | `37a08838-db82-4de0-bfe1-bed876e7086e` |
-| ExistingPrivateJwkPath | Path to the existing private key file | No* | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json` |
-| ExistingPrivateJwk | Private key string | No* | `{"alg":"PS512","d":"xxx .....}` |
+| Parameter name |Short Name| Description | Required | Sample |
+|----------------|----------|---|----------|--------|
+| --ClientId |-c| The target Client's unique identifier. <br> Found in HelseId Selvbetjening Klient konfigurasjon. | <b>Yes</b> | `37a08838-db82-4de0-bfe1-bed876e7086e` |
+| --ExistingPrivateJwkPath |-ep| Path to the private key file. | <b>No*</b> | `C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json` |
+| --ExistingPrivateJwk |-e| Private key string. | <b>No*</b> | `{"alg":"PS512","d":"xxx .....}` |
+|--AuthorityUrl |-a|Authority url to target.                                                                         |<b>Yes</b>|`https://helseid-sts.test.nhn.no`|
+|--BaseAddress |-b|Base address url to target.                                                                         |<b>Yes</b>|`https://api.selvbetjening.test.nhn.no`|
 
-*Either ExistingPrivateJwkPath or ExistingPrivateJwk must be provided.
+<i>*Either ExistingPrivateJwkPath or ExistingPrivateJwk value must be provided.</i>
 
 ## Commands
 
 ### Read expiration using private key file
 
 ```bash
-helseid-cli readclientsecretexpiration --ClientId <CLIENT_ID> --ExistingPrivateJwkPath <PATH_TO_PRIVATE_KEY>
+helseid-cli readclientsecretexpiration --ClientId <CLIENT_ID> --ExistingPrivateJwkPath <PATH_TO_PRIVATE_KEY> --AuthorityUrl <AUTHORITY_URL> --BaseAddress <BASE_URL>
 ```
 
 ### Read expiration using private key string
 
 ```bash
-helseid-cli readclientsecretexpiration --ClientId <CLIENT_ID> --ExistingPrivateJwk <PRIVATE_KEY_JSON>
+helseid-cli readclientsecretexpiration --ClientId <CLIENT_ID> --ExistingPrivateJwk <PRIVATE_KEY_JSON> --AuthorityUrl <AUTHORITY_URL> --BaseAddress <BASE_URL>
 ```
 
 ### Using short parameter names
 
 ```bash
-helseid-cli readclientsecretexpiration -c <CLIENT_ID> -ep <PATH_TO_PRIVATE_KEY>
+helseid-cli readclientsecretexpiration -c <CLIENT_ID> -ep <PATH_TO_PRIVATE_KEY> --a <AUTHORITY_URL> --b <BASE_URL>
 ```
 
 ## Examples
@@ -44,7 +46,9 @@ helseid-cli readclientsecretexpiration -c <CLIENT_ID> -ep <PATH_TO_PRIVATE_KEY>
 ```bash
 helseid-cli readclientsecretexpiration \
   --ClientId "37a08838-db82-4de0-bfe1-bed876e7086e" \
-  --ExistingPrivateJwkPath "C:\keys\client_private.json"
+  --ExistingPrivateJwkPath "C:\keys\client_private.json" \
+  --AuthorityUrl "https://helseid-sts.test.nhn.no" \
+  --BaseAddress "https://api.selvbetjening.test.nhn.no"
 ```
 
 ### Example 2: Read expiration with inline key
@@ -53,6 +57,8 @@ helseid-cli readclientsecretexpiration \
 helseid-cli readclientsecretexpiration \
   --ClientId "37a08838-db82-4de0-bfe1-bed876e7086e" \
   --ExistingPrivateJwk '{"alg":"PS512","d":"...private key data..."}'
+  --AuthorityUrl "https://helseid-sts.test.nhn.no" \
+  --BaseAddress "https://api.selvbetjening.test.nhn.no"
 ```
 
 ## Working with Escaped JSON from HelseID API
@@ -67,7 +73,7 @@ When HelseID APIs return JWK data, it often comes with escaped quotes like: `{\"
 # Get JWK from API response - use as-is without modification
 $apiJwkResponse = '{\"kty\":\"RSA\",\"kid\":\"my-key-2024\",\"d\":\"MIIEowIBAAKCAQEA...\",\"n\":\"xGHNF7qI...\",\"e\":\"AQAB\"}'
 
-dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk $apiJwkResponse
+dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk $apiJwkResponse --AuthorityUrl "https://helseid-sts.test.nhn.no" --BaseAddress "https://api.selvbetjening.test.nhn.no"
 ```
 
 #### Alternative: PowerShell here-string
@@ -78,14 +84,14 @@ $json = @"
 {\"kty\":\"RSA\",\"kid\":\"my-key-2024\",\"d\":\"MIIEowIBAAKCAQEA...\",\"n\":\"xGHNF7qI...\",\"e\":\"AQAB\"}
 "@
 
-dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk $json
+dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk $json --AuthorityUrl "https://helseid-sts.test.nhn.no" --BaseAddress "https://api.selvbetjening.test.nhn.no"
 ```
 
 ### Important: Avoid Direct Command Line Usage with Escaped JSON
 
 ```powershell
 # This will fail due to shell parsing issues:
-dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk "{\"kty\":\"RSA\"}"
+dotnet run -- readclientsecretexpiration --ClientId "my-client-id" --ExistingPrivateJwk "{\"kty\":\"RSA\"}" --AuthorityUrl "https://helseid-sts.test.nhn.no" --BaseAddress "https://api.selvbetjening.test.nhn.no"
 ```
 
 ## Output
@@ -128,8 +134,10 @@ This command can be integrated into Octopus Deploy runbooks to monitor client se
 # PowerShell script step in Octopus Deploy
 $clientId = "#{ClientId}"
 $privateKeyPath = "#{PrivateKeyPath}"
+$authority = "#{AuthorityUrl}"
+$baseAddress = "#{BaseAddress}"
 
-$result = & helseid-cli readclientsecretexpiration -c $clientId -ep $privateKeyPath
+$result = & helseid-cli readclientsecretexpiration -c $clientId -ep $privateKeyPath -a $authority -b $baseAddress
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Successfully retrieved expiration date: $result"
@@ -157,7 +165,7 @@ if ($LASTEXITCODE -eq 0) {
 ```bash
 #!/bin/bash
 # Capture exit code and output
-output=$(helseid-cli readclientsecretexpiration --ClientId "$CLIENT_ID" --ExistingPrivateJwkPath "$KEY_PATH" 2>&1)
+output=$(helseid-cli readclientsecretexpiration --ClientId "$CLIENT_ID" --ExistingPrivateJwkPath "$KEY_PATH" 2>&1 --AuthorityUrl "$AUTHORITY_URL" -BaseAddress "$BASE_ADDRESS")
 exit_code=$?
 
 if [ $exit_code -eq 0 ]; then
@@ -192,8 +200,11 @@ $clientId = "my-client-id"
 # API response comes with escaped quotes - use as-is
 $jwkFromApi = '{\"kty\":\"RSA\",\"kid\":\"my-key-2024\",\"d\":\"MIIEowIBAAKCAQEA...\"}'
 
+$authority = "https://helseid-sts.test.nhn.no",
+$baseAddress = "https://api.selvbetjening.test.nhn.no"
+
 # Pass API response directly without modification
-$result = & helseid-cli readclientsecretexpiration --ClientId $clientId --ExistingPrivateJwk $jwkFromApi
+$result = & helseid-cli readclientsecretexpiration --ClientId $clientId --ExistingPrivateJwk $jwkFromApi --AuthorityUrl $authority -BaseAddress $baseAddress
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Secret expiration retrieved: $result"
