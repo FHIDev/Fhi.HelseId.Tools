@@ -18,8 +18,27 @@ public partial class Program
 
         var rootCommand = BuildRootCommand(new CliHostBuilder(args));
 
+        var invocationConfig = new InvocationConfiguration
+        {
+            EnableDefaultExceptionHandler = false
+        };
+
         var parseResult = rootCommand.Parse(args);
-        return await parseResult.InvokeAsync();
+
+        try
+        {
+            return await parseResult.InvokeAsync(invocationConfig);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine($"Unhandled exception: {e.Message}");
+            return 1;
+        }
+        finally
+        { 
+            // FLUSH LOGGER
+        }
+        
     }
 
     internal static RootCommand BuildRootCommand(CliHostBuilder hostBuilder)
