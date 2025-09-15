@@ -7,26 +7,31 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {
     public class KeyGenerationTests
     {
-        [TestCase("--KeyFileNamePrefix", "--KeyDirectory")]
-        [TestCase("-n", "-d")]
-        public async Task GenerateJsonWebKeys(string filePrefix, string directory)
+        [Test]
+        public async Task GenerateJsonWebKeys()
         {
             var fileHandlerMock = new FileHandlerMock();
             var fakeLogProvider = new FakeLoggerProvider();
+
             var prefixName = "integration_test";
             var directoryPath = "c:\\temp";
+
             var args = new[]
             {
                 GenerateJsonWebKeyParameterNames.CommandName,
-                $"{filePrefix}", prefixName,
-                $"{directory}", directoryPath
+                $"--{GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long}", prefixName,
+                $"--{GenerateJsonWebKeyParameterNames.KeyDirectory.Long}", directoryPath
             };
+
             var rootCommandBuilder = new RootCommandBuilder()
                 .WithArgs(args)
                 .WithFileHandler(fileHandlerMock)
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
+            var rootCommand = rootCommandBuilder.Build();
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var exitCode = await parseResult.InvokeAsync();
+
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(fileHandlerMock.Files, Has.Count.EqualTo(2));
@@ -38,6 +43,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             }
         }
 
+        /**
+        // TODO: needs upgrade to version beta5 of system.commandLine
         [Test]
         [Ignore("todo")]
         public async Task GenerateJsonWebKeys_InvalidParameterAsync()
@@ -67,7 +74,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 Assert.That(logs!, Does.Contain(@"Private key saved: c:\temp\integration_test_private.json"));
                 Assert.That(logs!, Does.Contain(@"Public key saved: c:\temp\integration_test_public.json"));
             }
-        }
+        }*/
 
         [Test]
         public async Task GenerateJsonWebKeys_PathIsEmpty_UseCurrentDirectory()
@@ -84,7 +91,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
               .WithFileHandler(fileHandlerMock)
               .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
+            var rootCommand = rootCommandBuilder.Build();
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var exitCode = await parseResult.InvokeAsync();
 
             using (Assert.EnterMultipleScope())
             {

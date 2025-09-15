@@ -16,8 +16,10 @@ public partial class Program
             .WriteTo.Console()
             .CreateLogger();
 
-        var command = BuildRootCommand(new CliHostBuilder(args));
-        return await command.InvokeAsync(args);
+        var rootCommand = BuildRootCommand(new CliHostBuilder(args));
+
+        var parseResult = rootCommand.Parse(args);
+        return await parseResult.InvokeAsync();
     }
 
     internal static RootCommand BuildRootCommand(CliHostBuilder hostBuilder)
@@ -29,7 +31,7 @@ public partial class Program
         foreach (var builder in commandBuilders)
         {
             var command = builder.Build(host);
-            rootCommand.AddCommand(command);
+            rootCommand.Subcommands.Add(command);
         }
 
         return rootCommand;

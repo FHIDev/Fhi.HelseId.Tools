@@ -1,7 +1,6 @@
 using System.CommandLine;
 using Microsoft.Extensions.Hosting;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
-using System.CommandLine.NamingConventionBinder;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
 {
@@ -18,86 +17,70 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                 TreatUnmatchedTokensAsErrors = true
             };
 
-            updateClientKeyCommand.CreateStringOption(
+            var clientIdOption = updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.ClientId.Long,
                 UpdateClientKeyParameterNames.ClientId.Short,
                 "Client ID for client to update",
-                isRequired: true
-            );
+                isRequired: true);
 
-            updateClientKeyCommand.CreateStringOption(
+            var newPublicJwkPathOption = updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.NewPublicJwkPath.Long,
                 UpdateClientKeyParameterNames.NewPublicJwkPath.Short,
                 "Path to the new public key file",
-                isRequired: false
-            );
+                isRequired: false);
 
-            updateClientKeyCommand.CreateStringOption(
+            var existingPrivateJwkPathOption = updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Long,
                 UpdateClientKeyParameterNames.ExistingPrivateJwkPath.Short,
                 "Path to the existing private key file",
-                isRequired: false
-            );
+                isRequired: false);
 
-            updateClientKeyCommand.CreateStringOption(
+            var newPublicJwkOption = updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.NewPublicJwk.Long,
                 UpdateClientKeyParameterNames.NewPublicJwk.Short,
                 "New public key value",
-                isRequired: false
-            );
+                isRequired: false);
 
-            updateClientKeyCommand.CreateStringOption(
+            var existingPrivateJwkOption = updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.ExistingPrivateJwk.Long,
                 UpdateClientKeyParameterNames.ExistingPrivateJwk.Short,
                 "Existing private key value",
-                isRequired: false
-            );
+                isRequired: false);
 
-            updateClientKeyCommand.CreateStringOption(
+            var authorityUrlOption = updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.AuthorityUrl.Long,
                 UpdateClientKeyParameterNames.AuthorityUrl.Short,
                 "Authority url to update secret with",
-                isRequired: true
-            );
+                isRequired: true);
 
-            updateClientKeyCommand.CreateStringOption(
+            var baseAddressOption = updateClientKeyCommand.CreateStringOption(
                 UpdateClientKeyParameterNames.BaseAddress.Long,
                 UpdateClientKeyParameterNames.BaseAddress.Short,
                 "Base Address url to update secret with",
-                isRequired: true
-            );
+                isRequired: true);
 
-            updateClientKeyCommand.CreateBoolOption(
+            var yesOption = updateClientKeyCommand.CreateBoolOption(
                 UpdateClientKeyParameterNames.YesOption.Long,
                 UpdateClientKeyParameterNames.YesOption.Short,
-                "Automatically confirm update without prompting user",
-                defaultValue: false
-            );
+                "Automatically confirm update without prompting user");
 
-            updateClientKeyCommand.Handler = CommandHandler.Create(async (
-                string clientId,
-                string newPublicJwkPath,
-                string existingPrivateJwkPath,
-                string existingPrivateJwk,
-                string newPublicJwk,
-                string authorityUrl,
-                string baseAddress,
-                bool yes) =>
+            updateClientKeyCommand.SetAction(async (ParseResult parseResult, CancellationToken cancellationToken) =>
             {
                 var parameters = new UpdateClientKeyParameters
                 {
-                    ClientId = clientId,
-                    NewPublicJwkPath = newPublicJwkPath,
-                    ExistingPrivateJwkPath = existingPrivateJwkPath,
-                    ExistingPrivateJwk = existingPrivateJwk,
-                    NewPublicJwk = newPublicJwk,
-                    AuthorityUrl = authorityUrl,
-                    BaseAddress = baseAddress,
-                    Yes = yes
+                    // TODO: fix "may be null"
+                    ClientId = parseResult.GetValue(clientIdOption)!,
+                    NewPublicJwkPath = parseResult.GetValue(newPublicJwkPathOption),
+                    ExistingPrivateJwkPath = parseResult.GetValue(existingPrivateJwkPathOption),
+                    NewPublicJwk = parseResult.GetValue(newPublicJwkOption),
+                    ExistingPrivateJwk = parseResult.GetValue(existingPrivateJwkOption),
+                    AuthorityUrl = parseResult.GetValue(authorityUrlOption)!,
+                    BaseAddress = parseResult.GetValue(baseAddressOption)!,
+                    Yes = parseResult.GetValue(yesOption)
                 };
+
                 return await _commandHandler.ExecuteAsync(parameters);
             });
-
 
             return updateClientKeyCommand;
         }

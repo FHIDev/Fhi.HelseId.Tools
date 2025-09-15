@@ -44,7 +44,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var exitCode = await parseResult.InvokeAsync();
 
             using (Assert.EnterMultipleScope())
             {
@@ -85,7 +86,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var exitCode = await parseResult.InvokeAsync();
 
             using (Assert.EnterMultipleScope())
             {
@@ -127,15 +129,14 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var exitCode = await parseResult.InvokeAsync();
 
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(exitCode, Is.EqualTo(1));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                var newKeyExists = string.IsNullOrEmpty(newKeyPath);
-                var oldKeyExists = string.IsNullOrEmpty(oldKeyPath);
-                Assert.That(logs!.Any(l => l.Contains($"One or more parameters empty.")));
+                Assert.That(logs!.Any(l => l.Contains("One or more parameters empty.")));
             }
         }
 
@@ -158,7 +159,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var exitCode = await parseResult.InvokeAsync();
 
             using (Assert.EnterMultipleScope())
             {
