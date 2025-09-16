@@ -37,12 +37,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
                     _fileHandler.CreateDirectory(certPath);
                 }
 
-                if (string.IsNullOrWhiteSpace(parameters.CertificatePassword))
-                {
-                    _logger.LogError("Required option '--CertificatePassword' is missing.");
-                    throw new ArgumentException("Required option '--CertificatePassword' is missing.");
-                }
-
                 CertificateFiles certificateFiles = GenerateCertificates(parameters.CertificateCommonName, parameters.CertificatePassword);
 
                 var privateCertPath = Path.Combine(certPath, $"{parameters.CertificateCommonName}_private.pfx");

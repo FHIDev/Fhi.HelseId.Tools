@@ -18,12 +18,12 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
         /// <summary>
         /// Common name of certificates
         /// </summary>
-        public string CertificateCommonName { get; set; } = string.Empty;
+        public required string CertificateCommonName { get; set; }
 
         /// <summary>
         /// Password for the certificate
         /// </summary>
-        public string CertificatePassword { get; set; } = string.Empty;
+        public required string CertificatePassword { get; set; }
 
         /// <summary>
         /// Directory where public and private certificates will be stored
