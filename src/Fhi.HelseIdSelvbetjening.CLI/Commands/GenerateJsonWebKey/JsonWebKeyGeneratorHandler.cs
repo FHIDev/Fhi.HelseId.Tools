@@ -2,20 +2,12 @@ using Fhi.Authentication.Tokens;
 using Fhi.HelseIdSelvbetjening.CLI.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
+namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
 {
-    internal class KeyGeneratorService
+    internal class JsonWebKeyGeneratorHandler(IFileHandler fileHandler, ILogger<JsonWebKeyGeneratorHandler> logger)
     {
-        private readonly GenerateKeyParameters _parameters;
-        private readonly IFileHandler _fileHandler;
-        private readonly ILogger<KeyGeneratorService> _logger;
-
-        public KeyGeneratorService(GenerateKeyParameters parameters, IFileHandler fileHandler, ILogger<KeyGeneratorService> logger)
-        {
-            _parameters = parameters;
-            _fileHandler = fileHandler;
-            _logger = logger;
-        }
+        private readonly IFileHandler _fileHandler = fileHandler;
+        private readonly ILogger<JsonWebKeyGeneratorHandler> _logger = logger;
 
         /// <summary>
         /// Generates private and public key.
@@ -24,9 +16,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
         /// privateKey will be named FileName_public.json 
         /// </summary>
         /// <returns></returns>
-        public Task ExecuteAsync()
+        public void Execute(GenerateJsonWebKeyParameters parameters)
         {
-            var keyPath = _parameters.KeyDirectory ?? Environment.CurrentDirectory;
+            var keyPath = parameters.KeyDirectory ?? Environment.CurrentDirectory;
             if (!_fileHandler.PathExists(keyPath))
             {
                 _logger.LogInformation("Key path did not exist. Creating folder {@KeyPath}", keyPath);
@@ -35,16 +27,14 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateKey
 
             var keyPair = JwkGenerator.GenerateRsaJwk();
 
-            var privateKeyPath = Path.Combine(keyPath, $"{_parameters.KeyFileNamePrefix}_private.json");
-            var publicKeyPath = Path.Combine(keyPath, $"{_parameters.KeyFileNamePrefix}_public.json");
+            var privateKeyPath = Path.Combine(keyPath, $"{parameters.KeyFileNamePrefix}_private.json");
+            var publicKeyPath = Path.Combine(keyPath, $"{parameters.KeyFileNamePrefix}_public.json");
 
             _fileHandler.WriteAllText(privateKeyPath, keyPair.PrivateKey);
             _fileHandler.WriteAllText(publicKeyPath, keyPair.PublicKey);
 
             _logger.LogInformation("Private key saved: {@PrivateKeyPath}", privateKeyPath);
             _logger.LogInformation("Public key saved: {@PublicKeyPath}", publicKeyPath);
-
-            return Task.CompletedTask;
         }
     }
 }

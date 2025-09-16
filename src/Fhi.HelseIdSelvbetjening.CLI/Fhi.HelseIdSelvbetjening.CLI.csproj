@@ -11,7 +11,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>helseid-cli</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
-    <Version>1.0.0-beta1</Version>
+    <Version>1.0.0</Version>
     <Authors>FHI</Authors>
     <Company>Folkehelseinstituttet</Company>
     <Description>Command line tool for HelseID client configuration and key management</Description>

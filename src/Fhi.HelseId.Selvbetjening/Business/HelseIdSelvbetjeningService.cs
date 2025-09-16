@@ -5,31 +5,28 @@ using Fhi.HelseIdSelvbetjening.Extensions;
 using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Fhi.HelseIdSelvbetjening.Business
 {
     internal class HelseIdSelvbetjeningService(
-        IOptions<SelvbetjeningConfiguration> selvbetjeningConfig,
         ITokenService tokenService,
         ISelvbetjeningApi selvbetjeningApi,
         ILogger<HelseIdSelvbetjeningService> logger) : IHelseIdSelvbetjeningService
     {
-        private readonly SelvbetjeningConfiguration _selvbetjeningConfig = selvbetjeningConfig.Value;
         private readonly ITokenService _tokenService = tokenService;
         private readonly ISelvbetjeningApi _selvbetjeningApi = selvbetjeningApi;
         private readonly ILogger<HelseIdSelvbetjeningService> _logger = logger;
 
-        public async Task<ClientSecretUpdateResponse> UpdateClientSecret(ClientConfiguration clientToUpdate, string newPublicJwk)
+        public async Task<ClientSecretUpdateResponse> UpdateClientSecret(ClientConfiguration clientToUpdate, string authority, string baseAddress, string newPublicJwk)
         {
             _logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
             var dPoPKey = CreateDPoPKey();
-            var response = await _tokenService.RequestDPoPToken(_selvbetjeningConfig.Authority, clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
+            var response = await _tokenService.RequestDPoPToken(authority, clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
             if (!response.IsError && response.AccessToken != null)
             {
                 var (ClientSecretUpdate, ProblemDetail) = await _selvbetjeningApi.UpdateClientSecretsAsync(
-                    _selvbetjeningConfig.BaseAddress,
+                    baseAddress,
                     dPoPKey,
                     response.AccessToken,
                     newPublicJwk);
@@ -47,7 +44,7 @@ namespace Fhi.HelseIdSelvbetjening.Business
             return new(null, response.ErrorDescription);
         }
 
-        public async Task<IResult<ClientSecretExpirationResponse, ErrorResult>> ReadClientSecretExpiration(ClientConfiguration clientConfiguration)
+        public async Task<IResult<ClientSecretExpirationResponse, ErrorResult>> ReadClientSecretExpiration(ClientConfiguration clientConfiguration, string authority, string baseAddress)
         {
             var errorResult = ValidateClientConfiguration(clientConfiguration);
             if (!errorResult.IsValid)
@@ -55,7 +52,7 @@ namespace Fhi.HelseIdSelvbetjening.Business
 
             var dPoPKey = CreateDPoPKey();
             var response = await _tokenService.RequestDPoPToken(
-                _selvbetjeningConfig.Authority,
+                authority,
                 clientConfiguration.ClientId,
                 clientConfiguration.Jwk,
                 "nhn:selvbetjening/client",
@@ -67,7 +64,7 @@ namespace Fhi.HelseIdSelvbetjening.Business
                 return new Error<ClientSecretExpirationResponse, ErrorResult>(errorResult);
             }
 
-            var (ClientSecrets, ProblemDetail) = await _selvbetjeningApi.GetClientSecretsAsync(_selvbetjeningConfig.BaseAddress, dPoPKey, response.AccessToken);
+            var (ClientSecrets, ProblemDetail) = await _selvbetjeningApi.GetClientSecretsAsync(baseAddress, dPoPKey, response.AccessToken);
             if (ProblemDetail != null)
             {
                 errorResult.AddError($"Failed to read client secret expiration: {ProblemDetail.Detail}");
