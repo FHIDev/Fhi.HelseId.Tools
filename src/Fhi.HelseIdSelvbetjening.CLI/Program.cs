@@ -24,27 +24,26 @@ public partial class Program
             EnableDefaultExceptionHandler = false
         };
 
-        var parseResult = rootCommand.Parse(args);
-
-        // Config of parse error
-        if (parseResult.Action is ParseErrorAction parseError)
-        {
-            parseError.ShowTypoCorrections = true; // Gives the user typo suggestions for options
-            parseError.ShowHelp = true; // No idea what does
-        }
-
-        // Method of getting parsing errors into logger!
-        // Do we need this?
-        /*if (parseResult.Errors.Count > 0)
-        {
-            foreach (var error in parseResult.Errors)
-            {
-                Log.Logger.Error("Error trying to run command: {Message}", error.Message);
-            }
-        }*/
-
         try
         {
+            var parseResult = rootCommand.Parse(args);
+
+            // Config of parse error
+            if (parseResult.Action is ParseErrorAction parseError)
+            {
+                parseError.ShowTypoCorrections = false; // Gives the user typo suggestions for options
+                parseError.ShowHelp = true; // Shows output of command --help if parsing fails
+            }
+
+            // Method of getting parsing errors into logger
+            if (parseResult.Errors.Count > 0)
+            {
+                foreach (var error in parseResult.Errors)
+                {
+                    Log.Logger.Error("Error trying to run command: {Message}", error.Message);
+                }
+            }
+
             return await parseResult.InvokeAsync(invocationConfig);
         }
         catch (Exception e)
