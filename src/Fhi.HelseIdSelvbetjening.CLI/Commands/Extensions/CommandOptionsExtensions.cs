@@ -21,18 +21,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
 
             option.Aliases.Add($"-{shortName}");
 
-            if (isRequired)
-            {
-                option.Validators.Add(result =>
-                {
-                    var value = result.GetValueOrDefault<string>();
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        result.AddError($"Required parameter is missing or empty. Use --{longName} / -{shortName}.");
-                    }
-                });
-            }
-
             command.Options.Add(option);
             return option;
         }

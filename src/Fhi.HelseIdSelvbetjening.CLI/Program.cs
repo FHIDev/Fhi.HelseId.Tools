@@ -43,7 +43,7 @@ public partial class Program
         }
         finally
         {
-            // FLUSH LOGGER
+            Log.CloseAndFlush();
         }
         
     }
