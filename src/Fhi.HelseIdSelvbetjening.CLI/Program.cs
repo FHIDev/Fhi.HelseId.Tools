@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.CommandLine.Invocation;
 using Fhi.HelseIdSelvbetjening.CLI;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,17 +26,23 @@ public partial class Program
 
         var parseResult = rootCommand.Parse(args);
 
+        if (parseResult.Action is ParseErrorAction parseError)
+        {
+            parseError.ShowTypoCorrections = true;
+            parseError.ShowHelp = true;
+        }
+
         try
         {
             return await parseResult.InvokeAsync(invocationConfig);
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine($"Unhandled exception: {e.Message}");
+            Console.Error.WriteLine($"Error occured during command run: {e.Message}");
             return 1;
         }
         finally
-        { 
+        {
             // FLUSH LOGGER
         }
         
