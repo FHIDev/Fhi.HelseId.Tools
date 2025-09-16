@@ -30,7 +30,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithArgs([
                     ReadClientSecretExpirationParameterNames.CommandName,
                     $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", "test-client-id",
-                    $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long}", jwk
+                    $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long}", jwk,
+                    $"--{ReadClientSecretExpirationParameterNames.AuthorityUrl.Long}", "https://helseid-sts.test.nhn.no",
+                    $"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", "https://api.selvbetjening.test.nhn.no"
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
@@ -70,7 +72,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     ReadClientSecretExpirationParameterNames.CommandName,
                     $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", "test-client-id",
                     $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long}", jwk,
-                    $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Long}", filePath
+                    $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Long}", filePath,
+                    $"--{ReadClientSecretExpirationParameterNames.AuthorityUrl.Long}", "https://helseid-sts.test.nhn.no",
+                    $"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", "https://api.selvbetjening.test.nhn.no"
                 ]);
 
 
@@ -96,7 +100,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithArgs([
                     ReadClientSecretExpirationParameterNames.CommandName,
                     $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", "test-client-id",
-                    $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long}", @"{""kid"":""test-kid"",""kty"":""RSA""}"
+                    $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long}", @"{""kid"":""test-kid"",""kty"":""RSA""}",
+                    $"--{ReadClientSecretExpirationParameterNames.AuthorityUrl.Long}", "https://helseid-sts.test.nhn.no",
+                    $"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", "https://api.selvbetjening.test.nhn.no"
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
@@ -119,7 +125,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace)
                 .WithArgs([
                     ReadClientSecretExpirationParameterNames.CommandName,
-                    $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", "clientId"
+                    $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", "clientId",
+                    $"--{ReadClientSecretExpirationParameterNames.AuthorityUrl.Long}", "https://helseid-sts.test.nhn.no",
+                    $"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", "https://api.selvbetjening.test.nhn.no"
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
@@ -156,7 +164,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     "n": "test-n-value",
                     "e": "AQAB"
                 }
-                """
+                """,
+                $"--{ReadClientSecretExpirationParameterNames.AuthorityUrl.Long}", "https://helseid-sts.test.nhn.no",
+                $"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", "https://api.selvbetjening.test.nhn.no"
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
@@ -192,7 +202,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     "n": "test-n-value",
                     "e": "AQAB"
                 }
-                """
+                """,
+                $"--{ReadClientSecretExpirationParameterNames.AuthorityUrl.Long}", "https://helseid-sts.test.nhn.no",
+                $"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", "https://api.selvbetjening.test.nhn.no"
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
@@ -217,7 +229,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithArgs([
                     ReadClientSecretExpirationParameterNames.CommandName,
                     $"--{ReadClientSecretExpirationParameterNames.ClientId.Long}", "test-client-id",
-                    $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long}", jwk
+                    $"--{ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long}", jwk,
+                    $"--{ReadClientSecretExpirationParameterNames.AuthorityUrl.Long}", "https://helseid-sts.test.nhn.no",
+                    $"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", "https://api.selvbetjening.test.nhn.no",
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
@@ -232,7 +246,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         }
 
         private static HelseIdSelvbetjeningService CreateSelvbetjeningService(List<ClientSecret> clientSecrets) => new HelseIdSelvbetjeningServiceBuilder()
-                               .WithDefaultConfiguration()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null))
                                .WithGetClientSecretResponse(clientSecrets).Build();
     }

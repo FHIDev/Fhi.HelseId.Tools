@@ -12,11 +12,10 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
         public async Task UpdateClientSecret_InvalidClient_ReturnError()
         {
             var builder = new HelseIdSelvbetjeningServiceBuilder()
-                .WithDefaultConfiguration()
                 .WithDPopTokenResponse(new TokenResponse(null, true, "invalid_token"));
             var service = builder.Build();
 
-            var response = await service.UpdateClientSecret(new ClientConfiguration("invalid-client", "old-jwk"), "new-jwk");
+            var response = await service.UpdateClientSecret(new ClientConfiguration("invalid-client", "old-jwk"), "https://authority", "https://nhn.selvbetjening", "new-jwk");
 
             using (Assert.EnterMultipleScope())
             {

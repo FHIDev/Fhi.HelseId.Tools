@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "Generatekey": {
+    "GenerateJsonWebkey": {
       "commandName": "Project",
-      "commandLineArgs": "generatekey --KeyFileNamePrefix name --KeyDirectory C:\\temp",
+      "commandLineArgs": "generatejsonwebkey --KeyFileNamePrefix name --KeyDirectory C:\\temp",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
