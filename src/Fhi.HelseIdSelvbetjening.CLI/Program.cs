@@ -21,21 +21,20 @@ public partial class Program
 
         var invocationConfig = new InvocationConfiguration
         {
-            EnableDefaultExceptionHandler = false
+            // Setting this to false enables us to create our own try catch exception handle
+            EnableDefaultExceptionHandler = false 
         };
 
         try
         {
             var parseResult = rootCommand.Parse(args);
 
-            // Config of parse error
             if (parseResult.Action is ParseErrorAction parseError)
             {
                 parseError.ShowTypoCorrections = false; // Gives the user typo suggestions for options
                 parseError.ShowHelp = true; // Shows output of command --help if parsing fails
             }
 
-            // Method of getting parsing errors into logger
             if (parseResult.Errors.Count > 0)
             {
                 foreach (var error in parseResult.Errors)
