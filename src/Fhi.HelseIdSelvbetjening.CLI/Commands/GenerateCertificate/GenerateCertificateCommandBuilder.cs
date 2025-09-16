@@ -1,5 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
+using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
@@ -14,20 +15,32 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
         }
         public Command Build(IHost host)
         {
-            var generateCertCommand = new Command(GenerateCertificateParameterNames.CommandName, "Generate keys in PEM certificate format");
-
-            var certNameOption = new Option<string>([$"--{GenerateCertificateParameterNames.CertificateCommonName.Long}", $"-{GenerateCertificateParameterNames.CertificateCommonName.Short}"], "Common Name (CN) for the certificate") { IsRequired = true };
-            generateCertCommand.AddOption(certNameOption);
+            var generateCertCommand = new Command(
+                GenerateCertificateParameterNames.CommandName,
+                "Generate keys in PEM certificate format")
+            {
+                TreatUnmatchedTokensAsErrors = true
+            };
             
-            var certPasswordOption = new Option<string>([$"--{GenerateCertificateParameterNames.CertificatePassword.Long}", $"-{GenerateCertificateParameterNames.CertificatePassword.Short}"], "Password for the generated certificate") { IsRequired = true };
-            generateCertCommand.AddOption(certPasswordOption);
+            generateCertCommand.CreateStringOption(
+                GenerateCertificateParameterNames.CertificateCommonName.Long,
+                GenerateCertificateParameterNames.CertificateCommonName.Short,
+                "Common Name (CN) for the certificate",
+                isRequired: true);
             
-            var certDirOption = new Option<string>([$"--{GenerateCertificateParameterNames.CertificateDirectory.Long}", $"-{GenerateCertificateParameterNames.CertificateDirectory.Short}"], "Directory to store the generated certificates");
-            generateCertCommand.AddOption(certDirOption);
-
-            generateCertCommand.TreatUnmatchedTokensAsErrors = true;
+            generateCertCommand.CreateStringOption(
+                GenerateCertificateParameterNames.CertificatePassword.Long,
+                GenerateCertificateParameterNames.CertificatePassword.Short,
+                "Password for the generated certificate",
+                isRequired: true);
             
-            generateCertCommand.Handler = CommandHandler.Create(async (string certificateCommonName, string certificatePassword, string? certificateDirectory) =>
+            generateCertCommand.CreateStringOption(
+                GenerateCertificateParameterNames.CertificateDirectory.Long,
+                GenerateCertificateParameterNames.CertificateDirectory.Short,
+                "Directory to store the generated certificates",
+                isRequired: false);
+            
+            generateCertCommand.Handler = CommandHandler.Create((string certificateCommonName, string certificatePassword, string? certificateDirectory) =>
             {
                 var parameters = new GenerateCertificateParameters
                 {
@@ -35,7 +48,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
                     CertificatePassword = certificatePassword,
                     CertificateDirectory = certificateDirectory
                 };
-                return await _commandHandler.ExecuteAsync(parameters);
+                _commandHandler.Execute(parameters);
             });
             
             return generateCertCommand;
