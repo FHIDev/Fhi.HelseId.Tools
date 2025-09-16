@@ -3,12 +3,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Services
     internal interface IFileHandler
     {
         bool PathExists(string path);
-
         void CreateDirectory(string path);
-
-        void WriteAllText(string path, string content);
-
         string ReadAllText(string path);
+        void WriteAllText(string path, string content);
+        void WriteAllBytes(string path, byte[] content);
     }
     internal class FileHandler : IFileHandler
     {
@@ -30,6 +28,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Services
         public void WriteAllText(string path, string content)
         {
             File.WriteAllText(path, content);
+        }
+        
+        public void WriteAllBytes(string path, byte[] content)
+        {
+            File.WriteAllBytes(path, content);
         }
     }
 }
