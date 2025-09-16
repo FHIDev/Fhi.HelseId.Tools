@@ -26,11 +26,22 @@ public partial class Program
 
         var parseResult = rootCommand.Parse(args);
 
+        // Config of parse error
         if (parseResult.Action is ParseErrorAction parseError)
         {
-            parseError.ShowTypoCorrections = true;
-            parseError.ShowHelp = true;
+            parseError.ShowTypoCorrections = true; // Gives the user typo suggestions for options
+            parseError.ShowHelp = true; // No idea what does
         }
+
+        // Method of getting parsing errors into logger!
+        // Do we need this?
+        /*if (parseResult.Errors.Count > 0)
+        {
+            foreach (var error in parseResult.Errors)
+            {
+                Log.Logger.Error("Error trying to run command: {Message}", error.Message);
+            }
+        }*/
 
         try
         {
@@ -38,7 +49,7 @@ public partial class Program
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine($"Error occured during command run: {e.Message}");
+            Log.Logger.Error($"Error occured during command run: {e.Message}");
             return 1;
         }
         finally
