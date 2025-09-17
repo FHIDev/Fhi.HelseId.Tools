@@ -17,7 +17,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 
         public async Task<int> ExecuteAsync(ReadClientSecretExpirationParameters parameters)
         {
-            using (_logger.BeginScope("ClientId: {ClientId}", parameters.ClientId))
+            using (_logger.BeginScope("Reading client secret for ClientId: {ClientId}", parameters.ClientId))
             {
                 var privateKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
                 parameters.ExistingPrivateJwk,

@@ -5,7 +5,9 @@ namespace Fhi.HelseIdSelvbetjening.Business.Models
     /// <summary>
     /// Response after updating client secret
     /// </summary>
-    /// <param name="HttpStatus">Status code</param>
-    /// <param name="Message">Message</param>
-    public record ClientSecretUpdateResponse(HttpStatusCode? HttpStatus, string? Message);
+    public class ClientSecretUpdateResponse
+    {
+        public HttpStatusCode? HttpStatus { get; set; }
+        public string? Message { get; set; }
+    }
 }
