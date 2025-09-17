@@ -5,18 +5,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
 {
-    internal class GenerateCertificateCommandHandler
+    internal class GenerateCertificateCommandHandler(
+        IFileHandler fileHandler,
+        ILogger<GenerateCertificateCommandHandler> logger)
     {
-        private readonly IFileHandler _fileHandler;
-        private readonly ILogger<GenerateCertificateCommandHandler> _logger;
-
-        public GenerateCertificateCommandHandler(
-            IFileHandler fileHandler, 
-            ILogger<GenerateCertificateCommandHandler> logger)
-        {
-            _fileHandler = fileHandler;
-            _logger = logger;
-        }
+        private readonly IFileHandler _fileHandler = fileHandler;
+        private readonly ILogger<GenerateCertificateCommandHandler> _logger = logger;
 
         /// <summary>
         /// Generates private and public key in certificate format.
