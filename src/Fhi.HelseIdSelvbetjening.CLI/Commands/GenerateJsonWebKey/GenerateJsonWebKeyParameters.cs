@@ -22,6 +22,6 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
         /// <summary>
         /// Directory where public and private file will be stored
         /// </summary>
-        public required string KeyDirectory { get; set; }
+        public string? KeyDirectory { get; set; }
     };
 }

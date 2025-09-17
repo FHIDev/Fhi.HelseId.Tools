@@ -38,7 +38,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
                 {
                     // TODO: fix "may be null"
                     KeyFileNamePrefix = keyFileNamePrefix!,
-                    KeyDirectory = keyDirectory!
+                    KeyDirectory = keyDirectory
                 };
 
                 _commandHandler.Execute(parameters);
