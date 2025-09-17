@@ -9,7 +9,21 @@
     },
     "UpdateClientKey With Path": {
       "commandName": "Project",
-      "commandLineArgs": "updateclientkey --ClientId client --NewPublicJwkPath C:\\temp\\name_private.json --ExistingPrivateJwkPath C:\\temp\\oldKey.json",
+      "commandLineArgs": "updateclientkey --ClientId client --NewPublicJwkPath C:\\temp\\name_private.json --ExistingPrivateJwkPath C:\\temp\\oldKey.json -a aaa -b bbb",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "ReadClient secret with Path": {
+      "commandName": "Project",
+      "commandLineArgs": "readclientsecretexpiration --ClientId client --ExistingPrivateJwkPath C:\\temp\\name_private.json --AuthorityUrl aaa --BaseAddress bbb",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "exceptionTest": {
+      "commandName": "Project",
+      "commandLineArgs": "generatejsonwebkey --KeyFileNamePrefx",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

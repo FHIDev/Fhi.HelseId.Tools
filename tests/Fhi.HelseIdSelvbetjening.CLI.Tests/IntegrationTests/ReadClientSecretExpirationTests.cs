@@ -36,7 +36,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
@@ -79,7 +95,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
@@ -106,7 +138,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
@@ -131,7 +179,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            int exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
@@ -170,7 +234,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
@@ -208,7 +288,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
@@ -235,7 +331,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {

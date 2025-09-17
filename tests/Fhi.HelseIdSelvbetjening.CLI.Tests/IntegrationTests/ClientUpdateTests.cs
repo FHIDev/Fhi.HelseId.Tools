@@ -44,7 +44,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
@@ -85,7 +101,24 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                // Optional: assert specific exception types or messages
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
@@ -127,15 +160,30 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                // Optional: assert specific exception types or messages
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(exitCode, Is.EqualTo(1));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                var newKeyExists = string.IsNullOrEmpty(newKeyPath);
-                var oldKeyExists = string.IsNullOrEmpty(oldKeyPath);
-                Assert.That(logs!.Any(l => l.Contains($"One or more parameters empty.")));
+                Assert.That(logs!.Any(l => l.Contains("One or more parameters empty.")));
             }
         }
 
@@ -158,8 +206,24 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
 
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            int exitCode;
+
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                // Optional: assert specific exception types or messages
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(exitCode, Is.Not.EqualTo(1));

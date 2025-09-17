@@ -29,7 +29,25 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithFileHandler(fileHandlerMock)
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
+            var rootCommand = rootCommandBuilder.Build();
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            int exitCode;
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
+
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(fileHandlerMock.Files, Has.Count.EqualTo(3));
@@ -63,7 +81,24 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
               .WithFileHandler(fileHandlerMock)
               .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
+            var rootCommand = rootCommandBuilder.Build();
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            int exitCode;
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             using (Assert.EnterMultipleScope())
             {
@@ -97,7 +132,24 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var originalError = Console.Error;
             Console.SetError(errorWriter);
 
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
+            var rootCommand = rootCommandBuilder.Build();
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+
+            var invocationConfig = new InvocationConfiguration
+            {
+                EnableDefaultExceptionHandler = false
+            };
+
+            int exitCode;
+            try
+            {
+                exitCode = await parseResult.InvokeAsync(invocationConfig);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
+                exitCode = 1;
+            }
 
             Console.SetError(originalError);
 

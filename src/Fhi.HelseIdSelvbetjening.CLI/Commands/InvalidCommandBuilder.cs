@@ -11,9 +11,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands
         public Command Build(IHost host)
         {
             var invalidCommand = new Command("invalid", "Invalid command.");
-            invalidCommand.SetHandler(() =>
+
+            invalidCommand.SetAction((ParseResult parseResult, CancellationToken cancellationToken) =>
             {
                 Console.Error.WriteLine("Invalid command.");
+                return Task.FromResult(1);
             });
 
             return invalidCommand;
