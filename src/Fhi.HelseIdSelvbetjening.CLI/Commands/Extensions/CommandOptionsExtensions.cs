@@ -29,8 +29,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
             this Command command,
             string longName,
             string shortName,
-            string description
-            /*bool defaultValue = false*/)
+            string description)
         {
             var option = new Option<bool>(
                 name: $"--{longName}"
@@ -41,8 +40,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
             };
 
             option.Aliases.Add($"-{shortName}");
-            // TODO: how to do this inversion beta5 ?
-            //option.SetDefaultValue(defaultValue);
+            option.DefaultValueFactory = _ => false;
 
             command.Options.Add(option);
             return option;
