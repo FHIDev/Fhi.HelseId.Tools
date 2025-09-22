@@ -29,7 +29,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
                 "Directory to store the generated keys",
                 isRequired: false);
 
-            generateJsonWebKeyCommand.SetAction((ParseResult parseResult, CancellationToken cancellationToken) =>
+            generateJsonWebKeyCommand.SetAction((ParseResult parseResult) =>
             {
                 var keyFileNamePrefix = parseResult.GetValue(keyFileNamePrefixOption);
                 var keyDirectory = parseResult.GetValue(keyDirectoryOption);
