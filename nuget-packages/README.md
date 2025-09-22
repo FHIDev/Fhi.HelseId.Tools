@@ -37,7 +37,7 @@ Semantic versioning uses the format X.Y.Z where X, Y, Z represents a range of po
     * Avoid releasing breaking changes often and consider collecting multiple breaking changes into one release when possible.
     * Calculate the gain against the cost of doing smaller breaking changes.
     * Avoid releasing the first MAJOR version of a package, version 1.0.0, until package has properly left the early stages of development.
-* Quickly release a MAJOR version when a breaking change is accidentally released in a MINOR or PATCH version, even if code has not been updated between releases.
+* Quickly release a MAJOR version when a breaking change is accidentally introduced in a MINOR or PATCH version, even if code has not been updated between releases.
 * It might seem sensible to update a MAJOR version after a conceptually important release, but this breaks Semantic Versioning standard. 
     * Do not update the MAJOR version unless breaking changes are introduced.
     * Avoid what is called "Romantic versioning". 
