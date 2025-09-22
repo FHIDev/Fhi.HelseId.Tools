@@ -2,7 +2,9 @@
 
 Client Secret Tool is a console application that facilitates the secure rotation of client secrets for applications integrated with Helse ID. A user initiates a request to upgrade/rotate the client secret for an application through the tools console interface. The tool provides commands for:
 
-- **Generation of new keys** Command for generating new private and public Json Web Keys (jwk). See [overview of key generation commands](./generate-json-web-key-command.md)
+- **Generation of new keys** 
+    - Command for generating new private and public Json Web Keys (jwk). See [key generation commands](./generate-json-web-key-command.md)
+    - Command for generating new private and public keys in certificate format. See [certificate generation commands](./generatecertificates-command.md)
 - **Update client keys in HelseID client configuration:** Command for updating secrets (public key) on a HelseID client. See [overview of update client secret commands](./client-secret-update-commands.md)
 - **Read client secret expiration:** Command for reading the expiration date of client secrets to enable automated monitoring and renewal scheduling. See [overview of read client secret expiration commands](./read-client-secret-expiration-command.md)
 
