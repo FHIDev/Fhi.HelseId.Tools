@@ -14,7 +14,7 @@ Packages released across multiple software package hosting sites (such as NuGet,
 ## Naming Convention
 
 <b>Packages released by FHI can be identified through these naming conventions:</b>
-* NuGet-packages should have ID prefixes with the name "`TBD`". This prefix ID is reserved for FHI and all NuGet-packages released by FHI should have this prefix.
+* NuGet-packages should have ID prefixes with the name "`TBD`". This prefix ID is reserved for FHI.
 * For packages that are not released as NuGet-packages:
     * Use a naming ID similar to that of a NuGet-package.
     * Example: npm packages should use the namespace @`TBD`/ for packages released by FHI.
