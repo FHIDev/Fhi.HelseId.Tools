@@ -7,8 +7,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {
     public class KeyGenerationTests
     {
-        [Test]
-        public async Task GenerateJsonWebKeys()
+        [TestCase("--KeyFileNamePrefix", "--KeyDirectory")]
+        [TestCase("-n", "-d")]
+        public async Task GenerateJsonWebKeys(string prefixOption, string directoryPathOption)
         {
             var fileHandlerMock = new FileHandlerMock();
             var fakeLogProvider = new FakeLoggerProvider();
@@ -19,8 +20,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var args = new[]
             {
                 GenerateJsonWebKeyParameterNames.CommandName,
-                $"--{GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long}", prefixName,
-                $"--{GenerateJsonWebKeyParameterNames.KeyDirectory.Long}", directoryPath
+                $"{prefixOption}", prefixName,
+                $"{directoryPathOption}", directoryPath
             };
 
             var rootCommandBuilder = new RootCommandBuilder()
