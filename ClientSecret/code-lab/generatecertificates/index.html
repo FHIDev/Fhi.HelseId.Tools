@@ -6,7 +6,7 @@
 <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="../../../img/favicon.ico" rel="shortcut icon"/>
-<title>Update client secret command - FHI HelseID Tools</title>
+<title>Generate new certificates command - FHI HelseID Tools</title>
 <link href="../../../css/theme.css" rel="stylesheet"/>
 <link href="../../../css/theme_extra.css" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
@@ -14,8 +14,8 @@
 <link href="../../../overrides/cards.css" rel="stylesheet"/>
 <script>
         // Current page data
-        var mkdocs_page_name = "Update client secret command";
-        var mkdocs_page_input_path = "ClientSecret/code-lab/updateclientsecret.ipynb";
+        var mkdocs_page_name = "Generate new certificates command";
+        var mkdocs_page_input_path = "ClientSecret/code-lab/generatecertificates.ipynb";
         var mkdocs_page_url = null;
       </script>
 <!--[if lt IE 9]>
@@ -50,15 +50,15 @@
 <ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../about-codelab/">Getting started with codelab</a>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../generatecertificates/">Generate new certificates command</a>
+<li class="toctree-l2 current"><a class="reference internal current" href="#">Generate new certificates command</a>
+<ul class="current">
+</ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../generatenewjsonwebkeys/">Generate new Json Web keys command</a>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../readclientsecret/">Readclientsecret</a>
 </li>
-<li class="toctree-l2 current"><a class="reference internal current" href="#">Update client secret command</a>
-<ul class="current">
-</ul>
+<li class="toctree-l2"><a class="reference internal" href="../updateclientsecret/">Update client secret command</a>
 </li>
 </ul>
 </li>
@@ -89,7 +89,7 @@
 <li><a aria-label="Docs" class="icon icon-home" href="../../.."></a></li>
 <li class="breadcrumb-item">ClientSecret</li>
 <li class="breadcrumb-item">Code lab</li>
-<li class="breadcrumb-item active">Update client secret command</li>
+<li class="breadcrumb-item active">Generate new certificates command</li>
 <li class="wy-breadcrumbs-aside">
 </li>
 </ul>
@@ -533,18 +533,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=62849c1e">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d132cdb9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="update-client-secret-command">Update client secret command<a class="anchor-link" href="#update-client-secret-command">¶</a></h1>
+<h1 id="generate-new-certificates-command">Generate new certificates command<a class="anchor-link" href="#generate-new-certificates-command">¶</a></h1>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5ffced0c">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a54dceac">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -562,25 +562,35 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-PowerShell"><pre><span></span><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">install</span> <span class="p">-</span><span class="n">-global</span> <span class="n">Fhi</span><span class="p">.</span><span class="n">HelseIdSelvbetjening</span><span class="p">.</span><span class="nb">CLI </span><span class="p">-</span><span class="n">-version</span> <span class="n">1</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span>
+<div class="highlight-ipynb hl-PowerShell"><pre><span></span><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">install</span> <span class="p">-</span><span class="n">-global</span> <span class="n">Fhi</span><span class="p">.</span><span class="n">HelseIdSelvbetjening</span><span class="p">.</span><span class="nb">CLI </span><span class="p">-</span><span class="n">-prerelease</span>
 
-<span class="nv">$clientId</span> <span class="p">=</span> <span class="s2">""</span>
-<span class="nv">$newKeyPath</span> <span class="p">=</span> <span class="s2">""</span>
-<span class="nv">$oldKeyPath</span> <span class="p">=</span><span class="s2">""</span>
-<span class="nv">$authorityUrl</span> <span class="p">=</span> <span class="s2">""</span>
-<span class="nv">$baseAddress</span> <span class="p">=</span> <span class="s2">""</span>
+<span class="nv">$certificateCommonName</span> <span class="p">=</span> <span class="s2">"CertName"</span>
+<span class="nv">$certificatePassword</span> <span class="p">=</span> <span class="s2">"CertPw123!"</span>
+<span class="nv">$certificateDirectory</span> <span class="p">=</span> <span class="s2">"C:\Certificates\test1"</span>
 
-<span class="n">helseid-cli</span> <span class="n">updateclientkey</span> <span class="p">-</span><span class="n">-ClientId</span> <span class="nv">$clientId</span> <span class="p">-</span><span class="n">-NewPublicJwkPath</span> <span class="nv">$newKeyPath</span> <span class="p">-</span><span class="n">-ExistingPrivateJwkPath</span> <span class="nv">$oldKeyPath</span> <span class="p">-</span><span class="n">-AuthorityUrl</span> <span class="nv">$authorityUrl</span> <span class="p">-</span><span class="n">-BaseAddress</span> <span class="nv">$baseAddress</span> <span class="p">-</span><span class="n">-Yes</span>
+
+<span class="n">helseid-cli</span> <span class="n">generatecertificate</span> <span class="p">-</span><span class="n">-CertificateCommonName</span> <span class="nv">$certificateCommonName</span> <span class="p">-</span><span class="n">-CertificatePassword</span> <span class="nv">$certificatePassword</span> <span class="p">-</span><span class="n">-CertificateDirectory</span> <span class="nv">$certificateDirectory</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1">dotnet tool install --global Fhi.HelseIdSelvbetjening.CLI --version 1.0.0
+<div class="clipboard-copy-txt" id="cell-1">dotnet tool install --global Fhi.HelseIdSelvbetjening.CLI --prerelease
 
-$clientId = ""
-$newKeyPath = ""
-$oldKeyPath =""
-$authorityUrl = ""
-$baseAddress = ""
+$certificateCommonName = "CertName"
+$certificatePassword = "CertPw123!"
+$certificateDirectory = "C:\Certificates\test1"
 
-helseid-cli updateclientkey --ClientId $clientId --NewPublicJwkPath $newKeyPath --ExistingPrivateJwkPath $oldKeyPath --AuthorityUrl $authorityUrl --BaseAddress $baseAddress --Yes</div>
+
+helseid-cli generatecertificate --CertificateCommonName $certificateCommonName --CertificatePassword $certificatePassword --CertificateDirectory $certificateDirectory</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre></pre>
 </div>
 </div>
 </div>
@@ -595,8 +605,8 @@ helseid-cli updateclientkey --ClientId $clientId --NewPublicJwkPath $newKeyPath 
 </div>
 </div><footer>
 <div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
-<a class="btn btn-neutral float-left" href="../readclientsecret/" title="Readclientsecret"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-<a class="btn btn-neutral float-right" href="../../commands/client-secret-update-commands/" title="Update client with new keys Commands">Next <span class="icon icon-circle-arrow-right"></span></a>
+<a class="btn btn-neutral float-left" href="../about-codelab/" title="Getting started with codelab"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../generatenewjsonwebkeys/" title="Generate new Json Web keys command">Next <span class="icon icon-circle-arrow-right"></span></a>
 </div>
 <hr/>
 <div role="contentinfo">
@@ -611,8 +621,8 @@ helseid-cli updateclientkey --ClientId $clientId --NewPublicJwkPath $newKeyPath 
 </div>
 <div aria-label="Versions" class="rst-versions" role="note">
 <span class="rst-current-version" data-toggle="rst-current-version">
-<span><a href="../readclientsecret/" style="color: #fcfcfc">« Previous</a></span>
-<span><a href="../../commands/client-secret-update-commands/" style="color: #fcfcfc">Next »</a></span>
+<span><a href="../about-codelab/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../generatenewjsonwebkeys/" style="color: #fcfcfc">Next »</a></span>
 </span>
 </div>
 <script src="../../../js/jquery-3.6.0.min.js"></script>

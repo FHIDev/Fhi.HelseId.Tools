@@ -56,6 +56,8 @@
     <ul>
                 <li class="toctree-l2"><a class="reference internal" href="../code-lab/about-codelab/">Getting started with codelab</a>
                 </li>
+                <li class="toctree-l2"><a class="reference internal" href="../code-lab/generatecertificates/">Generate new certificates command</a>
+                </li>
                 <li class="toctree-l2"><a class="reference internal" href="../code-lab/generatenewjsonwebkeys/">Generate new Json Web keys command</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../code-lab/readclientsecret/">Readclientsecret</a>
@@ -69,6 +71,8 @@
                 <li class="toctree-l2"><a class="reference internal" href="../commands/client-secret-update-commands/">Update client with new keys Commands</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../commands/generate-json-web-key-command/">Generate new Json Web keys Commands</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../commands/generatecertificates-command/">Generate keys in certificate format Commands</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../commands/read-client-secret-expiration-command/">Read client secret expiration command</a>
                 </li>
@@ -102,7 +106,11 @@
                 <h1 id="about-helseid-client-secrets-jwk">About HelseId Client secrets (Jwk)</h1>
 <p>Client Secret Tool is a console application that facilitates the secure rotation of client secrets for applications integrated with Helse ID. A user initiates a request to upgrade/rotate the client secret for an application through the tools console interface. The tool provides commands for:</p>
 <ul>
-<li><strong>Generation of new keys</strong> Command for generating new private and public Json Web Keys (jwk). See <a href="./generate-json-web-key-command.md">overview of key generation commands</a></li>
+<li><strong>Generation of new keys</strong> <ul>
+<li>Command for generating new private and public Json Web Keys (jwk). See <a href="./generate-json-web-key-command.md">key generation commands</a></li>
+<li>Command for generating new private and public keys in certificate format. See <a href="./generatecertificates-command.md">certificate generation commands</a></li>
+</ul>
+</li>
 <li><strong>Update client keys in HelseID client configuration:</strong> Command for updating secrets (public key) on a HelseID client. See <a href="./client-secret-update-commands.md">overview of update client secret commands</a></li>
 <li><strong>Read client secret expiration:</strong> Command for reading the expiration date of client secrets to enable automated monitoring and renewal scheduling. See <a href="./read-client-secret-expiration-command.md">overview of read client secret expiration commands</a></li>
 </ul>

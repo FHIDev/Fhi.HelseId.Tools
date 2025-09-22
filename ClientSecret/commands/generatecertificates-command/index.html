@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../../../img/favicon.ico" />
-    <title>Update client with new keys Commands - FHI HelseID Tools</title>
+    <title>Generate keys in certificate format Commands - FHI HelseID Tools</title>
     <link rel="stylesheet" href="../../../css/theme.css" />
     <link rel="stylesheet" href="../../../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -14,8 +14,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Update client with new keys Commands";
-        var mkdocs_page_input_path = "ClientSecret/commands/client-secret-update-commands.md";
+        var mkdocs_page_name = "Generate keys in certificate format Commands";
+        var mkdocs_page_input_path = "ClientSecret/commands/generatecertificates-command.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -66,31 +66,21 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" >Commands</a>
     <ul class="current">
-                <li class="toctree-l2 current"><a class="reference internal current" href="#">Update client with new keys Commands</a>
+                <li class="toctree-l2"><a class="reference internal" href="../client-secret-update-commands/">Update client with new keys Commands</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../generate-json-web-key-command/">Generate new Json Web keys Commands</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">Generate keys in certificate format Commands</a>
     <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#flow">Flow</a>
-    </li>
     <li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#commands">Commands</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#updateclientkey-using-key-string">updateclientkey using key string</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#updateclientkey-using-key-path">updateclientkey using key path</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#updateclientkey-with-automatic-confirmation">updateclientkey with automatic confirmation</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#updateclientkey-with-automatic-confirmation_1">updateclientkey with automatic confirmation</a>
-    </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#notes">Notes</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#code-sample">Code sample</a>
     </li>
     </ul>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../generate-json-web-key-command/">Generate new Json Web keys Commands</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="../generatecertificates-command/">Generate keys in certificate format Commands</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../read-client-secret-expiration-command/">Read client secret expiration command</a>
                 </li>
@@ -113,7 +103,7 @@
     <li><a href="../../.." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">ClientSecret</li>
           <li class="breadcrumb-item">Commands</li>
-      <li class="breadcrumb-item active">Update client with new keys Commands</li>
+      <li class="breadcrumb-item active">Generate keys in certificate format Commands</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -122,105 +112,59 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="update-client-with-new-keys-commands">Update client with new keys Commands</h1>
-<h2 id="flow">Flow</h2>
-<ol>
-<li><strong>User Request:</strong> A user initiates a request to upgrade/ rotate the client secret for an application through the tools console interface.</li>
-<li><strong>Authentication:</strong> The Client Secret Tool authenticates with Helse ID using the old secret and client ID to verify its identity to get an access token.</li>
-<li><strong>Secret Update Process:</strong> The tool updates the client configuration through the Helse ID Selvbetjening API passing the access token. The updated secret is then stored in the Client Configuration inside Helse ID.</li>
-</ol>
+                <h1 id="generate-keys-in-certificate-format-commands">Generate keys in certificate format Commands</h1>
 <h2 id="parameters">Parameters</h2>
 <table>
 <thead>
 <tr>
 <th>Parameter name</th>
-<th>Short Name</th>
-<th>Descrition</th>
+<th>Short name</th>
+<th>Description</th>
 <th>Required</th>
 <th>Sample</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>--ClientId</td>
-<td>-c</td>
-<td>The target client for the secret update. <br> Found in HelseId Selvbetjening Klient konfigurasjon.</td>
+<td>CertificateCommonName</td>
+<td>cn</td>
+<td>Common name of the certificate, key file name prefix. <br><br>Files generated: <br><code>&lt;CommonName&gt;_private.pfx</code><br> <code>&lt;CommonName&gt;_public.pem</code><br>  <code>&lt;CommonName&gt;_thumbprint.txt</code></td>
 <td><b>Yes</b></td>
-<td><code>37a08838-db82-4de0-bfe1-bed876e7086e</code></td>
+<td><code>"newCertificate"</code></td>
 </tr>
 <tr>
-<td>--NewPublicJwkPath</td>
-<td>-np</td>
-<td>Path to the new public key.</td>
-<td><b>No*</b></td>
-<td><code>C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_public.json</code></td>
-</tr>
-<tr>
-<td>--NewPublicJwk</td>
-<td>-n</td>
-<td>The new public key string.</td>
-<td><b>No*</b></td>
-<td><code>{\"alg\":\"PS512\",\"d\":\"xxx .....}</code></td>
-</tr>
-<tr>
-<td>--ExistingPrivateJwkPath</td>
-<td>-ep</td>
-<td>Path to the existing private key.</td>
-<td><b>No*</b></td>
-<td><code>C:\keys\37a08838-db82-4de0-bfe1-bed876e7086e_private.json</code></td>
-</tr>
-<tr>
-<td>--ExistingPrivateJwk</td>
-<td>-e</td>
-<td>The old private key string.</td>
-<td><b>No*</b></td>
-<td><code>{\"alg\":\"PS512\",\"d\":\"xxx .....}</code></td>
-</tr>
-<tr>
-<td>--AuthorityUrl</td>
-<td>-a</td>
-<td>Authority url to target.</td>
+<td>CertificatePassword</td>
+<td>pwd</td>
+<td>Password for the private certificate.</td>
 <td><b>Yes</b></td>
-<td><code>https://helseid-sts.test.nhn.no</code></td>
+<td><code>"CertPassword123!"</code></td>
 </tr>
 <tr>
-<td>--BaseAddress</td>
-<td>-b</td>
-<td>Base address url to target.</td>
-<td><b>Yes</b></td>
-<td><code>https://api.selvbetjening.test.nhn.no</code></td>
-</tr>
-<tr>
-<td>--Yes</td>
-<td>-y</td>
-<td>Automatic confirmation of update without user input.</td>
-<td>No</td>
-<td>--Yes</td>
+<td>CertificateDirectory</td>
+<td>dir</td>
+<td>Path to where private and public key will be stored.</td>
+<td><b>No</b></td>
+<td><code>"C:\\temp"</code></td>
 </tr>
 </tbody>
 </table>
-<p><i>*Either path or string parameter value for the new and old keys must be provided.</i></p>
 <h2 id="commands">Commands</h2>
-<h3 id="updateclientkey-using-key-string">updateclientkey using key string</h3>
-<pre><code> updateclientkey --ClientId &lt;CLIENT_ID&gt; --NewPublicJwk &lt;NEW_KEY&gt;  --ExistingPrivateJwk &lt;OLD_KEY&gt; --AuthorityUrl &lt;AUTHORITY_URL&gt; --BaseAddress &lt;BASE_URL&gt;
+<pre><code> generatecertificate --CertificateCommonName &lt;NAME&gt; --CertificatePassword &lt;PASSWORD&gt; --CertificateDirectory &lt;PATH&gt;
 </code></pre>
-<h3 id="updateclientkey-using-key-path">updateclientkey using key path</h3>
-<pre><code> updateclientkey --ClientId &lt;CLIENT_ID&gt; --NewPublicJwkPath &lt;PATH&gt; --ExistingPrivateJwkPath &lt;PATH&gt; --AuthorityUrl &lt;AUTHORITY_URL&gt; --BaseAddress &lt;BASE_URL&gt;
-</code></pre>
-<h3 id="updateclientkey-with-automatic-confirmation">updateclientkey with automatic confirmation</h3>
-<pre><code> updateclientkey --ClientId &lt;CLIENT_ID&gt; --NewPublicJwk &lt;NEW_KEY&gt;  --ExistingPrivateJwk &lt;OLD_KEY&gt; --AuthorityUrl &lt;AUTHORITY_URL&gt; --BaseAddress &lt;BASE_URL&gt; --Yes 
-</code></pre>
-<h3 id="updateclientkey-with-automatic-confirmation_1">updateclientkey with automatic confirmation</h3>
-<pre><code> updateclientkey --ClientId &lt;CLIENT_ID&gt; --NewPublicJwk &lt;NEW_KEY&gt;  --ExistingPrivateJwk &lt;OLD_KEY&gt; --Yes
-</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>Public certificate in PEM format can be added to client in HelseId selvbetjening </li>
+<li>Private certificate can be installed on server or for users as needed (requires certificate password)</li>
+<li>Programmatic retrieval of certificate requires input of certificate thumbprint</li>
+</ul>
 <h2 id="code-sample">Code sample</h2>
-<p>See code lab <a href="../../code-lab/updateclientsecret/">Update client secret</a> </p>
+<p>See code lab <a href="../../code-lab/generatecertificates/">Generate Certificates</a> </p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../../code-lab/updateclientsecret/" class="btn btn-neutral float-left" title="Update client secret command"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../generate-json-web-key-command/" class="btn btn-neutral float-right" title="Generate new Json Web keys Commands">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../generate-json-web-key-command/" class="btn btn-neutral float-left" title="Generate new Json Web keys Commands"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../read-client-secret-expiration-command/" class="btn btn-neutral float-right" title="Read client secret expiration command">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -243,10 +187,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../../code-lab/updateclientsecret/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../generate-json-web-key-command/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../generate-json-web-key-command/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../read-client-secret-expiration-command/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
