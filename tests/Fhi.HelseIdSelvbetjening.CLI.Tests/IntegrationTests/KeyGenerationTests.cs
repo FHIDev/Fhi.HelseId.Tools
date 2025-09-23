@@ -7,8 +7,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {
     public class KeyGenerationTests
     {
-        [Test]
-        public async Task GenerateJsonWebKeys()
+        [TestCase("--KeyFileNamePrefix", "--KeyDirectory")]
+        [TestCase("-n", "-d")]
+        public async Task GenerateJsonWebKeys(string prefixOption, string directoryPathOption)
         {
             var fileHandlerMock = new FileHandlerMock();
             var fakeLogProvider = new FakeLoggerProvider();
@@ -19,8 +20,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var args = new[]
             {
                 GenerateJsonWebKeyParameterNames.CommandName,
-                $"--{GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long}", prefixName,
-                $"--{GenerateJsonWebKeyParameterNames.KeyDirectory.Long}", directoryPath
+                $"{prefixOption}", prefixName,
+                $"{directoryPathOption}", directoryPath
             };
 
             var rootCommandBuilder = new RootCommandBuilder()
@@ -30,22 +31,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
             var rootCommand = rootCommandBuilder.Build();
             var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
-
-            var invocationConfig = new InvocationConfiguration
-            {
-                EnableDefaultExceptionHandler = false
-            };
-
-            int exitCode;
-            try
-            {
-                exitCode = await parseResult.InvokeAsync(invocationConfig);
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
-                exitCode = 1;
-            }
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -108,22 +95,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
             var rootCommand = rootCommandBuilder.Build();
             var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
-
-            var invocationConfig = new InvocationConfiguration
-            {
-                EnableDefaultExceptionHandler = false
-            };
-
-            int exitCode;
-            try
-            {
-                exitCode = await parseResult.InvokeAsync(invocationConfig);
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Test caught exception: {ex.Message}");
-                exitCode = 1;
-            }
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {

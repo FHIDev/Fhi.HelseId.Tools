@@ -46,9 +46,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                             _logger.LogError("No secret found with matching Kid.");
                             return 1;
                         },
-                        onError: (result) =>
+                        onError: (errorResult) =>
                         {
-                            var allMessages = string.Join("; ", result.Errors.Select(e => e.ToString()));
+                            var allMessages = string.Join("; ", errorResult.Errors.Select(e => e.ToString()));
                             _logger.LogDebug("Details: {Details}", allMessages);
                             return 1;
                         });

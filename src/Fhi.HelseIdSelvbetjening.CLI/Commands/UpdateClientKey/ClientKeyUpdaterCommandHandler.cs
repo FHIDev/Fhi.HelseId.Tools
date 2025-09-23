@@ -18,7 +18,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         private readonly IFileHandler _fileHandler = fileHandler;
         private readonly ILogger<ClientKeyUpdaterCommandHandler> _logger = logger;
 
-        /*public async Task<int> ExecuteAsync(UpdateClientKeyParameters parameters)
+        public async Task<int> ExecuteAsync(UpdateClientKeyParameters parameters)
         {
             _logger.LogInformation("Update client {@ClientId}", parameters.ClientId);
 
@@ -129,6 +129,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                     }
                 );
             }
+            return 0;
         }
     }
 }

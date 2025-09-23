@@ -1,5 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.Invocation;
 using Fhi.HelseIdSelvbetjening.CLI;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,7 @@ public partial class Program
 
         var invocationConfig = new InvocationConfiguration
         {
-            // Setting this to false enables us to create our own try catch exception handle
+            // Setting this to false enables us to create our own try catch exception handler
             EnableDefaultExceptionHandler = false 
         };
 

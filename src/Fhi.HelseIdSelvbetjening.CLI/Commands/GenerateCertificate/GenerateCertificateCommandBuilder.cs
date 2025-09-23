@@ -36,7 +36,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
                 "Directory to store the generated certificates",
                 isRequired: false);
             
-            generateCertCommand.SetAction((ParseResult parseResult, CancellationToken cancellationToken) =>
+            generateCertCommand.SetAction((ParseResult parseResult) =>
             {
                 var certificateCommonName = parseResult.GetValue(certificateCommonNameOption);
                 var certificatePassword = parseResult.GetValue(certificatePasswordOption);
