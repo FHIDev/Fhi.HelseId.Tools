@@ -9,7 +9,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup
 {
     internal class CommandLineBuilder
     {
-        public async Task<int> CommandLineBuilderInvokerAsync(ParseResult parseResult)
+        public static async Task<int> CommandLineBuilderInvokerAsync(ParseResult parseResult)
         {
             var invocationConfig = new InvocationConfiguration
             {

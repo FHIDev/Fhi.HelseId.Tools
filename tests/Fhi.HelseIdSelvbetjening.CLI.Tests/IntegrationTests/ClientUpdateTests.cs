@@ -46,7 +46,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var rootCommand = rootCommandBuilder.Build();
             var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
             var commandLineBuilder = new CommandLineBuilder();
-            var exitCode = await commandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -89,7 +89,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var rootCommand = rootCommandBuilder.Build();
             var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
             var commandLineBuilder = new CommandLineBuilder();
-            var exitCode = await commandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -134,7 +134,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 
             var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
             var commandLineBuilder = new CommandLineBuilder();
-            var exitCode = await commandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -165,7 +165,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var rootCommand = rootCommandBuilder.Build();
             var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
             var commandLineBuilder = new CommandLineBuilder();
-            var exitCode = await commandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
