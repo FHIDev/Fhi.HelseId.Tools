@@ -36,16 +36,6 @@
     <ProjectReference Include="..\Fhi.HelseId.Selvbetjening\Fhi.HelseIdSelvbetjening.csproj" />
   </ItemGroup>  
   <ItemGroup>
-    <None Update="appsettings.Test.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>true</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Update="appsettings.Production.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>true</Pack>
-      <PackagePath></PackagePath>
-    </None>
     <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 

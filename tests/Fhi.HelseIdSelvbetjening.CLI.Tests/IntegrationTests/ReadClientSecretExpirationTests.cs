@@ -36,7 +36,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -77,9 +79,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     $"--{ReadClientSecretExpirationParameterNames.BaseAddress.Long}", "https://api.selvbetjening.test.nhn.no"
                 ]);
 
-
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -106,7 +109,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -131,7 +136,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            int exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -170,7 +177,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -208,7 +217,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -235,7 +246,9 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 ]);
 
             var rootCommand = rootCommandBuilder.Build();
-            var exitCode = await rootCommand.InvokeAsync(rootCommandBuilder.Args);
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {

@@ -5,14 +5,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
 {
-    internal class GenerateCertificateCommandBuilder : ICommandBuilder
+    internal class GenerateCertificateCommandBuilder(GenerateCertificateCommandHandler commandHandler) : ICommandBuilder
     {
-        private readonly GenerateCertificateCommandHandler _commandHandler;
+        private readonly GenerateCertificateCommandHandler _commandHandler = commandHandler;
 
-        public GenerateCertificateCommandBuilder(GenerateCertificateCommandHandler commandHandler)
-        {
-            _commandHandler = commandHandler;
-        }
         public Command Build(IHost host)
         {
             var generateCertCommand = new Command(
@@ -21,34 +17,41 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateCertificate
             {
                 TreatUnmatchedTokensAsErrors = true
             };
-            
-            generateCertCommand.CreateStringOption(
+
+            var certificateCommonNameOption = generateCertCommand.CreateStringOption(
                 GenerateCertificateParameterNames.CertificateCommonName.Long,
                 GenerateCertificateParameterNames.CertificateCommonName.Short,
                 "Common Name (CN) for the certificate",
                 isRequired: true);
-            
-            generateCertCommand.CreateStringOption(
+
+            var certificatePasswordOption = generateCertCommand.CreateStringOption(
                 GenerateCertificateParameterNames.CertificatePassword.Long,
                 GenerateCertificateParameterNames.CertificatePassword.Short,
                 "Password for the generated certificate",
                 isRequired: true);
-            
-            generateCertCommand.CreateStringOption(
+
+            var certificateDirectoryOption = generateCertCommand.CreateStringOption(
                 GenerateCertificateParameterNames.CertificateDirectory.Long,
                 GenerateCertificateParameterNames.CertificateDirectory.Short,
                 "Directory to store the generated certificates",
                 isRequired: false);
             
-            generateCertCommand.Handler = CommandHandler.Create((string certificateCommonName, string certificatePassword, string? certificateDirectory) =>
+            generateCertCommand.SetAction((ParseResult parseResult) =>
             {
+                var certificateCommonName = parseResult.GetValue(certificateCommonNameOption);
+                var certificatePassword = parseResult.GetValue(certificatePasswordOption);
+                var certificateDirectory = parseResult.GetValue(certificateDirectoryOption);
+
                 var parameters = new GenerateCertificateParameters
                 {
-                    CertificateCommonName = certificateCommonName,
-                    CertificatePassword = certificatePassword,
+                    // TODO: fix "may be null"
+                    CertificateCommonName = certificateCommonName!,
+                    CertificatePassword = certificatePassword!,
                     CertificateDirectory = certificateDirectory
                 };
+
                 _commandHandler.Execute(parameters);
+                return Task.FromResult(0);
             });
             
             return generateCertCommand;

@@ -1,7 +1,6 @@
 using System.CommandLine;
 using Microsoft.Extensions.Hosting;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
-using System.CommandLine.NamingConventionBinder;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 {
@@ -18,58 +17,48 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                 TreatUnmatchedTokensAsErrors = true
             };
 
-            readExpirationCommand.CreateStringOption(
+            var clientIdOption = readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.ClientId.Long,
                 ReadClientSecretExpirationParameterNames.ClientId.Short,
                 "Client ID for client to query",
-                isRequired: true
-            );
+                isRequired: true);
 
-            readExpirationCommand.CreateStringOption(
+            var existingPrivateJwkPathOption = readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Long,
                 ReadClientSecretExpirationParameterNames.ExistingPrivateJwkPath.Short,
                 "Path to the existing private key file",
-                isRequired: false
-            );
+                isRequired: false);
 
-            readExpirationCommand.CreateStringOption(
+            var existingPrivateJwkOption = readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Long,
                 ReadClientSecretExpirationParameterNames.ExistingPrivateJwk.Short,
                 "Existing private key value",
-                isRequired: false
-            );
+                isRequired: false);
 
-            readExpirationCommand.CreateStringOption(
+            var authorityUrlOption = readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.AuthorityUrl.Long,
                 ReadClientSecretExpirationParameterNames.AuthorityUrl.Short,
                 "Authority url to query secret expiration with",
-                isRequired: true
-            );
+                isRequired: true);
 
-            readExpirationCommand.CreateStringOption(
+            var baseAddressOption = readExpirationCommand.CreateStringOption(
                 ReadClientSecretExpirationParameterNames.BaseAddress.Long,
                 ReadClientSecretExpirationParameterNames.BaseAddress.Short,
                 "Base Address url to query secret expiration with",
-                isRequired: true
-            );
+                isRequired: true);
 
-            readExpirationCommand.Handler = CommandHandler.Create(async
-            (
-                string clientId,
-                string existingPrivateJwkPath,
-                string existingPrivateJwk,
-                string authorityUrl,
-                string baseAddress
-            ) =>
+            readExpirationCommand.SetAction(async (ParseResult parseResult, CancellationToken cancellationToken) =>
             {
                 var parameters = new ReadClientSecretExpirationParameters
                 {
-                    ClientId = clientId,
-                    ExistingPrivateJwkPath = existingPrivateJwkPath,
-                    ExistingPrivateJwk = existingPrivateJwk,
-                    AuthorityUrl = authorityUrl,
-                    BaseAddress = baseAddress
+                    // TODO: fix "may be null"
+                    ClientId = parseResult.GetValue(clientIdOption)!,
+                    ExistingPrivateJwkPath = parseResult.GetValue(existingPrivateJwkPathOption),
+                    ExistingPrivateJwk = parseResult.GetValue(existingPrivateJwkOption),
+                    AuthorityUrl = parseResult.GetValue(authorityUrlOption)!,
+                    BaseAddress = parseResult.GetValue(baseAddressOption)!
                 };
+
                 return await _commandHandler.ExecuteAsync(parameters);
             });
 

@@ -4,7 +4,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
 {
     internal static class CommandOptionsExtensions
     {
-        public static void CreateStringOption(
+        public static Option<string> CreateStringOption(
             this Command command,
             string longName,
             string shortName,
@@ -12,46 +12,38 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions
             bool isRequired = false)
         {
             var option = new Option<string>(
-                [$"--{longName}", $"-{shortName}"],
-                description)
+                name: $"--{longName}"
+            )
             {
-                IsRequired = isRequired,
-                Arity = ArgumentArity.ExactlyOne
+                Description = description,
+                Required = isRequired
             };
 
-            if (isRequired)
-            {
-                option.AddValidator(result =>
-                {
-                    var value = result.GetValueOrDefault<string>();
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        result.ErrorMessage =
-                            $"Required parameter is missing or empty. Use --{longName} / -{shortName}.";
-                    }
-                });
-            }
+            option.Aliases.Add($"-{shortName}");
 
-            command.AddOption(option);
+            command.Options.Add(option);
+            return option;
         }
 
-        public static void CreateBoolOption(
+        public static Option<bool> CreateBoolOption(
             this Command command,
             string longName,
             string shortName,
-            string description,
-            bool defaultValue = false)
+            string description)
         {
             var option = new Option<bool>(
-                [$"--{longName}", $"-{shortName}"],
-                description)
+                name: $"--{longName}"
+            )
             {
-                IsRequired = false,
-                Arity = ArgumentArity.Zero,
+                Description = description,
+                Required = false
             };
 
-            option.SetDefaultValue(defaultValue);
-            command.AddOption(option);
+            option.Aliases.Add($"-{shortName}");
+            option.DefaultValueFactory = _ => false;
+
+            command.Options.Add(option);
+            return option;
         }
     }
 }

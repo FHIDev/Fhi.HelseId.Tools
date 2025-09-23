@@ -12,14 +12,9 @@ using Serilog;
 
 namespace Fhi.HelseIdSelvbetjening.CLI
 {
-    internal class CliHostBuilder
+    internal class CliHostBuilder(string[] args)
     {
-        protected readonly string[] _args;
-
-        public CliHostBuilder(string[] args)
-        {
-            _args = args;
-        }
+        protected readonly string[] _args = args;
 
         public IHost BuildHost()
         {

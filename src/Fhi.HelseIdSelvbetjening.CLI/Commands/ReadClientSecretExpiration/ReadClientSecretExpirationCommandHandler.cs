@@ -17,55 +17,47 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
 
         public async Task<int> ExecuteAsync(ReadClientSecretExpirationParameters parameters)
         {
-            try
+            using (_logger.BeginScope("ClientId: {ClientId}", parameters.ClientId))
             {
-                using (_logger.BeginScope("ClientId: {ClientId}", parameters.ClientId))
+                var privateKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
+                parameters.ExistingPrivateJwk,
+                parameters.ExistingPrivateJwkPath,
+                "Private Key",
+                _logger,
+                _fileHandler);
+
+                if (!string.IsNullOrWhiteSpace(privateKey))
                 {
-                    var privateKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
-                    parameters.ExistingPrivateJwk,
-                    parameters.ExistingPrivateJwkPath,
-                    "Private Key",
-                    _logger,
-                    _fileHandler);
+                    var result = await _helseIdService.ReadClientSecretExpiration(new ClientConfiguration(
+                        parameters.ClientId, privateKey),
+                        parameters.AuthorityUrl, parameters.BaseAddress);
 
-                    if (!string.IsNullOrWhiteSpace(privateKey))
-                    {
-                        var result = await _helseIdService.ReadClientSecretExpiration(new ClientConfiguration(
-                            parameters.ClientId, privateKey),
-                            parameters.AuthorityUrl, parameters.BaseAddress);
-
-                        return result.HandleResponse(
-                            onSuccess: value =>
+                    return result.HandleResponse(
+                        onSuccess: value =>
+                        {
+                            if (value.SelectedSecret != null && value.SelectedSecret.ExpirationDate.HasValue)
                             {
-                                if (value.SelectedSecret != null && value.SelectedSecret.ExpirationDate.HasValue)
-                                {
-                                    var epochTime = ((DateTimeOffset)value.SelectedSecret.ExpirationDate.Value).ToUnixTimeSeconds();
-                                    _logger.LogDebug("Kid: {Kid}", value.SelectedSecret.KeyId);
-                                    _logger.LogInformation("{EpochTime}", epochTime);
-                                    return 0;
-                                }
+                                var epochTime = ((DateTimeOffset)value.SelectedSecret.ExpirationDate.Value).ToUnixTimeSeconds();
+                                _logger.LogDebug("Kid: {Kid}", value.SelectedSecret.KeyId);
+                                _logger.LogInformation("{EpochTime}", epochTime);
+                                return 0;
+                            }
 
-                                _logger.LogError("No secret found with matching Kid.");
-                                return 1;
-                            },
-                            onError: (result) =>
-                            {
-                                var allMessages = string.Join("; ", result.Errors.Select(e => e.ToString()));
-                                _logger.LogDebug("Details: {Details}", allMessages);
-                                return 1;
-                            });
-                    }
-                    else
-                    {
-                        _logger.LogError("No private key provided. Either ExistingPrivateJwk or ExistingPrivateJwkPath must be specified.");
-                        return 1;
-                    }
+                            _logger.LogError("No secret found with matching Kid.");
+                            return 1;
+                        },
+                        onError: (errorResult) =>
+                        {
+                            var allMessages = string.Join("; ", errorResult.Errors.Select(e => e.ToString()));
+                            _logger.LogDebug("Details: {Details}", allMessages);
+                            return 1;
+                        });
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in ReadClientSecretExpiration command. Exception type: {ExceptionType}", ex.GetType().Name);
-                return 1;
+                else
+                {
+                    _logger.LogError("No private key provided. Either ExistingPrivateJwk or ExistingPrivateJwkPath must be specified.");
+                    return 1;
+                }
             }
         }
     }
