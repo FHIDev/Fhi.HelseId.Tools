@@ -4,7 +4,7 @@ using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
-namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
+namespace Fhi.HelseIdSelvbetjening.UnitTests.Business
 {
     public class UpdateClientSecretTests
     {
@@ -19,22 +19,17 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
 
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(response.Message, Is.EqualTo("invalid_token"));
+                var error = GetErrorResult(response);
+                Assert.That(error.IsValid, Is.False);
+                Assert.That(error.Errors, Contains.Item("Token request failed invalid_token"));
             }
-            builder.Logger.Received(1).Log(
-                LogLevel.Information,
-                Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString()!.Contains("Start updating client")),
-                null,
-                Arg.Any<Func<object, Exception?, string>>()
-            );
-            builder.Logger.Received(1).Log(
-               LogLevel.Error,
-               Arg.Any<EventId>(),
-               Arg.Is<object>(o => o.ToString()!.Contains("Could not update client invalid-client.  Error: invalid_token")),
-               null,
-               Arg.Any<Func<object, Exception?, string>>()
-           );
+        }
+
+        private static ErrorResult GetErrorResult(IResult<ClientSecretUpdateResponse, ErrorResult> response)
+        {
+            return response.HandleResponse(
+                          onSuccess: (clientsecret) => throw new InvalidOperationException("Expected validation error for null ClientConfiguration, but got success response."),
+                          onError: (error) => error!);
         }
     }
 }

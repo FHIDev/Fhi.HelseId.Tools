@@ -16,7 +16,7 @@ namespace Fhi.HelseIdSelvbetjening.Business
         /// <param name="baseAddress">Base address to send request</param>
         /// <param name="newPublicJwk">New public key for client</param>
         /// <returns></returns>
-        public Task<ClientSecretUpdateResponse> UpdateClientSecret(ClientConfiguration clientToUpdate, string authority, string baseAddress, string newPublicJwk);
+        public Task<IResult<ClientSecretUpdateResponse, ErrorResult>> UpdateClientSecret(ClientConfiguration clientToUpdate, string authority, string baseAddress, string newPublicJwk);
 
         /// <summary>
         /// Read the expiration date of a client secret

@@ -54,7 +54,6 @@ public partial class Program
         {
             Log.CloseAndFlush();
         }
-        
     }
 
     internal static RootCommand BuildRootCommand(CliHostBuilder hostBuilder)
