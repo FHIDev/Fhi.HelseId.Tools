@@ -1,8 +1,8 @@
 using System.Net;
+using Fhi.Authentication.OpenIdConnect;
 using Fhi.Authentication.Tokens;
 using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.Extensions;
-using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -14,18 +14,14 @@ namespace Fhi.HelseIdSelvbetjening.Business
         ISelvbetjeningApi selvbetjeningApi,
         ILogger<HelseIdSelvbetjeningService> logger) : IHelseIdSelvbetjeningService
     {
-        private readonly ITokenService _tokenService = tokenService;
-        private readonly ISelvbetjeningApi _selvbetjeningApi = selvbetjeningApi;
-        private readonly ILogger<HelseIdSelvbetjeningService> _logger = logger;
-
         public async Task<ClientSecretUpdateResponse> UpdateClientSecret(ClientConfiguration clientToUpdate, string authority, string baseAddress, string newPublicJwk)
         {
-            _logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
+            logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
             var dPoPKey = CreateDPoPKey();
-            var response = await _tokenService.RequestDPoPToken(authority, clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
+            var response = await tokenService.RequestDPoPToken(authority, clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
             if (!response.IsError && response.AccessToken != null)
             {
-                var (ClientSecretUpdate, ProblemDetail) = await _selvbetjeningApi.UpdateClientSecretsAsync(
+                var (ClientSecretUpdate, ProblemDetail) = await selvbetjeningApi.UpdateClientSecretsAsync(
                     baseAddress,
                     dPoPKey,
                     response.AccessToken,
@@ -33,14 +29,14 @@ namespace Fhi.HelseIdSelvbetjening.Business
 
                 if (ProblemDetail != null)
                 {
-                    _logger.LogError("Failed to update client {@ClientId}. Error: {@ProblemDetail}", clientToUpdate.ClientId, ProblemDetail.Detail);
+                    logger.LogError("Failed to update client {@ClientId}. Error: {@ProblemDetail}", clientToUpdate.ClientId, ProblemDetail.Detail);
                     return new ClientSecretUpdateResponse(HttpStatusCode.BadRequest, ProblemDetail.Detail);
                 }
                 //TODO: improve response with IResult. Should not serialize output
                 return new ClientSecretUpdateResponse(HttpStatusCode.OK, ClientSecretUpdate?.Serialize());
             }
 
-            _logger.LogError("Could not update client {@ClientId}.  Error: {@Message}", clientToUpdate.ClientId, response.ErrorDescription);
+            logger.LogError("Could not update client {@ClientId}.  Error: {@Message}", clientToUpdate.ClientId, response.ErrorDescription);
             return new(null, response.ErrorDescription);
         }
 
@@ -51,7 +47,7 @@ namespace Fhi.HelseIdSelvbetjening.Business
                 return new Error<ClientSecretExpirationResponse, ErrorResult>(errorResult);
 
             var dPoPKey = CreateDPoPKey();
-            var response = await _tokenService.RequestDPoPToken(
+            var response = await tokenService.RequestDPoPToken(
                 authority,
                 clientConfiguration.ClientId,
                 clientConfiguration.Jwk,
@@ -64,7 +60,7 @@ namespace Fhi.HelseIdSelvbetjening.Business
                 return new Error<ClientSecretExpirationResponse, ErrorResult>(errorResult);
             }
 
-            var (ClientSecrets, ProblemDetail) = await _selvbetjeningApi.GetClientSecretsAsync(baseAddress, dPoPKey, response.AccessToken);
+            var (ClientSecrets, ProblemDetail) = await selvbetjeningApi.GetClientSecretsAsync(baseAddress, dPoPKey, response.AccessToken);
             if (ProblemDetail != null)
             {
                 errorResult.AddError($"Failed to read client secret expiration: {ProblemDetail.Detail}");

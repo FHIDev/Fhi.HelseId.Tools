@@ -1,6 +1,5 @@
+using Fhi.Authentication.OpenIdConnect;
 using Fhi.HelseIdSelvbetjening.Business;
-using Fhi.HelseIdSelvbetjening.Business.Models;
-using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
 using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos;
 using Microsoft.Extensions.Logging;
