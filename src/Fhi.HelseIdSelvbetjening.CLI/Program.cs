@@ -1,6 +1,5 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.Invocation;
 using Fhi.HelseIdSelvbetjening.CLI;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,7 +54,6 @@ public partial class Program
         {
             Log.CloseAndFlush();
         }
-        
     }
 
     internal static RootCommand BuildRootCommand(CliHostBuilder hostBuilder)
