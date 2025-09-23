@@ -29,7 +29,12 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                 .WithFileHandler(fileHandlerMock)
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
+            var rootCommand = rootCommandBuilder.Build();
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
+
             using (Assert.EnterMultipleScope())
             {
                 Assert.That(fileHandlerMock.Files, Has.Count.EqualTo(3));
@@ -63,7 +68,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
               .WithFileHandler(fileHandlerMock)
               .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
+            var rootCommand = rootCommandBuilder.Build();
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
             {
@@ -97,7 +106,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var originalError = Console.Error;
             Console.SetError(errorWriter);
 
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
+            var rootCommand = rootCommandBuilder.Build();
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+
+            var commandLineBuilder = new CommandLineBuilder();
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             Console.SetError(originalError);
 

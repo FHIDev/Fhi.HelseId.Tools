@@ -1,7 +1,6 @@
 using System.CommandLine;
 using Microsoft.Extensions.Hosting;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.Extensions;
-using System.CommandLine.NamingConventionBinder;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
 {
@@ -18,30 +17,32 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
                 TreatUnmatchedTokensAsErrors = true
             };
 
-            generateJsonWebKeyCommand.CreateStringOption(
+            var keyFileNamePrefixOption = generateJsonWebKeyCommand.CreateStringOption(
                 GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long,
                 GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Short,
                 "Prefix for the key file names",
                 isRequired: true);
 
-            generateJsonWebKeyCommand.CreateStringOption(
+            var keyDirectoryOption = generateJsonWebKeyCommand.CreateStringOption(
                 GenerateJsonWebKeyParameterNames.KeyDirectory.Long,
                 GenerateJsonWebKeyParameterNames.KeyDirectory.Short,
                 "Directory to store the generated keys",
                 isRequired: false);
 
-            generateJsonWebKeyCommand.Handler = CommandHandler.Create(
-            (
-                string keyFileNamePrefix,
-                string keyDirectory
-            ) =>
+            generateJsonWebKeyCommand.SetAction((ParseResult parseResult) =>
             {
+                var keyFileNamePrefix = parseResult.GetValue(keyFileNamePrefixOption);
+                var keyDirectory = parseResult.GetValue(keyDirectoryOption);
+
                 var parameters = new GenerateJsonWebKeyParameters
                 {
-                    KeyFileNamePrefix = keyFileNamePrefix,
+                    // TODO: fix "may be null"
+                    KeyFileNamePrefix = keyFileNamePrefix!,
                     KeyDirectory = keyDirectory
                 };
+
                 _commandHandler.Execute(parameters);
+                return Task.FromResult(0);
             });
 
             return generateJsonWebKeyCommand;

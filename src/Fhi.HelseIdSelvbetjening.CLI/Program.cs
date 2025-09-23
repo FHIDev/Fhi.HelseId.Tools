@@ -1,5 +1,5 @@
 using System.CommandLine;
-using System.CommandLine.Parsing;
+using System.CommandLine.Invocation;
 using Fhi.HelseIdSelvbetjening.CLI;
 using Fhi.HelseIdSelvbetjening.CLI.Commands;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +17,44 @@ public partial class Program
             .WriteTo.Console()
             .CreateLogger();
 
-        var command = BuildRootCommand(new CliHostBuilder(args));
-        return await command.InvokeAsync(args);
+        var rootCommand = BuildRootCommand(new CliHostBuilder(args));
+
+        var invocationConfig = new InvocationConfiguration
+        {
+            // Setting this to false enables us to create our own try catch exception handler
+            EnableDefaultExceptionHandler = false 
+        };
+
+        try
+        {
+            var parseResult = rootCommand.Parse(args);
+
+            if (parseResult.Action is ParseErrorAction parseError)
+            {
+                parseError.ShowTypoCorrections = false; // Gives the user typo suggestions for options
+                parseError.ShowHelp = true; // Shows output of command --help if parsing fails
+            }
+
+            if (parseResult.Errors.Count > 0)
+            {
+                foreach (var error in parseResult.Errors)
+                {
+                    Log.Logger.Error("Error trying to run command: {Message}", error.Message);
+                }
+            }
+
+            return await parseResult.InvokeAsync(invocationConfig);
+        }
+        catch (Exception e)
+        {
+            Log.Logger.Error($"Error occured during command run: {e.Message}");
+            return 1;
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
+        
     }
 
     internal static RootCommand BuildRootCommand(CliHostBuilder hostBuilder)
@@ -30,7 +66,7 @@ public partial class Program
         foreach (var builder in commandBuilders)
         {
             var command = builder.Build(host);
-            rootCommand.AddCommand(command);
+            rootCommand.Subcommands.Add(command);
         }
 
         return rootCommand;

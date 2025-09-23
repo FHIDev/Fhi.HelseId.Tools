@@ -13,6 +13,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" />
+    <PackageReference Include="System.CommandLine" />
+    <PackageReference Include="System.CommandLine.NamingConventionBinder" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Fhi.HelseIdSelvbetjening.CLI.Tests" />
