@@ -13,59 +13,67 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
         IFileHandler fileHandler,
         ILogger<ClientKeyUpdaterCommandHandler> logger)
     {
-        private readonly IHostEnvironment _hostEnvironment = hostEnvironment;
-        private readonly IHelseIdSelvbetjeningService _helseIdSelvbetjeningService = helseIdSelvbetjeningService;
-        private readonly IFileHandler _fileHandler = fileHandler;
-        private readonly ILogger<ClientKeyUpdaterCommandHandler> _logger = logger;
-
         public async Task<int> ExecuteAsync(UpdateClientKeyParameters parameters)
         {
-            _logger.LogInformation("Update client {@ClientId}", parameters.ClientId);
-
-            var environment = _hostEnvironment.EnvironmentName;
-            _logger.LogInformation("Environment: {environment}", environment);
-            if (!parameters.Yes)
+            using (logger.BeginScope("Updating Keys for ClientId: {ClientId}", parameters.ClientId))
             {
-                _logger.LogInformation("Update client in environment {environment}? y/n", environment);
-                var input = Console.ReadLine();
-                if (input?.Trim().ToLower() != "y")
-                {
-                    _logger.LogInformation("Operation cancelled.");
-                    return 0;
-                }
-            }
+                var environment = hostEnvironment.EnvironmentName;
+                logger.LogInformation("Environment: {environment}", environment);
 
-            var newKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
+                if (!parameters.Yes)
+                {
+                    logger.LogInformation("Update client in environment {environment}? y/n", environment);
+                    var input = Console.ReadLine();
+                    if (input?.Trim().ToLower() != "y")
+                    {
+                        logger.LogInformation("Operation cancelled.");
+                        return 0;
+                    }
+                }
+
+                var newKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
                 parameters.NewPublicJwk,
                 parameters.NewPublicJwkPath,
                 "New key",
-                _logger,
-                _fileHandler);
+                logger,
+                fileHandler);
 
-            var oldKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
+                var oldKey = KeyResolutionExtensions.ResolveKeyValuePathOrString(
                 parameters.ExistingPrivateJwk,
                 parameters.ExistingPrivateJwkPath,
                 "Old key",
-                _logger,
-                _fileHandler);
+                logger,
+                fileHandler);
 
-            bool newKeyExists = !string.IsNullOrEmpty(newKey);
-            bool oldKeyExists = !string.IsNullOrEmpty(oldKey);
+                bool newKeyExists = !string.IsNullOrEmpty(newKey);
+                bool oldKeyExists = !string.IsNullOrEmpty(oldKey);
 
-            if (!newKeyExists || !oldKeyExists)
-            {
-                _logger.LogError("One or more parameters empty.");
-                _logger.LogInformation("New key found: {newKeyExists} Old key found: {oldKeyExists}", newKeyExists, oldKeyExists);
-                return 1;
+                if (!newKeyExists || !oldKeyExists)
+                {
+                    logger.LogError("One or more parameters empty.");
+                    logger.LogInformation("New key found: {newKeyExists} Old key found: {oldKeyExists}", newKeyExists, oldKeyExists);
+                    return 1;
+                }
+
+                var result = await helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(
+                parameters.ClientId, oldKey),
+                parameters.AuthorityUrl, parameters.BaseAddress, newKey);
+
+                return result.HandleResponse(
+                    onSuccess: value =>
+                    {
+                        logger.LogInformation("Keys successfully updated.");
+                        logger.LogInformation("Result http message: {resultMessage}", value.Message!.ToString());
+                        return 0;
+                    },
+                    onError: (result) =>
+                    {
+                        var allMessages = string.Join("; ", result.Errors.Select(e => e.ToString()));
+                        logger.LogDebug("Details: {Details}", allMessages);
+                        return 1;
+                    }
+                );
             }
-
-            var result = await _helseIdSelvbetjeningService.UpdateClientSecret(new ClientConfiguration(
-            parameters.ClientId, oldKey),
-            parameters.AuthorityUrl, parameters.BaseAddress, newKey);
-            _logger.LogInformation("Result http status: {resultStatus}", result.HttpStatus.ToString());
-            _logger.LogInformation("Result http message: {resultMessage}", result.Message);
-
-            return 0;
         }
     }
 }

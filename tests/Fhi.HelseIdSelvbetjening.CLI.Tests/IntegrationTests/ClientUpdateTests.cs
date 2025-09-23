@@ -52,8 +52,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(0));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!, Does.Contain($"Update client {clientId}"));
-                Assert.That(logs!, Does.Contain("Result http status: OK"));
+                Assert.That(logs!, Does.Contain("""Result http message: {"Expiration":""}"""));
+                Assert.That(logs!, Does.Contain("Keys successfully updated.")); 
             }
         }
 
@@ -95,9 +95,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(0));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!, Does.Contain($"Update client {clientId}"));
-                //TODO: improve response
-                Assert.That(logs, Does.Contain("Result http status: OK"));
+                Assert.That(logs!, Does.Contain("""Result http message: {"Expiration":"2028-08-08T00:00:00Z"}"""));
+                Assert.That(logs!, Does.Contain("Keys successfully updated.")); 
             }
         }
 

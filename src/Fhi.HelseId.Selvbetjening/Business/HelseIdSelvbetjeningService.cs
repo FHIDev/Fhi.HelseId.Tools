@@ -18,30 +18,44 @@ namespace Fhi.HelseIdSelvbetjening.Business
         private readonly ISelvbetjeningApi _selvbetjeningApi = selvbetjeningApi;
         private readonly ILogger<HelseIdSelvbetjeningService> _logger = logger;
 
-        public async Task<ClientSecretUpdateResponse> UpdateClientSecret(ClientConfiguration clientToUpdate, string authority, string baseAddress, string newPublicJwk)
+        public async Task<IResult<ClientSecretUpdateResponse, ErrorResult>> UpdateClientSecret(ClientConfiguration clientConfiguration, string authority, string baseAddress, string newPublicJwk)
         {
-            _logger.LogInformation("Start updating client {@ClientId} with new key.", clientToUpdate.ClientId);
+            var errorResult = ValidateClientConfiguration(clientConfiguration);
+            if (!errorResult.IsValid)
+                return new Error<ClientSecretUpdateResponse, ErrorResult>(errorResult);
+
             var dPoPKey = CreateDPoPKey();
-            var response = await _tokenService.RequestDPoPToken(authority, clientToUpdate.ClientId, clientToUpdate.Jwk, "nhn:selvbetjening/client", dPoPKey);
-            if (!response.IsError && response.AccessToken != null)
+            var response = await _tokenService.RequestDPoPToken(
+                authority,
+                clientConfiguration.ClientId,
+                clientConfiguration.Jwk,
+                "nhn:selvbetjening/client",
+                dPoPKey);
+
+            if (response.IsError || response.AccessToken is null)
             {
-                var (ClientSecretUpdate, ProblemDetail) = await _selvbetjeningApi.UpdateClientSecretsAsync(
+                errorResult.AddError($"Token request failed {response.ErrorDescription}");
+                return new Error<ClientSecretUpdateResponse, ErrorResult>(errorResult);
+            }
+
+            var (ClientSecretUpdate, ProblemDetail) = await _selvbetjeningApi.UpdateClientSecretsAsync(
                     baseAddress,
                     dPoPKey,
                     response.AccessToken,
                     newPublicJwk);
 
-                if (ProblemDetail != null)
-                {
-                    _logger.LogError("Failed to update client {@ClientId}. Error: {@ProblemDetail}", clientToUpdate.ClientId, ProblemDetail.Detail);
-                    return new ClientSecretUpdateResponse(HttpStatusCode.BadRequest, ProblemDetail.Detail);
-                }
-                //TODO: improve response with IResult. Should not serialize output
-                return new ClientSecretUpdateResponse(HttpStatusCode.OK, ClientSecretUpdate?.Serialize());
+            if (ProblemDetail != null)
+            {
+                errorResult.AddError($"Failed to update client {@clientConfiguration.ClientId}. Error: {@ProblemDetail.Detail}");
+                return new Error<ClientSecretUpdateResponse, ErrorResult>(errorResult);
             }
 
-            _logger.LogError("Could not update client {@ClientId}.  Error: {@Message}", clientToUpdate.ClientId, response.ErrorDescription);
-            return new(null, response.ErrorDescription);
+            return new Success<ClientSecretUpdateResponse, ErrorResult>(
+                new ClientSecretUpdateResponse()
+                {
+                    HttpStatus = HttpStatusCode.OK,
+                    Message = ClientSecretUpdate?.Serialize()
+                });
         }
 
         public async Task<IResult<ClientSecretExpirationResponse, ErrorResult>> ReadClientSecretExpiration(ClientConfiguration clientConfiguration, string authority, string baseAddress)
