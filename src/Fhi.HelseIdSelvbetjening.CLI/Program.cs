@@ -21,7 +21,7 @@ public partial class Program
 
         var invocationConfig = new InvocationConfiguration
         {
-            // Setting this to false enables us to create our own try catch exception handle
+            // Setting this to false enables us to create our own try catch exception handler
             EnableDefaultExceptionHandler = false 
         };
 
