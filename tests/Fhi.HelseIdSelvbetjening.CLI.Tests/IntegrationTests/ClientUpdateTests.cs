@@ -1,6 +1,5 @@
 using Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey;
 using Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup;
-using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
 using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
 using NSubstitute;
 using System.CommandLine;
+using Fhi.Authentication.OpenIdConnect;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {

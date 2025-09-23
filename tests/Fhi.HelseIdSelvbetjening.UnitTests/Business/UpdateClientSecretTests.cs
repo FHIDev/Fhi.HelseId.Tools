@@ -1,10 +1,10 @@
+using Fhi.Authentication.OpenIdConnect;
 using Fhi.HelseIdSelvbetjening.Business.Models;
-using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
-namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
+namespace Fhi.HelseIdSelvbetjening.UnitTests.Business
 {
     public class UpdateClientSecretTests
     {

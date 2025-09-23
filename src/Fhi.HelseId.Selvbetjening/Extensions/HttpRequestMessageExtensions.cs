@@ -1,4 +1,5 @@
 using Duende.IdentityModel.Client;
+using Fhi.Authentication.Tokens;
 
 namespace Fhi.HelseIdSelvbetjening.Extensions
 {

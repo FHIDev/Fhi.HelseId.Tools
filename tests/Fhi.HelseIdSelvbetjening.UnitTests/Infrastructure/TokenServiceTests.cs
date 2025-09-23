@@ -1,4 +1,4 @@
-﻿using Fhi.HelseIdSelvbetjening.Infrastructure;
+﻿using Fhi.Authentication.OpenIdConnect;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

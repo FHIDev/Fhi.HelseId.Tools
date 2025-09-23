@@ -1,5 +1,5 @@
+using Fhi.Authentication.OpenIdConnect;
 using Fhi.HelseIdSelvbetjening.Business;
-using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
 using Microsoft.Extensions.DependencyInjection;
 

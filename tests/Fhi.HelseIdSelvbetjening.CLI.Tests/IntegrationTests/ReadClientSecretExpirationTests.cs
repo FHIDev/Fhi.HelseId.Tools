@@ -1,13 +1,12 @@
 using Fhi.HelseIdSelvbetjening.Business;
 using Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration;
 using Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup;
-using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
 using System.CommandLine;
-using System.CommandLine.Parsing;
+using Fhi.Authentication.OpenIdConnect;
 
 namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {

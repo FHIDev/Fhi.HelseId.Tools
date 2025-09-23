@@ -1,9 +1,9 @@
+using Fhi.Authentication.OpenIdConnect;
 using Fhi.HelseIdSelvbetjening.Business.Models;
-using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
 using ClientSecretDto = Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos.ClientSecret;
 
-namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
+namespace Fhi.HelseIdSelvbetjening.UnitTests.Business
 {
     public class ReadClientSecretExpirationTests
     {
