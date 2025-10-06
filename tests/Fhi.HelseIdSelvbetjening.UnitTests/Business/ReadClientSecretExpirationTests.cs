@@ -219,8 +219,8 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
             using (Assert.EnterMultipleScope())
             {
                 var error = GetErrorResult(response);
-                Assert.That(error.IsValid, Is.False);
-                Assert.That(error.Errors, Contains.Item("Token request failed invalid_token"));
+                var errorMessages = error.Errors.Select(e => e.ErrorMessageText);
+                Assert.That(errorMessages, Contains.Item("Token request failed invalid_token"));
             }
         }
 
@@ -236,9 +236,9 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
 
             using (Assert.EnterMultipleScope())
             {
-                var errorResult = GetErrorResult(response);
-                Assert.That(errorResult.IsValid, Is.False);
-                Assert.That(errorResult.Errors, Contains.Item("ClientId cannot be null or empty"));
+                var error = GetErrorResult(response);
+                var errorMessages = error.Errors.Select(e => e.ErrorMessageText);
+                Assert.That(errorMessages, Contains.Item("ClientId cannot be null or empty"));
             }
         }
 
@@ -254,9 +254,9 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
 
             using (Assert.EnterMultipleScope())
             {
-                var errorResult = GetErrorResult(response);
-                Assert.That(errorResult.IsValid, Is.False);
-                Assert.That(errorResult.Errors, Contains.Item("Jwk cannot be null or empty"));
+                var error = GetErrorResult(response);
+                var errorMessages = error.Errors.Select(e => e.ErrorMessageText);
+                Assert.That(errorMessages, Contains.Item("Jwk cannot be null or empty"));
             }
         }
 
@@ -270,10 +270,10 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Services
 
             using (Assert.EnterMultipleScope())
             {
-                var errorResult = GetErrorResult(response);
-                Assert.That(errorResult.IsValid, Is.False);
-                Assert.That(errorResult.Errors, Contains.Item("ClientId cannot be null or empty"));
-                Assert.That(errorResult.Errors, Contains.Item("Jwk cannot be null or empty"));
+                var error = GetErrorResult(response);
+                var errorMessages = error.Errors.Select(e => e.ErrorMessageText);
+                Assert.That(errorMessages, Contains.Item("ClientId cannot be null or empty"));
+                Assert.That(errorMessages, Contains.Item("Jwk cannot be null or empty"));
             }
         }
 

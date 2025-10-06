@@ -6,17 +6,16 @@ using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using static Fhi.HelseIdSelvbetjening.Business.Models.ErrorResult;
 
 namespace Fhi.HelseIdSelvbetjening.Business
 {
     internal class HelseIdSelvbetjeningService(
         ITokenService tokenService,
-        ISelvbetjeningApi selvbetjeningApi,
-        ILogger<HelseIdSelvbetjeningService> logger) : IHelseIdSelvbetjeningService
+        ISelvbetjeningApi selvbetjeningApi) : IHelseIdSelvbetjeningService
     {
         private readonly ITokenService _tokenService = tokenService;
         private readonly ISelvbetjeningApi _selvbetjeningApi = selvbetjeningApi;
-        private readonly ILogger<HelseIdSelvbetjeningService> _logger = logger;
 
         public async Task<IResult<ClientSecretUpdateResponse, ErrorResult>> UpdateClientSecret(ClientConfiguration clientConfiguration, string authority, string baseAddress, string newPublicJwk)
         {
@@ -34,7 +33,8 @@ namespace Fhi.HelseIdSelvbetjening.Business
 
             if (response.IsError || response.AccessToken is null)
             {
-                errorResult.AddError($"Token request failed {response.ErrorDescription}");
+                var error = new ErrorMessage($"Token request failed: {response.ErrorDescription}", HttpStatusCode.BadRequest, "error");
+                errorResult.AddError(error);
                 return new Error<ClientSecretUpdateResponse, ErrorResult>(errorResult);
             }
 
@@ -46,7 +46,8 @@ namespace Fhi.HelseIdSelvbetjening.Business
 
             if (ProblemDetail != null)
             {
-                errorResult.AddError($"Failed to update client {@clientConfiguration.ClientId}. Error: {@ProblemDetail.Detail}");
+                var error = new ErrorMessage($"Failed to update client {@clientConfiguration.ClientId}. Error: {@ProblemDetail.Detail}", HttpStatusCode.BadRequest, "error");
+                errorResult.AddError(error);
                 return new Error<ClientSecretUpdateResponse, ErrorResult>(errorResult);
             }
 
@@ -74,14 +75,16 @@ namespace Fhi.HelseIdSelvbetjening.Business
 
             if (response.IsError || response.AccessToken is null)
             {
-                errorResult.AddError($"Token request failed {response.ErrorDescription}");
+                var error = new ErrorMessage($"Token request failed {response.ErrorDescription}", HttpStatusCode.BadRequest, "error");
+                errorResult.AddError(error);
                 return new Error<ClientSecretExpirationResponse, ErrorResult>(errorResult);
             }
 
             var (ClientSecrets, ProblemDetail) = await _selvbetjeningApi.GetClientSecretsAsync(baseAddress, dPoPKey, response.AccessToken);
             if (ProblemDetail != null)
             {
-                errorResult.AddError($"Failed to read client secret expiration: {ProblemDetail.Detail}");
+                var error = new ErrorMessage($"Failed to read client secret expiration: {ProblemDetail.Detail}", HttpStatusCode.BadRequest, "error");
+                errorResult.AddError(error);
                 return new Error<ClientSecretExpirationResponse, ErrorResult>(errorResult);
             }
 
@@ -106,18 +109,21 @@ namespace Fhi.HelseIdSelvbetjening.Business
 
             if (clientConfiguration == null)
             {
-                validationResult.AddError("Client configuration cannot be null");
+                var error = new ErrorMessage("Client configuration cannot be null", HttpStatusCode.BadRequest, "error");
+                validationResult.AddError(error);
                 return validationResult;
             }
 
             if (string.IsNullOrWhiteSpace(clientConfiguration.ClientId))
             {
-                validationResult.AddError("ClientId cannot be null or empty");
+                var error = new ErrorMessage("ClientId cannot be null or empty", HttpStatusCode.BadRequest, "error");
+                validationResult.AddError(error);
             }
 
             if (string.IsNullOrWhiteSpace(clientConfiguration.Jwk))
             {
-                validationResult.AddError("Jwk cannot be null or empty");
+                var error = new ErrorMessage("Jwk cannot be null or empty", HttpStatusCode.BadRequest, "error");
+                validationResult.AddError(error);
             }
 
             return validationResult;
