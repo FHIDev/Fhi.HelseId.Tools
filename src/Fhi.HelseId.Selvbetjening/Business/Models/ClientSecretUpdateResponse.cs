@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace Fhi.HelseIdSelvbetjening.Business.Models
 {
     /// <summary>
@@ -7,7 +5,7 @@ namespace Fhi.HelseIdSelvbetjening.Business.Models
     /// </summary>
     public class ClientSecretUpdateResponse
     {
-        public HttpStatusCode? HttpStatus { get; set; }
-        public string? Message { get; set; }
+        public required string ExpirationDate { get; set; }
+        public string? ClientId { get; set; }
     }
 }

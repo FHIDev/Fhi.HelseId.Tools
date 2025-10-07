@@ -52,11 +52,11 @@ namespace Fhi.HelseIdSelvbetjening.Business
             }
 
             return new Success<ClientSecretUpdateResponse, ErrorResult>(
-                new ClientSecretUpdateResponse()
-                {
-                    HttpStatus = HttpStatusCode.OK,
-                    Message = ClientSecretUpdate?.Serialize()
-                });
+                    new ClientSecretUpdateResponse()
+                    {
+                        ExpirationDate = ClientSecretUpdate!.ToString(),
+                        ClientId = clientConfiguration.ClientId,
+                    });
         }
 
         public async Task<IResult<ClientSecretExpirationResponse, ErrorResult>> ReadClientSecretExpiration(ClientConfiguration clientConfiguration, string authority, string baseAddress)

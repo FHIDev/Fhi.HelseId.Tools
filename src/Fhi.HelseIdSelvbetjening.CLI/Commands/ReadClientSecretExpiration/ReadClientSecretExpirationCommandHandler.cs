@@ -48,7 +48,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                         },
                         onError: (errorResult) =>
                         {
-                            var allMessages = string.Join("; ", errorResult.Errors.Select(e => e.ToString()));
+                            var allMessages = string.Join("; ", errorResult.Errors.Select(e => e.ErrorMessageText));
                             _logger.LogDebug("Details: {Details}", allMessages);
                             return 1;
                         });
