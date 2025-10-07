@@ -36,7 +36,15 @@ namespace Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening
                 return (content.Deserialize<ClientSecret[]>(), null);
             }
 
-            return (null, content.Deserialize<ProblemDetail>());
+            var problemDetail = new ProblemDetail(
+                response.ReasonPhrase ?? "Error",
+                response.ReasonPhrase ?? "Error",
+                (int)response.StatusCode,
+                content,
+                null
+            );
+
+            return (null, problemDetail);
         }
 
         public async Task<(ClientSecretUpdateResult? ClientSecretUpdate, ProblemDetail? ProblemDetail)> UpdateClientSecretsAsync(string baseAddress, string dPoPKey, string accessToken, string newPublicJwk)
@@ -56,7 +64,15 @@ namespace Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening
                 return (content.Deserialize<ClientSecretUpdateResult>(), null);
             }
 
-            return (null, content.Deserialize<ProblemDetail>());
+            var problemDetail = new ProblemDetail(
+                clientSecretUpdateResponse.ReasonPhrase ?? "Error",
+                clientSecretUpdateResponse.ReasonPhrase ?? "Error",
+                (int)clientSecretUpdateResponse.StatusCode,
+                content,
+                null
+            );
+
+            return (null, problemDetail);
         }
     }
 }

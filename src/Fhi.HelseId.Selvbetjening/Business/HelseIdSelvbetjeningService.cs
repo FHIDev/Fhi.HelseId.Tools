@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 using Fhi.Authentication.Tokens;
 using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.Extensions;
@@ -31,9 +32,10 @@ namespace Fhi.HelseIdSelvbetjening.Business
                 "nhn:selvbetjening/client",
                 dPoPKey);
 
-            if (response.IsError || response.AccessToken is null)
+            if (response.IsError && response.AccessToken is null)
             {
-                var error = new ErrorMessage($"Token request failed: {response.ErrorDescription}", HttpStatusCode.BadRequest, "error");
+                var errorMessageText = $"Token request failed: {(string.IsNullOrEmpty(response.ErrorDescription) ? "No Error message provided by API" : response.ErrorDescription)}";
+                var error = new ErrorMessage(errorMessageText, HttpStatusCode.BadRequest, "error");
                 errorResult.AddError(error);
                 return new Error<ClientSecretUpdateResponse, ErrorResult>(errorResult);
             }
@@ -41,7 +43,7 @@ namespace Fhi.HelseIdSelvbetjening.Business
             var (ClientSecretUpdate, ProblemDetail) = await _selvbetjeningApi.UpdateClientSecretsAsync(
                     baseAddress,
                     dPoPKey,
-                    response.AccessToken,
+                    response.AccessToken!,
                     newPublicJwk);
 
             if (ProblemDetail != null)
@@ -52,11 +54,12 @@ namespace Fhi.HelseIdSelvbetjening.Business
             }
 
             return new Success<ClientSecretUpdateResponse, ErrorResult>(
-                    new ClientSecretUpdateResponse()
-                    {
-                        ExpirationDate = ClientSecretUpdate!.ToString(),
-                        ClientId = clientConfiguration.ClientId,
-                    });
+                new ClientSecretUpdateResponse()
+                {
+                    ExpirationDate = ClientSecretUpdate!.ToString(),
+                    ClientId = clientConfiguration.ClientId,
+                    NewKeyId = ExtractKid(newPublicJwk)
+                });
         }
 
         public async Task<IResult<ClientSecretExpirationResponse, ErrorResult>> ReadClientSecretExpiration(ClientConfiguration clientConfiguration, string authority, string baseAddress)
@@ -133,6 +136,21 @@ namespace Fhi.HelseIdSelvbetjening.Business
         {
             var key = JwkGenerator.GenerateRsaJwk();
             return key.PrivateKey;
+        }
+
+        /// <summary>
+        /// Takes a jwk key and returns just the kid
+        /// </summary>
+        /// <param name="jwkJson"></param>
+        /// <returns></returns>
+        private static string ExtractKid(string jwkJson)
+        {
+            using var doc = JsonDocument.Parse(jwkJson);
+            if (doc.RootElement.TryGetProperty("kid", out var kidElement))
+            {
+                return kidElement.GetString()!;
+            }
+            return string.Empty;
         }
     }
 }
