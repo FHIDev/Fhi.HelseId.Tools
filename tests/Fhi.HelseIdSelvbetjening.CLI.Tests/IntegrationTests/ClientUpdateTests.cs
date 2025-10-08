@@ -35,8 +35,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     $"--{UpdateClientKeyParameterNames.YesOption.Long}"
                 ])
                 .WithFileHandler(new FileHandlerBuilder()
-                    .WithExistingPrivateJwk(existingPrivateJwkPath)
-                    .WithNewPublicJwk(newPublicJwkPath)
+                    .WithExistingPrivateJwk(existingPrivateJwkPath, @"{""kid"":""file-jwk-kid"",""kty"":""RSA""}")
+                    .WithNewPublicJwk(newPublicJwkPath, @"{""kid"":""file-jwk-kid"",""kty"":""RSA""}")
                     .Build())
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null))

@@ -38,6 +38,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.ReadClientSecretExpiration
                             if (value.SelectedSecret != null && value.SelectedSecret.ExpirationDate.HasValue)
                             {
                                 var epochTime = ((DateTimeOffset)value.SelectedSecret.ExpirationDate.Value).ToUnixTimeSeconds();
+                                _logger.LogDebug("Kid: {Kid}", value.SelectedSecret.KeyId);
                                 _logger.LogInformation("{EpochTime}", epochTime);
                                 return 0;
                             }
