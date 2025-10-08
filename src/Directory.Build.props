@@ -5,11 +5,17 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Authors>Folkehelseinstituttet (FHI)</Authors>
     <Copyright>Copyright 2025 Folkehelseinstituttet (FHI)</Copyright>
+    <Company>Folkehelseinstituttet</Company>
+    <PackageIcon>fhi.png</PackageIcon>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RepositoryUrl>https://github.com/FHIDev/Fhi.HelseId.Tools</RepositoryUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugType>None</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="../fhi.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
   </Project>
   

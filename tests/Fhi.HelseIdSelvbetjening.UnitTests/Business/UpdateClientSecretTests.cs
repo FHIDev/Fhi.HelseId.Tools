@@ -1,8 +1,6 @@
 using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
 
 namespace Fhi.HelseIdSelvbetjening.UnitTests.Business
 {
