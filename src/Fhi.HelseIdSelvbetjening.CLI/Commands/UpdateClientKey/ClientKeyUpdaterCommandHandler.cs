@@ -63,13 +63,15 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.UpdateClientKey
                     onSuccess: value =>
                     {
                         logger.LogInformation("Keys successfully updated.");
-                        logger.LogInformation("Result http message: {resultMessage}", value.Message!.ToString());
+                        logger.LogInformation("Updated keys for Client: {clientId}", value.ClientId);
+                        logger.LogInformation("New public key Id: {keyId}", value.NewKeyId);
+                        logger.LogInformation("Expiration Date: {resultMessage}", value.ExpirationDate);
                         return 0;
                     },
                     onError: (result) =>
                     {
-                        var allMessages = string.Join("; ", result.Errors.Select(e => e.ToString()));
-                        logger.LogDebug("Details: {Details}", allMessages);
+                        var allMessages = string.Join("; ", result.Errors.Select(e => e.ErrorMessageText));
+                        logger.LogError("Details: {Details}", allMessages);
                         return 1;
                     }
                 );

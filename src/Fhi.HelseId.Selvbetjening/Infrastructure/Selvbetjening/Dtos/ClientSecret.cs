@@ -3,7 +3,7 @@ namespace Fhi.HelseIdSelvbetjening.Infrastructure.Selvbetjening.Dtos
     /// <summary>
     /// Represents a client secret from the HelseID API
     /// </summary>
-    public class ClientSecret
+    internal class ClientSecret
     {
         /// <summary>
         /// The expiration date of the client secret

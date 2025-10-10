@@ -1,8 +1,6 @@
 using Fhi.HelseIdSelvbetjening.Business.Models;
 using Fhi.HelseIdSelvbetjening.Infrastructure;
 using Fhi.HelseIdSelvbetjening.UnitTests.Setup;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
 
 namespace Fhi.HelseIdSelvbetjening.UnitTests.Business
 {
@@ -21,7 +19,9 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Business
             {
                 var error = GetErrorResult(response);
                 Assert.That(error.IsValid, Is.False);
-                Assert.That(error.Errors, Contains.Item("Token request failed invalid_token"));
+
+                var errorMessages = error.Errors.Select(e => e.ErrorMessageText);
+                Assert.That(errorMessages, Contains.Item("Token request failed: invalid_token"));
             }
         }
 
