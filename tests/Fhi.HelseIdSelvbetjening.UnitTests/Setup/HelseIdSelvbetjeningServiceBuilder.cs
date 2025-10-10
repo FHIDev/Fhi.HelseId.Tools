@@ -55,8 +55,7 @@ namespace Fhi.HelseIdSelvbetjening.UnitTests.Setup
         {
             return new HelseIdSelvbetjeningService(
                 TokenService,
-                SelvbetjeningApi,
-                Logger
+                SelvbetjeningApi
             );
         }
     }

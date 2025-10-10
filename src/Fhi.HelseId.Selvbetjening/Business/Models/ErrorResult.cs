@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace Fhi.HelseIdSelvbetjening.Business.Models
 {
     /// <summary>
@@ -5,20 +7,32 @@ namespace Fhi.HelseIdSelvbetjening.Business.Models
     /// </summary>
     public class ErrorResult
     {
-        public IEnumerable<string> Errors => _errors;
-        private readonly List<string> _errors = [];
+        public IEnumerable<IErrorMessage> Errors => _errors;
+        private readonly List<IErrorMessage> _errors = [];
         /// <summary>
         /// Gets whether the validation was successful (no errors)
         /// </summary>
         public bool IsValid => !Errors.Any();
 
+        public interface IErrorMessage { 
+            string ErrorMessageText { get; }
+            HttpStatusCode HttpStatusCode { get; }
+            string ErrorType { get; }
+        };
+
+        public record ErrorMessage(
+            string ErrorMessageText,
+            HttpStatusCode HttpStatusCode,
+            string ErrorType
+        ) : IErrorMessage;
+
         /// <summary>
         /// Adds a validation error
         /// </summary>
         /// <param name="error">The error message to add</param>
-        public void AddError(string error)
+        public void AddError(IErrorMessage error)
         {
-            if (!string.IsNullOrWhiteSpace(error))
+            if (!string.IsNullOrWhiteSpace(error.ErrorMessageText))
             {
                 _errors.Add(error);
             }
@@ -28,9 +42,9 @@ namespace Fhi.HelseIdSelvbetjening.Business.Models
         /// Adds multiple validation errors
         /// </summary>
         /// <param name="errors">The error messages to add</param>
-        public void AddErrors(IEnumerable<string> errors)
+        public void AddErrors(IEnumerable<IErrorMessage> errors)
         {
-            foreach (var error in errors.Where(e => !string.IsNullOrWhiteSpace(e)))
+            foreach (var error in errors.Where(e => !string.IsNullOrWhiteSpace(e.ErrorMessageText)))
             {
                 _errors.Add(error);
             }

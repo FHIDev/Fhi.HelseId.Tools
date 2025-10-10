@@ -35,12 +35,12 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                     $"--{UpdateClientKeyParameterNames.YesOption.Long}"
                 ])
                 .WithFileHandler(new FileHandlerBuilder()
-                    .WithExistingPrivateJwk(existingPrivateJwkPath)
-                    .WithNewPublicJwk(newPublicJwkPath)
+                    .WithExistingPrivateJwk(existingPrivateJwkPath, @"{""kid"":""file-jwk-kid"",""kty"":""RSA""}")
+                    .WithNewPublicJwk(newPublicJwkPath, @"{""kid"":""file-jwk-kid"",""kty"":""RSA""}")
                     .Build())
                 .WithSelvbetjeningService(new HelseIdSelvbetjeningServiceBuilder()
                                .WithDPopTokenResponse(new TokenResponse("access_token", false, null))
-                               .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("")).Build())
+                               .WithUpdateClientSecretResponse(new ClientSecretUpdateResult("2028-08-08T00:00:00Z")).Build())
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
             var rootCommand = rootCommandBuilder.Build();
@@ -52,7 +52,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(0));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!, Does.Contain("""Result http message: {"Expiration":""}"""));
+                Assert.That(logs!, Does.Contain("Expiration Date: ClientSecretUpdateResult { Expiration = 2028-08-08T00:00:00Z }"));
                 Assert.That(logs!, Does.Contain("Keys successfully updated.")); 
             }
         }
@@ -95,7 +95,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             {
                 Assert.That(exitCode, Is.EqualTo(0));
                 var logs = fakeLogProvider.Collector.GetSnapshot().Select(x => x.Message).ToList();
-                Assert.That(logs!, Does.Contain("""Result http message: {"Expiration":"2028-08-08T00:00:00Z"}"""));
+                Assert.That(logs!, Does.Contain("Expiration Date: ClientSecretUpdateResult { Expiration = 2028-08-08T00:00:00Z }"));
                 Assert.That(logs!, Does.Contain("Keys successfully updated.")); 
             }
         }
