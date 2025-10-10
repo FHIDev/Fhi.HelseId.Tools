@@ -32,7 +32,7 @@ namespace Fhi.HelseIdSelvbetjening.Business
                 "nhn:selvbetjening/client",
                 dPoPKey);
 
-            if (response.IsError && response.AccessToken is null)
+            if (response.IsError || response.AccessToken is null)
             {
                 var errorMessageText = $"Token request failed: {(string.IsNullOrEmpty(response.ErrorDescription) ? "No Error message provided by API" : response.ErrorDescription)}";
                 var error = new ErrorMessage(errorMessageText, HttpStatusCode.BadRequest, "error");
@@ -43,7 +43,7 @@ namespace Fhi.HelseIdSelvbetjening.Business
             var (ClientSecretUpdate, ProblemDetail) = await _selvbetjeningApi.UpdateClientSecretsAsync(
                     baseAddress,
                     dPoPKey,
-                    response.AccessToken!,
+                    response.AccessToken,
                     newPublicJwk);
 
             if (ProblemDetail != null)
@@ -53,10 +53,17 @@ namespace Fhi.HelseIdSelvbetjening.Business
                 return new Error<ClientSecretUpdateResponse, ErrorResult>(errorResult);
             }
 
+            if (ClientSecretUpdate is null)
+            {
+                var error = new ErrorMessage($"Error occured while updating client {@clientConfiguration.ClientId}. Error: HelseID did not return with the expected content. Check if client was updated before retrying.", HttpStatusCode.BadGateway, "error");
+                errorResult.AddError(error);
+                return new Error<ClientSecretUpdateResponse, ErrorResult>(errorResult);
+            }
+
             return new Success<ClientSecretUpdateResponse, ErrorResult>(
                 new ClientSecretUpdateResponse()
                 {
-                    ExpirationDate = ClientSecretUpdate!.ToString(),
+                    ExpirationDate = ClientSecretUpdate.ToString(),
                     ClientId = clientConfiguration.ClientId,
                     NewKeyId = ExtractKid(newPublicJwk)
                 });
