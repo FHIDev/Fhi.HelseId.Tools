@@ -25,7 +25,7 @@
 
 # -----------------------------------
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0
+FROM mcr.microsoft.com/dotnet/sdk:9.0
 
 WORKDIR /script
 
@@ -33,4 +33,4 @@ COPY Key-gen-and-update.sh .
 
 RUN chmod +x Key-gen-and-update.sh
 
-CMD ["./Key-gen-and-update.sh"]
+CMD ["bash", "./Key-gen-and-update.sh"]
