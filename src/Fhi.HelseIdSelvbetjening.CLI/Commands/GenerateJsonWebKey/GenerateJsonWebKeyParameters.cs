@@ -7,7 +7,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
         public const string CommandName = "generatejsonwebkey";
         public static readonly GenerateJsonWebKeyOptionNames KeyFileNamePrefix = new("KeyFileNamePrefix", "n");
         public static readonly GenerateJsonWebKeyOptionNames KeyDirectory = new("KeyDirectory", "d");
-        public static readonly GenerateJsonWebKeyOptionNames KeyCustomKid = new("CustomKid", "k");
+        public static readonly GenerateJsonWebKeyOptionNames KeyCustomKid = new("KeyCustomKid", "k");
     }
 
     /// <summary>
