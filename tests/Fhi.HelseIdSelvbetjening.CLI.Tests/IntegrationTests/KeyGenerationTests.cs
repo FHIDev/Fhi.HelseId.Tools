@@ -7,9 +7,11 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {
     public class KeyGenerationTests
     {
-        [TestCase("--KeyFileNamePrefix", "--KeyDirectory")]
-        [TestCase("-n", "-d")]
-        public async Task GenerateJsonWebKeys(string prefixOption, string directoryPathOption)
+        [TestCase("--KeyFileNamePrefix", "--KeyDirectory", "")]
+        [TestCase("--KeyFileNamePrefix", "--KeyDirectory", "--KeyCustomKid")]
+        [TestCase("-n", "-d", "")]
+        [TestCase("-n", "-d", "-k")]
+        public async Task GenerateJsonWebKeys(string prefixOption, string directoryPathOption, string? customKidOption)
         {
             var fileHandlerMock = new FileHandlerMock();
             var fakeLogProvider = new FakeLoggerProvider();
@@ -17,15 +19,21 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var prefixName = "integration_test";
             var directoryPath = "c:\\temp";
 
-            var args = new[]
+            var args = new List<string>
             {
                 GenerateJsonWebKeyParameterNames.CommandName,
                 $"{prefixOption}", prefixName,
                 $"{directoryPathOption}", directoryPath
             };
 
+            if (!string.IsNullOrWhiteSpace(customKidOption))
+            {
+                args.Add($"{customKidOption}");
+                args.Add("customKidTest");
+            }
+
             var rootCommandBuilder = new RootCommandBuilder()
-                .WithArgs(args)
+                .WithArgs(args.ToArray())
                 .WithFileHandler(fileHandlerMock)
                 .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
@@ -86,7 +94,8 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var args = new[]
             {
                 GenerateJsonWebKeyParameterNames.CommandName,
-                $"--{GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long}", "TestClient"
+                $"--{GenerateJsonWebKeyParameterNames.KeyFileNamePrefix.Long}", "TestClient",
+                $"--KeyCustomKid", "TESSTSTST"
             };
             var rootCommandBuilder = new RootCommandBuilder()
               .WithArgs(args)
