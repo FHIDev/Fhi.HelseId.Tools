@@ -29,16 +29,24 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
                 "Directory to store the generated keys",
                 isRequired: false);
 
+            var keyCustomKidOption = generateJsonWebKeyCommand.CreateStringOption(
+                GenerateJsonWebKeyParameterNames.KeyCustomKid.Long,
+                GenerateJsonWebKeyParameterNames.KeyCustomKid.Short,
+                "Custom Kid value to use in the generated keys",
+                isRequired: false);
+
             generateJsonWebKeyCommand.SetAction((ParseResult parseResult) =>
             {
                 var keyFileNamePrefix = parseResult.GetValue(keyFileNamePrefixOption);
                 var keyDirectory = parseResult.GetValue(keyDirectoryOption);
+                var keyCustomKid = parseResult.GetValue(keyCustomKidOption);
 
                 var parameters = new GenerateJsonWebKeyParameters
                 {
                     // TODO: fix "may be null"
                     KeyFileNamePrefix = keyFileNamePrefix!,
-                    KeyDirectory = keyDirectory
+                    KeyDirectory = keyDirectory,
+                    KeyCustomKid = keyCustomKid
                 };
 
                 _commandHandler.Execute(parameters);
