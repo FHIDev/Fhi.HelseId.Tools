@@ -2,7 +2,7 @@ using Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey;
 using Fhi.HelseIdSelvbetjening.CLI.IntegrationTests.Setup;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
-using System.CommandLine;
+
 namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
 {
     public class KeyGenerationTests
@@ -11,7 +11,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
         [TestCase("--KeyFileNamePrefix", "--KeyDirectory", "--KeyCustomKid")]
         [TestCase("-n", "-d", "")]
         [TestCase("-n", "-d", "-k")]
-        public async Task GenerateJsonWebKeys(string prefixOption, string directoryPathOption, string? customKidOption)
+        public async Task GIVEN_GenerateJsonWebKeys_WHEN_ValidParameters_THEN_GenerateValidKeyPair(string prefixOption, string directoryPathOption, string? customKidOption)
         {
             var fileHandlerMock = new FileHandlerMock();
             var fakeLogProvider = new FakeLoggerProvider();
@@ -22,8 +22,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var args = new List<string>
             {
                 GenerateJsonWebKeyParameterNames.CommandName,
-                $"{prefixOption}", prefixName,
-                $"{directoryPathOption}", directoryPath
+                $"{prefixOption}", 
+                prefixName,
+                $"{directoryPathOption}", 
+                directoryPath
             };
 
             if (!string.IsNullOrWhiteSpace(customKidOption))
@@ -40,6 +42,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var rootCommand = rootCommandBuilder.Build();
             var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
             var commandLineBuilder = new CommandLineBuilder();
+
             var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
@@ -53,17 +56,23 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             }
         }
 
-        /**
-        // TODO: needs upgrade to version beta5 of system.commandLine
         [Test]
-        [Ignore("todo")]
-        public async Task GenerateJsonWebKeys_InvalidParameterAsync()
+        [Ignore("TODO: Parsing errors cannot be tested on command level, needs to be tested on program level")]
+        public async Task GIVEN_GenerateJsonWebKeys_WHEN_InvalidParameterAsync_THEN_ExitWithExitCode1()
         {
             var fileHandlerMock = new FileHandlerMock();
             var fakeLogProvider = new FakeLoggerProvider();
+
+            var prefixName = "integration_test";
+            var directoryPath = "c:\\temp";
+
             var args = new[]
             {
                 GenerateJsonWebKeyParameterNames.CommandName,
+                "--KeyFileNamePrefix",
+                prefixName,
+                "--KeyDirectory",
+                directoryPath,
                 "--invalidparameter", "integration_test"
             };
             var rootCommandBuilder = new RootCommandBuilder()
@@ -71,23 +80,25 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
                .WithFileHandler(fileHandlerMock)
                .WithLoggerProvider(fakeLogProvider, LogLevel.Trace);
 
-            int exitCode = await rootCommandBuilder.Build().InvokeAsync(args);
+            var rootCommand = rootCommandBuilder.Build();
+            var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
+            var commandLineBuilder = new CommandLineBuilder();
+
+            var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
+
             using (Assert.EnterMultipleScope())
             {
                 var logs = fakeLogProvider.Collector?.GetSnapshot().Select(x => x.Message).ToList();
 
-                Assert.That(exitCode, Is.Not.EqualTo(0));
-                //TODO:Figure out what error message should be
-                Assert.That(logs, Does.Contain("Unrecognized option '--invalidparameter'").IgnoreCase
-                    .Or.Contain("Unknown option").IgnoreCase
-                    .Or.Contain("is not a recognized option").IgnoreCase);
-                Assert.That(logs!, Does.Contain(@"Private key saved: c:\temp\integration_test_private.json"));
-                Assert.That(logs!, Does.Contain(@"Public key saved: c:\temp\integration_test_public.json"));
+                Assert.That(exitCode, Is.EqualTo(1));
+                Assert.That(logs, Does.Contain("Unrecognized command or argument '--invalidparameter'."));
+                Assert.That(logs!, !Does.Contain(@"Private key saved: c:\temp\integration_test_private.json"));
+                Assert.That(logs!, !Does.Contain(@"Public key saved: c:\temp\integration_test_public.json"));
             }
-        }*/
+        }
 
         [Test]
-        public async Task GenerateJsonWebKeys_PathIsEmpty_UseCurrentDirectory()
+        public async Task GIVEN_GenerateJsonWebKeys_WHEN_PathIsEmpty_THEN_UseCurrentDirectory()
         {
             var fakeLogProvider = new FakeLoggerProvider();
             var fileHandlerMock = new FileHandlerMock();
@@ -105,6 +116,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.IntegrationTests
             var rootCommand = rootCommandBuilder.Build();
             var parseResult = rootCommand.Parse(rootCommandBuilder.Args);
             var commandLineBuilder = new CommandLineBuilder();
+            
             var exitCode = await CommandLineBuilder.CommandLineBuilderInvokerAsync(parseResult);
 
             using (Assert.EnterMultipleScope())
