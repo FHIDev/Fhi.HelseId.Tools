@@ -25,7 +25,7 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
                 _fileHandler.CreateDirectory(keyPath);
             }
 
-            var keyPair = JwkGenerator.GenerateRsaJwk();
+            var keyPair = JwkGenerator.GenerateRsaJwk(/*kid: parameters.KeyCustomKid*/);
 
             var privateKeyPath = Path.Combine(keyPath, $"{parameters.KeyFileNamePrefix}_private.json");
             var publicKeyPath = Path.Combine(keyPath, $"{parameters.KeyFileNamePrefix}_public.json");

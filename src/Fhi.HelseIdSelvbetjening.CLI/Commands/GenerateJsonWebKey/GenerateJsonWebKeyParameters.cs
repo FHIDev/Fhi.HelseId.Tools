@@ -1,12 +1,13 @@
 namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
 {
-    public record UpdateGenerateJsonWebKeyOptionNames(string Long, string Short);
+    public record GenerateJsonWebKeyOptionNames(string Long, string Short);
 
     internal static class GenerateJsonWebKeyParameterNames
     {
         public const string CommandName = "generatejsonwebkey";
-        public static readonly UpdateGenerateJsonWebKeyOptionNames KeyFileNamePrefix = new("KeyFileNamePrefix", "n");
-        public static readonly UpdateGenerateJsonWebKeyOptionNames KeyDirectory = new("KeyDirectory", "d");
+        public static readonly GenerateJsonWebKeyOptionNames KeyFileNamePrefix = new("KeyFileNamePrefix", "n");
+        public static readonly GenerateJsonWebKeyOptionNames KeyDirectory = new("KeyDirectory", "d");
+        public static readonly GenerateJsonWebKeyOptionNames KeyCustomKid = new("KeyCustomKid", "k");
     }
 
     /// <summary>
@@ -23,5 +24,10 @@ namespace Fhi.HelseIdSelvbetjening.CLI.Commands.GenerateJsonWebKey
         /// Directory where public and private file will be stored
         /// </summary>
         public string? KeyDirectory { get; set; }
+
+        /// <summary>
+        /// Custom Kid thats present on both public and private key
+        /// </summary>
+        public string? KeyCustomKid { get; set; }
     };
 }
